@@ -82,6 +82,18 @@ export const albums: Album[] = [
     title: "album0",
     total_duration: 20,
   },
+  {
+    id: "album1",
+    artists: ["artist0"],
+    category: "EP",
+    coverImg: "123",
+    introduction: "good",
+    length: 3,
+    musics: ["music2", "music3"],
+    released_at: new Date(),
+    title: "album0",
+    total_duration: 20,
+  },
 ];
 
 export const artists: Artist[] = [
