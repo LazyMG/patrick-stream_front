@@ -48,7 +48,7 @@ const AdminMain: React.FC = () => {
   };
   return (
     <ContentContainer>
-      <Link to={"/"}>
+      <Link to={"/admin/musics"}>
         <Tab>
           <TabContent>Music: {musicsCount}</TabContent>
           <TabContent>

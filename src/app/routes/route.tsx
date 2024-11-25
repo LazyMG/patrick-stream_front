@@ -8,6 +8,8 @@ import AdminArtists from "../../pages/admin/AdminArtists";
 import Layout from "../../pages/Layout";
 import AdminDetailMusic from "../../pages/admin/AdminDetailMusic";
 import AdminMusicsNew from "../../pages/admin/AdminMusicsNew";
+import AdminMusicsEdit from "../../pages/admin/AdminMusicsEdit";
+import AdminMusicsDetailContainer from "../../pages/admin/AdminMusicsDetailContainer";
 
 const router = createBrowserRouter([
   {
@@ -27,7 +29,17 @@ const router = createBrowserRouter([
           },
           {
             path: ":musicId",
-            element: <AdminDetailMusic />,
+            element: <AdminMusicsDetailContainer />,
+            children: [
+              {
+                index: true,
+                element: <AdminDetailMusic />,
+              },
+              {
+                path: "settings",
+                element: <AdminMusicsEdit />,
+              },
+            ],
           },
           {
             path: "",

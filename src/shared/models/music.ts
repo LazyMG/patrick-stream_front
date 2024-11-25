@@ -14,7 +14,7 @@ export interface Music {
   duration: number;
   counts: Count;
   ytId: string;
-  released_at: Date;
+  released_at: string;
   genre: string[];
   coverImg: string;
   created_at: Date;
