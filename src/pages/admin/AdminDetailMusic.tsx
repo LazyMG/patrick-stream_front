@@ -102,7 +102,7 @@ const AdminDetailMusic: React.FC = () => {
             <p>앨범: {music?.album}</p>
             <p>재생시간: {music?.duration}</p>
             <p>유튜브 아이디: {music?.ytId}</p>
-            <p>발매 일자: {music?.released_at.toDateString()}</p>
+            <p>발매 일자: {music?.released_at}</p>
             <p>등록 일자: {music?.created_at.toDateString()}</p>
             <p>장르: {music?.genre}</p>
           </Info>

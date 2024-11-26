@@ -48,6 +48,7 @@ interface IFormInput {
 
 const AdminMusicsEdit: React.FC = () => {
   const music = useOutletContext<Music | undefined>();
+  const [currentMusic, setCurrentMusic] = useState<IFormInput>();
   const { register, setValue, handleSubmit, trigger, getValues } = useForm<
     IFormInput
   >();
@@ -56,6 +57,14 @@ const AdminMusicsEdit: React.FC = () => {
 
   useEffect(() => {
     if (music) {
+      setCurrentMusic({
+        title: music.title,
+        duration: music.duration,
+        ytId: music.ytId,
+        released_at: music.released_at,
+        genre: music.genre.toString(),
+        coverImg: music.coverImg,
+      });
       setValue("title", music.title);
       setValue("duration", music?.duration),
         setValue("ytId", music?.ytId),
@@ -66,26 +75,16 @@ const AdminMusicsEdit: React.FC = () => {
   }, [setValue, music]);
 
   const onSubmit: SubmitHandler<IFormInput> = (event) => {
-    if (!music) return;
+    if (!currentMusic) return;
 
-    // 수정 필요
-    Object.keys(event).forEach((key) => {
-      if (getValues(key) === "") {
-        setValue(key, music[key]);
-      }
-    });
-
-    // 수정 필요
     (Object.keys(event) as (keyof IFormInput)[]).forEach((key) => {
-      if (event[key] === "") {
-        const value = key === "genre" ? music[key].join(", ") : music[key];
-
-        // event[key]를 명확하게 처리
-        (event as Record<keyof IFormInput, string | number | string[]>)[
-          key
-        ] = value;
+      if (getValues(key) === "") {
+        setValue(key, currentMusic[key]);
       }
     });
+
+    // 데이터 보내기
+    const data = getValues();
   };
 
   const submitForm = async () => {
