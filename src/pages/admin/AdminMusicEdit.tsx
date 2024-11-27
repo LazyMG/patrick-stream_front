@@ -46,7 +46,7 @@ interface IFormInput {
   coverImg: string;
 }
 
-const AdminMusicsEdit: React.FC = () => {
+const AdminMusicEdit: React.FC = () => {
   const music = useOutletContext<Music | undefined>();
   const [currentMusic, setCurrentMusic] = useState<IFormInput>();
   const { register, setValue, handleSubmit, trigger, getValues } = useForm<
@@ -132,4 +132,4 @@ const AdminMusicsEdit: React.FC = () => {
   );
 };
 
-export default AdminMusicsEdit;
+export default AdminMusicEdit;

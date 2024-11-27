@@ -58,8 +58,27 @@ const AdminMain: React.FC = () => {
           </TabContent>
         </Tab>
       </Link>
-      <Tab>Album: {albumsCount}</Tab>
-      <Tab>Artist: {artistsCount}</Tab>
+
+      <Link to={"/admin/albums"}>
+        <Tab>
+          <TabContent>Album: {albumsCount}</TabContent>
+          <TabContent>
+            <button onClick={(event) => gotoUploadPage(event, "/albums/new")}>
+              등록하기
+            </button>
+          </TabContent>
+        </Tab>
+      </Link>
+      <Link to={"/admin/artists"}>
+        <Tab>
+          <TabContent>Artist: {artistsCount}</TabContent>
+          <TabContent>
+            <button onClick={(event) => gotoUploadPage(event, "/artists/new")}>
+              등록하기
+            </button>
+          </TabContent>
+        </Tab>
+      </Link>
     </ContentContainer>
   );
 };

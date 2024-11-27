@@ -8,8 +8,12 @@ import AdminArtists from "../../pages/admin/AdminArtists";
 import Layout from "../../pages/Layout";
 import AdminDetailMusic from "../../pages/admin/AdminDetailMusic";
 import AdminMusicsNew from "../../pages/admin/AdminMusicsNew";
-import AdminMusicsEdit from "../../pages/admin/AdminMusicsEdit";
+import AdminMusicEdit from "../../pages/admin/AdminMusicEdit";
 import AdminMusicsDetailContainer from "../../pages/admin/AdminMusicsDetailContainer";
+import AdminAlbumsNew from "../../pages/admin/AdminAlbumsNew";
+import AdminAlbumsDetailContainer from "../../pages/admin/AdminAlbumsDetailContainer";
+import AdminDetailAlbum from "../../pages/admin/AdminDetailAlbum";
+import AdminAlbumEdit from "../../pages/admin/AdminAlbumEdit";
 
 const router = createBrowserRouter([
   {
@@ -37,7 +41,7 @@ const router = createBrowserRouter([
               },
               {
                 path: "settings",
-                element: <AdminMusicsEdit />,
+                element: <AdminMusicEdit />,
               },
             ],
           },
@@ -48,8 +52,31 @@ const router = createBrowserRouter([
         ],
       },
       {
-        path: "albums",
-        element: <AdminAlbums />,
+        path: "ablums",
+        children: [
+          {
+            path: "new",
+            element: <AdminAlbumsNew />,
+          },
+          {
+            path: ":albumId",
+            element: <AdminAlbumsDetailContainer />,
+            children: [
+              {
+                index: true,
+                element: <AdminDetailAlbum />,
+              },
+              {
+                path: "settings",
+                element: <AdminAlbumEdit />,
+              },
+            ],
+          },
+          {
+            path: "",
+            element: <AdminAlbums />,
+          },
+        ],
       },
       {
         path: "artists",

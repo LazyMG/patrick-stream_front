@@ -92,7 +92,7 @@ export const albums: Album[] = [
     length: 3,
     musics: ["music2", "music3"],
     released_at: new Date(),
-    title: "album0",
+    title: "album1",
     total_duration: 20,
   },
 ];
