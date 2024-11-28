@@ -1,19 +1,22 @@
 import { createBrowserRouter } from "react-router-dom";
-import AdminLayout from "../../pages/admin/AdminLayout";
-import AdminMain from "../../pages/admin/AdminMain";
-import AdminMusics from "../../pages/admin/AdminMusics";
-import AdminAlbums from "../../pages/admin/AdminAlbums";
-import AdminArtists from "../../pages/admin/AdminArtists";
-
 import Layout from "../../pages/Layout";
-import AdminDetailMusic from "../../pages/admin/AdminDetailMusic";
-import AdminMusicsNew from "../../pages/admin/AdminMusicsNew";
-import AdminMusicEdit from "../../pages/admin/AdminMusicEdit";
-import AdminMusicsDetailContainer from "../../pages/admin/AdminMusicsDetailContainer";
-import AdminAlbumsNew from "../../pages/admin/AdminAlbumsNew";
-import AdminAlbumsDetailContainer from "../../pages/admin/AdminAlbumsDetailContainer";
-import AdminDetailAlbum from "../../pages/admin/AdminDetailAlbum";
-import AdminAlbumEdit from "../../pages/admin/AdminAlbumEdit";
+import AdminLayout from "../../pages/admin/AdminLayout";
+
+import AdminMain from "../../pages/admin/AdminMain";
+
+import AdminMusicsNew from "../../pages/admin/music/AdminMusicsNew";
+import AdminMusicsDetailContainer from "../../pages/admin/music/AdminMusicsDetailContainer";
+import AdminDetailMusic from "../../pages/admin/music/AdminDetailMusic";
+import AdminMusicEdit from "../../pages/admin/music/AdminMusicEdit";
+import AdminMusics from "../../pages/admin/music/AdminMusics";
+
+import AdminAlbumsNew from "../../pages/admin/album/AdminAlbumsNew";
+import AdminAlbumsDetailContainer from "../../pages/admin/album/AdminAlbumsDetailContainer";
+import AdminDetailAlbum from "../../pages/admin/album/AdminDetailAlbum";
+import AdminAlbumEdit from "../../pages/admin/album/AdminAlbumEdit";
+import AdminAlbums from "../../pages/admin/album/AdminAlbums";
+
+import AdminArtists from "../../pages/admin/AdminArtists";
 
 const router = createBrowserRouter([
   {
@@ -52,7 +55,7 @@ const router = createBrowserRouter([
         ],
       },
       {
-        path: "ablums",
+        path: "albums",
         children: [
           {
             path: "new",

@@ -82,6 +82,7 @@ export const albums: Album[] = [
     released_at: new Date(),
     title: "album0",
     total_duration: 20,
+    created_at: new Date(),
   },
   {
     id: "album1",
@@ -94,6 +95,7 @@ export const albums: Album[] = [
     released_at: new Date(),
     title: "album1",
     total_duration: 20,
+    created_at: new Date(),
   },
 ];
 
@@ -107,5 +109,6 @@ export const artists: Artist[] = [
     debut_at: new Date(),
     introduction: "good",
     musics: ["music0", "music2", "music3"],
+    created_at: new Date(),
   },
 ];

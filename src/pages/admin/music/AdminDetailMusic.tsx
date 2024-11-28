@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import styled from "styled-components";
-import { Music } from "../../shared/models/music";
-import { _getAlbums } from "../../shared/lib/testAlbumFunc";
-import { _getAritsts } from "../../shared/lib/testArtistFunc";
+import { Music } from "../../../shared/models/music";
+import { _getAlbums } from "../../../shared/lib/testAlbumFunc";
+import { _getAritsts } from "../../../shared/lib/testArtistFunc";
 
 const ContentContainer = styled.div`
   display: flex;

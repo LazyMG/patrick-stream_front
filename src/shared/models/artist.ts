@@ -15,4 +15,5 @@ export interface Artist {
   debut_at: Date;
   country: string;
   coverImg: string;
+  created_at: Date;
 }

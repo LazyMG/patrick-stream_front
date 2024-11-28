@@ -16,4 +16,5 @@ export interface Album {
   total_duration: number;
   length: number;
   coverImg: string;
+  created_at: Date;
 }

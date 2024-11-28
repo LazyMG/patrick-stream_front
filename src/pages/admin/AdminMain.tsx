@@ -58,7 +58,6 @@ const AdminMain: React.FC = () => {
           </TabContent>
         </Tab>
       </Link>
-
       <Link to={"/admin/albums"}>
         <Tab>
           <TabContent>Album: {albumsCount}</TabContent>
