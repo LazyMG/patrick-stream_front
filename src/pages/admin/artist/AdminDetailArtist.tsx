@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
-import { Album } from "../../../shared/models/album";
 import styled from "styled-components";
+import { Artist } from "../../../shared/models/artist";
 
 const ContentContainer = styled.div`
   display: flex;
@@ -11,18 +11,18 @@ const ContentContainer = styled.div`
   position: relative;
 `;
 
-// const ModalOverlay = styled.div`
-//   position: fixed;
-//   width: 100vw;
-//   height: 100vh;
-//   background-color: rgba(0, 0, 0, 0.5);
-//   z-index: 1;
-//   top: 0;
-//   left: 0;
-//   display: flex;
-//   justify-content: center;
-//   align-items: center;
-// `;
+const ModalOverlay = styled.div`
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 
 // const AlbumModal = styled.div`
 //   width: 50%;
@@ -89,9 +89,8 @@ const Comment = styled.div`
   border-radius: 15px;
 `;
 
-const AdminDetailAlbum: React.FC = () => {
-  const album = useOutletContext<Album | undefined>();
-
+const AdminDetailArtist: React.FC = () => {
+  const artist = useOutletContext<Artist | undefined>();
   const navigate = useNavigate();
 
   const gotoPage = (
@@ -103,10 +102,10 @@ const AdminDetailAlbum: React.FC = () => {
     navigate("/admin" + url);
   };
 
-  const deleteAblum = () => {
-    if (confirm(`[${album?.title}]을(를) 삭제하시겠습니까?`)) {
+  const deleteArtist = () => {
+    if (confirm(`[${artist?.artistname}]을(를) 삭제하시겠습니까?`)) {
       //삭제 로직
-      navigate("/admin/albums");
+      navigate("/admin/artists");
     } else {
       return;
     }
@@ -115,28 +114,28 @@ const AdminDetailAlbum: React.FC = () => {
   return (
     <ContentContainer>
       <ContentHeader>
-        <button>앨범에서 음악 삭제</button>
-        <button>아티스트에 등록하기</button>
+        <button>앨범 삭제하기</button>
+        <button>음악 등록하기</button>
         <button
-          onClick={(event) => gotoPage(event, `/albums/${album?.id}/settings`)}
+          onClick={(event) =>
+            gotoPage(event, `/artists/${artist?.id}/settings`)
+          }
         >
           수정하기
         </button>
-        <button onClick={deleteAblum}>삭제하기</button>
+        <button onClick={deleteArtist}>삭제하기</button>
       </ContentHeader>
       <Content>
         <ContentRow>
           <Info>
-            <p>제목: {album?.title}</p>
-            <p>아티스트: {album?.artists}</p>
-            <p>재생시간: {album?.total_duration}</p>
-            <p>등록 일자: {album?.created_at.toDateString()}</p>
-            <p>발매 일자: {album?.released_at.toDateString()}</p>
-            <p>카테고리: {album?.category}</p>
-            <p>곡 수: {album?.length}</p>
-            <p>현재 곡 수: {album?.musics.length}</p>
+            <p>이름: {artist?.artistname}</p>
+            <p>음악 수: {artist?.musics.length}</p>
+            <p>앨범 수: {artist?.albums.length}</p>
+            <p>데뷔 일자: {artist?.debut_at.toDateString()}</p>
+            <p>등록 일자: {artist?.created_at.toDateString()}</p>
+            <p>국가: {artist?.country}</p>
           </Info>
-          <Image src={album?.coverImg} />
+          <Image src={artist?.coverImg} />
         </ContentRow>
         <ContentRow>
           <CommentContainer>
@@ -152,4 +151,4 @@ const AdminDetailAlbum: React.FC = () => {
   );
 };
 
-export default AdminDetailAlbum;
+export default AdminDetailArtist;

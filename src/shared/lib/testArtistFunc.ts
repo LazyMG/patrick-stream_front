@@ -6,8 +6,12 @@ export const _getAritsts = () => {
 };
 
 export const _getArtistInfo = (artistId: string) => {
+  return artists.find((artist) => artist.id === artistId);
+};
+
+export const _getArtistName = (artistId: string) => {
   const artist: Artist | undefined = artists.find(
-    (artist) => artist.id == artistId
+    (artist) => artist.id === artistId
   );
 
   if (!artist) return null;

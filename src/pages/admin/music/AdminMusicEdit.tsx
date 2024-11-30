@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import styled from "styled-components";
-import { Music } from "../../shared/models/music";
+import { Music } from "../../../shared/models/music";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { IMusicFormInput } from "../../../shared/types";
 
 const ContentContainer = styled.div`
   display: flex;
@@ -37,21 +38,21 @@ const ContentFooter = styled.div`
   justify-content: space-around;
 `;
 
-interface IFormInput {
-  title: string;
-  duration: number;
-  ytId: string;
-  released_at: string;
-  genre: string;
-  coverImg: string;
-}
-
 const AdminMusicEdit: React.FC = () => {
   const music = useOutletContext<Music | undefined>();
-  const [currentMusic, setCurrentMusic] = useState<IFormInput>();
+  const [currentMusic, setCurrentMusic] = useState<IMusicFormInput>();
   const { register, setValue, handleSubmit, trigger, getValues } = useForm<
-    IFormInput
-  >();
+    IMusicFormInput
+  >({
+    defaultValues: {
+      title: music?.title,
+      duration: music?.duration,
+      ytId: music?.ytId,
+      released_at: music?.released_at,
+      genre: music?.genre.toString(),
+      coverImg: music?.coverImg,
+    },
+  });
 
   const navigate = useNavigate();
 
@@ -65,26 +66,20 @@ const AdminMusicEdit: React.FC = () => {
         genre: music.genre.toString(),
         coverImg: music.coverImg,
       });
-      setValue("title", music.title);
-      setValue("duration", music?.duration),
-        setValue("ytId", music?.ytId),
-        setValue("released_at", music?.released_at),
-        setValue("genre", music?.genre.toString()),
-        setValue("coverImg", music?.coverImg);
     }
-  }, [setValue, music]);
+  }, [music]);
 
-  const onSubmit: SubmitHandler<IFormInput> = (event) => {
+  const onSubmit: SubmitHandler<IMusicFormInput> = (event) => {
     if (!currentMusic) return;
 
-    (Object.keys(event) as (keyof IFormInput)[]).forEach((key) => {
+    (Object.keys(event) as (keyof IMusicFormInput)[]).forEach((key) => {
       if (getValues(key) === "") {
         setValue(key, currentMusic[key]);
       }
     });
 
-    // 데이터 보내기
-    const data = getValues();
+    // // 데이터 보내기
+    // const data = getValues();
   };
 
   const submitForm = async () => {

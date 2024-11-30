@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { Music } from "../../shared/models/music";
 import { Album } from "../../shared/models/album";
 import { Artist } from "../../shared/models/artist";
-import { _getArtistInfo } from "../../shared/lib/testArtistFunc";
+import { _getArtistName } from "../../shared/lib/testArtistFunc";
 
 const ContentContainer = styled.div`
   display: flex;
@@ -87,7 +87,7 @@ const AdminPageLayout: React.FC<AdminPageLayoutProps> = ({
             <Link to={`./${music.id}`} key={music.id}>
               <Tab>
                 <TabContent>{music.title}</TabContent>
-                <TabContent>{_getArtistInfo(music.artists[0])}</TabContent>
+                <TabContent>{_getArtistName(music.artists[0])}</TabContent>
               </Tab>
             </Link>
           ))}

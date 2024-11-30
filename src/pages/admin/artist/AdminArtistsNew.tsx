@@ -3,7 +3,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import AdminUploadForm from "../../../widgets/AdminUploadForm";
-import { IAlbumFormInput } from "../../../shared/types";
+import { IArtistFormInput } from "../../../shared/types";
 
 const ContentContainer = styled.div`
   display: flex;
@@ -27,11 +27,11 @@ const ContentFooter = styled.div`
   justify-content: space-around;
 `;
 
-const AdminAlbumsNew: React.FC = () => {
-  const { register, handleSubmit, trigger } = useForm<IAlbumFormInput>();
+const AdminArtistsNew: React.FC = () => {
+  const { register, handleSubmit, trigger } = useForm<IArtistFormInput>();
   const navigate = useNavigate();
 
-  const onSubmit: SubmitHandler<IAlbumFormInput> = (event) => {
+  const onSubmit: SubmitHandler<IArtistFormInput> = (event) => {
     // 데이터 보내기
     console.log(event);
   };
@@ -46,21 +46,20 @@ const AdminAlbumsNew: React.FC = () => {
     }
   };
 
-  const albumFields = [
-    { name: "title", label: "제목", type: "text", tag: "input" },
-    { name: "length", label: "곡 수", type: "number", tag: "input" },
+  const artistFields = [
+    { name: "artistname", label: "이름", type: "text", tag: "input" },
     { name: "introduction", label: "소개", type: "text", tag: "textarea" },
-    { name: "released_at", label: "발매일자", type: "text", tag: "input" },
-    { name: "category", label: "카테고리", type: "text", tag: "input" },
+    { name: "debut_at", label: "데뷔 일자", type: "text", tag: "input" },
+    { name: "country", label: "국가", type: "text", tag: "input" },
     { name: "coverImg", label: "이미지", type: "text", tag: "input" },
   ] as const;
 
   return (
     <ContentContainer>
       <Content>
-        <AdminUploadForm<IAlbumFormInput>
+        <AdminUploadForm<IArtistFormInput>
           register={register}
-          fields={albumFields}
+          fields={artistFields}
         />
       </Content>
       <ContentFooter>
@@ -71,4 +70,4 @@ const AdminAlbumsNew: React.FC = () => {
   );
 };
 
-export default AdminAlbumsNew;
+export default AdminArtistsNew;

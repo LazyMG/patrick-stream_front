@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
-import styled from "styled-components";
-import { Album } from "../../../shared/models/album";
+import { Artist } from "../../../shared/models/artist";
+import { IArtistFormInput } from "../../../shared/types";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { IAlbumFormInput } from "../../../shared/types";
+import styled from "styled-components";
 
 const ContentContainer = styled.div`
   display: flex;
@@ -38,44 +38,41 @@ const ContentFooter = styled.div`
   justify-content: space-around;
 `;
 
-const AdminAlbumEdit: React.FC = () => {
-  const album = useOutletContext<Album | undefined>();
-  const [currentAlbum, setCurrentAlbum] = useState<IAlbumFormInput>();
-
+const AdminArtistsEdit: React.FC = () => {
+  const artist = useOutletContext<Artist | undefined>();
+  const [currentArtist, setCurrentArtist] = useState<IArtistFormInput>();
   const { register, setValue, handleSubmit, trigger, getValues } = useForm<
-    IAlbumFormInput
+    IArtistFormInput
   >({
     defaultValues: {
-      title: album?.title,
-      introduction: album?.introduction,
-      released_at: album?.released_at.toDateString(),
-      category: album?.category,
-      coverImg: album?.coverImg,
-      length: album?.length,
+      artistname: artist?.artistname,
+      introduction: artist?.introduction,
+      debut_at: artist?.debut_at.toDateString(),
+      country: artist?.country,
+      coverImg: artist?.coverImg,
     },
   });
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (album) {
-      setCurrentAlbum({
-        title: album?.title,
-        introduction: album?.introduction,
-        released_at: album?.released_at.toDateString(),
-        category: album.category,
-        coverImg: album.coverImg,
-        length: album.length,
+    if (artist) {
+      setCurrentArtist({
+        artistname: artist?.artistname,
+        introduction: artist?.introduction,
+        debut_at: artist?.debut_at.toDateString(),
+        country: artist?.country,
+        coverImg: artist?.coverImg,
       });
     }
-  }, [album]);
+  }, [artist]);
 
-  const onSubmit: SubmitHandler<IAlbumFormInput> = (event) => {
-    if (!currentAlbum) return;
+  const onSubmit: SubmitHandler<IArtistFormInput> = (event) => {
+    if (!currentArtist) return;
 
-    (Object.keys(event) as (keyof IAlbumFormInput)[]).forEach((key) => {
+    (Object.keys(event) as (keyof IArtistFormInput)[]).forEach((key) => {
       if (getValues(key) === "") {
-        setValue(key, currentAlbum[key]);
+        setValue(key, currentArtist[key]);
       }
     });
 
@@ -95,24 +92,20 @@ const AdminAlbumEdit: React.FC = () => {
       <Content>
         <EditForm>
           <InputRow>
-            <label>제목: </label>
-            <input type="text" {...register("title")} />
-          </InputRow>
-          <InputRow>
-            <label>곡 수: </label>
-            <input type="number" {...register("length")} />
+            <label>이름: </label>
+            <input type="text" {...register("artistname")} />
           </InputRow>
           <InputRow>
             <label>소개: </label>
             <input type="text" {...register("introduction")} />
           </InputRow>
           <InputRow>
-            <label>발매 일자: </label>
-            <input type="text" {...register("released_at")} />
+            <label>데뷔 일자: </label>
+            <input type="text" {...register("debut_at")} />
           </InputRow>
           <InputRow>
-            <label>카테고리: </label>
-            <input type="text" {...register("category")} />
+            <label>국가: </label>
+            <input type="text" {...register("country")} />
           </InputRow>
           <InputRow>
             <label>이미지: </label>
@@ -128,4 +121,4 @@ const AdminAlbumEdit: React.FC = () => {
   );
 };
 
-export default AdminAlbumEdit;
+export default AdminArtistsEdit;

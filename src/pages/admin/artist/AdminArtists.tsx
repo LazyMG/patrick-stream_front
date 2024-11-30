@@ -1,6 +1,6 @@
 import React from "react";
-import AdminPageLayout from "./AdminPageLayout";
-import { _getAritsts } from "../../shared/lib/testArtistFunc";
+import AdminPageLayout from ".././AdminPageLayout";
+import { _getAritsts } from "../../../shared/lib/testArtistFunc";
 
 const AdminArtists: React.FC = () => {
   const artists = _getAritsts();
