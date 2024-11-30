@@ -46,16 +46,22 @@ interface AdminPageLayoutProps {
   dataList: Music[] | Album[] | Artist[];
 }
 
-const isMusicList = (list: any[]): list is Music[] => {
-  return list.every((item) => "ytId" in item);
+const isMusicList = (list: unknown[]): list is Music[] => {
+  return list.every(
+    (item) => typeof item === "object" && item !== null && "ytId" in item
+  );
 };
 
-const isAlbumList = (list: any[]): list is Album[] => {
-  return list.every((item) => "category" in item);
+const isAlbumList = (list: unknown[]): list is Album[] => {
+  return list.every(
+    (item) => typeof item === "object" && item !== null && "category" in item
+  );
 };
 
-const isArtistList = (list: any[]): list is Artist[] => {
-  return list.every((item) => "artistname" in item);
+const isArtistList = (list: unknown[]): list is Artist[] => {
+  return list.every(
+    (item) => typeof item === "object" && item !== null && "artistname" in item
+  );
 };
 
 const AdminPageLayout: React.FC<AdminPageLayoutProps> = ({

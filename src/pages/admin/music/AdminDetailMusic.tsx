@@ -4,6 +4,8 @@ import styled from "styled-components";
 import { Music } from "../../../shared/models/music";
 import { _getAlbums } from "../../../shared/lib/testAlbumFunc";
 import { _getAritsts } from "../../../shared/lib/testArtistFunc";
+import AdminModal from "../../../widgets/AdminModal";
+import AdminDetailButtons from "../../../widgets/AdminDetailButtons";
 
 const ContentContainer = styled.div`
   display: flex;
@@ -11,31 +13,6 @@ const ContentContainer = styled.div`
   padding: 20px 20%;
   gap: 20px;
   position: relative;
-`;
-
-const ModalOverlay = styled.div`
-  position: fixed;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 1;
-  top: 0;
-  left: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-const AlbumModal = styled.div`
-  width: 50%;
-  height: 50%;
-  background-color: red;
-`;
-
-const ArtistModal = styled.div`
-  width: 50%;
-  height: 50%;
-  background-color: blue;
 `;
 
 const ContentHeader = styled.div`
@@ -106,15 +83,6 @@ const AdminDetailMusic: React.FC = () => {
 
   const navigate = useNavigate();
 
-  const gotoPage = (
-    event: React.MouseEvent<HTMLButtonElement>,
-    url: string
-  ) => {
-    event.stopPropagation();
-    event.preventDefault();
-    navigate("/admin" + url);
-  };
-
   const deleteMusic = () => {
     if (confirm(`[${music?.title}]을(를) 삭제하시겠습니까?`)) {
       //삭제 로직
@@ -124,61 +92,43 @@ const AdminDetailMusic: React.FC = () => {
     }
   };
 
+  const openAlbumModal = () => setIsAlbumModalOpen(true);
+
+  const openArtistModal = () => setIsArtistModalOpen(true);
+
+  const closeAlbumModal = () => setIsAlbumModalOpen(false);
+
+  const closeArtistModal = () => setIsArtistModalOpen(false);
+
   return (
     <ContentContainer>
       {isAlbumModalOpen && (
-        <ModalOverlay onClick={() => setIsAlbumModalOpen(false)}>
-          <AlbumModal
-            onClick={(event: React.MouseEvent<HTMLDivElement>) =>
-              event.stopPropagation()
-            }
-          >
-            <div>
-              <div>
-                <button onClick={() => setIsAlbumModalOpen(false)}>X</button>
-              </div>
-              <div>
-                {albums.map((album) => (
-                  <div>{album.title}</div>
-                ))}
-              </div>
-            </div>
-          </AlbumModal>
-        </ModalOverlay>
+        <AdminModal
+          closeModal={closeAlbumModal}
+          dataList={albums}
+          dataType="album"
+        />
       )}
       {isArtistModalOpen && (
-        <ModalOverlay onClick={() => setIsArtistModalOpen(false)}>
-          <ArtistModal
-            onClick={(event: React.MouseEvent<HTMLDivElement>) =>
-              event.stopPropagation()
-            }
-          >
-            <div>
-              <div>
-                <button onClick={() => setIsArtistModalOpen(false)}>X</button>
-              </div>
-              <div>
-                {artists.map((artist) => (
-                  <div>{artist.artistname}</div>
-                ))}
-              </div>
-            </div>
-          </ArtistModal>
-        </ModalOverlay>
+        <AdminModal
+          closeModal={closeArtistModal}
+          dataList={artists}
+          dataType="artist"
+        />
       )}
       <ContentHeader>
-        <button onClick={() => setIsAlbumModalOpen(true)}>
-          앨범에 등록하기
-        </button>
-        <button onClick={() => setIsArtistModalOpen(true)}>
-          아티스트에 등록하기
-        </button>
-        <button
-          onClick={(event) => gotoPage(event, `/musics/${music?.id}/settings`)}
-        >
-          수정하기
-        </button>
-        <button onClick={deleteMusic}>삭제하기</button>
+        <AdminDetailButtons
+          firstButtonConfig={{
+            modalOpen: openAlbumModal,
+            buttonText: "앨범에 등록하기",
+          }}
+          secondButtonConfig={{
+            modalOpen: openArtistModal,
+            buttonText: "아티스트에 등록하기",
+          }}
+          path={`/musics/${music?.id}`}
+          deleteFunc={deleteMusic}
+        />
       </ContentHeader>
       <Content>
         <ContentRow>
@@ -195,7 +145,9 @@ const AdminDetailMusic: React.FC = () => {
           <Image src={music?.coverImg} />
         </ContentRow>
         <ContentRow>
-          <YoutubeContainer src="https://www.youtube.com/embed/c7-81aUdLTI"></YoutubeContainer>
+          <YoutubeContainer
+            src={`https://www.youtube.com/embed/${music?.ytId}`}
+          ></YoutubeContainer>
         </ContentRow>
         <ContentRow>
           <CommentContainer>

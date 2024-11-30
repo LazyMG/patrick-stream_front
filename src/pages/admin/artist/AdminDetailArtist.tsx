@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import styled from "styled-components";
 import { Artist } from "../../../shared/models/artist";
+import AdminModal from "../../../widgets/AdminModal";
+import AdminDetailButtons from "../../../widgets/AdminDetailButtons";
 
 const ContentContainer = styled.div`
   display: flex;
@@ -10,31 +12,6 @@ const ContentContainer = styled.div`
   gap: 20px;
   position: relative;
 `;
-
-const ModalOverlay = styled.div`
-  position: fixed;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 1;
-  top: 0;
-  left: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-// const AlbumModal = styled.div`
-//   width: 50%;
-//   height: 50%;
-//   background-color: red;
-// `;
-
-// const ArtistModal = styled.div`
-//   width: 50%;
-//   height: 50%;
-//   background-color: blue;
-// `;
 
 const ContentHeader = styled.div`
   display: flex;
@@ -67,6 +44,13 @@ const Info = styled.div`
   border: 1px solid black;
 `;
 
+const Introduction = styled.p`
+  background-color: yellow;
+  width: 100%;
+  padding: 10px 15px;
+  height: 20px;
+`;
+
 const Image = styled.img`
   width: 300px;
   height: 300px;
@@ -91,16 +75,14 @@ const Comment = styled.div`
 
 const AdminDetailArtist: React.FC = () => {
   const artist = useOutletContext<Artist | undefined>();
-  const navigate = useNavigate();
+  const [isThisArtistMusicModalOpen, setIsThisArtistMusicModalOpen] = useState<
+    boolean
+  >(false);
+  const [isThisArtistAlbumModalOpen, setIsThisArtistAlbumModalOpen] = useState<
+    boolean
+  >(false);
 
-  const gotoPage = (
-    event: React.MouseEvent<HTMLButtonElement>,
-    url: string
-  ) => {
-    event.stopPropagation();
-    event.preventDefault();
-    navigate("/admin" + url);
-  };
+  const navigate = useNavigate();
 
   const deleteArtist = () => {
     if (confirm(`[${artist?.artistname}]을(를) 삭제하시겠습니까?`)) {
@@ -111,19 +93,43 @@ const AdminDetailArtist: React.FC = () => {
     }
   };
 
+  const openThisArtistMusicModal = () => setIsThisArtistMusicModalOpen(true);
+
+  const openThisArtistAlbumModal = () => setIsThisArtistAlbumModalOpen(true);
+
+  const closeThisArtistMusicModal = () => setIsThisArtistMusicModalOpen(false);
+
+  const closeThisArtistAlbumModal = () => setIsThisArtistAlbumModalOpen(false);
+
   return (
     <ContentContainer>
+      {isThisArtistMusicModalOpen && (
+        <AdminModal
+          closeModal={closeThisArtistMusicModal}
+          dataList={artist!.musics}
+          dataType="test"
+        />
+      )}
+      {isThisArtistAlbumModalOpen && (
+        <AdminModal
+          closeModal={closeThisArtistAlbumModal}
+          dataList={artist!.albums}
+          dataType="test"
+        />
+      )}
       <ContentHeader>
-        <button>앨범 삭제하기</button>
-        <button>음악 등록하기</button>
-        <button
-          onClick={(event) =>
-            gotoPage(event, `/artists/${artist?.id}/settings`)
-          }
-        >
-          수정하기
-        </button>
-        <button onClick={deleteArtist}>삭제하기</button>
+        <AdminDetailButtons
+          firstButtonConfig={{
+            modalOpen: openThisArtistMusicModal,
+            buttonText: "음악 삭제하기",
+          }}
+          secondButtonConfig={{
+            modalOpen: openThisArtistAlbumModal,
+            buttonText: "앨범 삭제하기",
+          }}
+          path={`/artists/${artist?.id}`}
+          deleteFunc={deleteArtist}
+        />
       </ContentHeader>
       <Content>
         <ContentRow>
@@ -136,6 +142,9 @@ const AdminDetailArtist: React.FC = () => {
             <p>국가: {artist?.country}</p>
           </Info>
           <Image src={artist?.coverImg} />
+        </ContentRow>
+        <ContentRow>
+          <Introduction>{artist?.introduction}</Introduction>
         </ContentRow>
         <ContentRow>
           <CommentContainer>
