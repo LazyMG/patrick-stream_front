@@ -8,14 +8,14 @@ const YoutubeButtonContainer = ({
   setYtId,
 }: IYoutubeButtonContainer) => {
   const handlePlay1 = () => {
-    setYtId("JZ_HcuJJpZ4");
+    setYtId("UGEUGJPk7jg");
     if (player) {
       player.playVideo(); // 버튼 클릭 시 재생
     }
   };
 
   const handlePlay2 = () => {
-    setYtId("xZbjgsE-Vlo");
+    setYtId("x2WuuytIXes");
     if (player) {
       player.playVideo(); // 버튼 클릭 시 재생
     }

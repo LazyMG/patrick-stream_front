@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import styled from "styled-components";
 import { Artist } from "../../../shared/models/artist";
-import AdminModal from "../../../widgets/AdminModal";
-import AdminDetailButtons from "../../../widgets/AdminDetailButtons";
+import AdminModal from "../../../widgets/admin/AdminModal";
+import AdminDetailButtons from "../../../widgets/admin/AdminDetailButtons";
 
 const ContentContainer = styled.div`
   display: flex;

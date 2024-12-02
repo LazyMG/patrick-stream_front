@@ -4,8 +4,8 @@ import styled from "styled-components";
 import { Music } from "../../../shared/models/music";
 import { _getAlbums } from "../../../shared/lib/testAlbumFunc";
 import { _getAritsts } from "../../../shared/lib/testArtistFunc";
-import AdminModal from "../../../widgets/AdminModal";
-import AdminDetailButtons from "../../../widgets/AdminDetailButtons";
+import AdminModal from "../../../widgets/admin/AdminModal";
+import AdminDetailButtons from "../../../widgets/admin/AdminDetailButtons";
 
 const ContentContainer = styled.div`
   display: flex;

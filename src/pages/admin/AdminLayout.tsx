@@ -1,8 +1,8 @@
 import { Outlet } from "react-router-dom";
 import styled from "styled-components";
-import AdminSidebar from "../../widgets/AdminSiderBar";
-import AdminHeader from "../../widgets/AdminHeader";
-import AdminDashboard from "../../widgets/AdminDashBoard";
+import AdminSidebar from "../../widgets/admin/AdminSiderBar";
+import AdminHeader from "../../widgets/admin/AdminHeader";
+import AdminDashboard from "../../widgets/admin/AdminDashBoard";
 
 const PageContainer = styled.div`
   display: flex;

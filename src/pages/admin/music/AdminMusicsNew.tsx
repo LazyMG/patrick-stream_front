@@ -2,7 +2,7 @@ import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import AdminUploadForm from "../../../widgets/AdminUploadForm";
+import AdminUploadForm from "../../../widgets/admin/AdminUploadForm";
 import { IMusicFormInput } from "../../../shared/types";
 
 const ContentContainer = styled.div`
