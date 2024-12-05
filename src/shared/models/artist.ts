@@ -7,13 +7,13 @@ import { Music } from "./music";
 // Album[] -> string[]
 
 export interface Artist {
-  id: string;
+  _id: string;
   artistname: string;
   musics: string[];
   albums: string[];
   introduction: string;
-  debut_at: Date;
+  debut_at: string;
   country: string;
   coverImg: string;
-  created_at: Date;
+  created_at: string;
 }

@@ -6,15 +6,15 @@ import { Music } from "./music";
 // Music[] -> string[]
 // Artist[] -> string[]
 export interface Album {
-  id: string;
+  _id: string;
   title: string;
   musics: string[];
   artists: string[];
   introduction: string;
-  released_at: Date;
+  released_at: string;
   category: string;
   total_duration: number;
   length: number;
   coverImg: string;
-  created_at: Date;
+  created_at: string;
 }

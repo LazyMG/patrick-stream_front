@@ -1,10 +1,25 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Outlet, useParams } from "react-router-dom";
-import { _getMusicInfo } from "../../../shared/lib/testMusicFunc";
 
 const AdminMusicsDetailContainer: React.FC = () => {
   const { musicId } = useParams();
-  const music = _getMusicInfo(musicId || "");
+  const [music, setMusic] = useState();
+
+  const getMusic = async (id = "") => {
+    const result = await fetch(
+      `http://localhost:5000/music/${id}`
+    ).then((res) => res.json());
+
+    if (result.ok) {
+      console.log(result.music);
+      setMusic(result.music);
+    }
+  };
+
+  useEffect(() => {
+    getMusic(musicId);
+  }, [musicId]);
+
   return <Outlet context={music} />;
 };
 

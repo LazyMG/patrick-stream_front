@@ -36,8 +36,8 @@ const AdminDetailArtist: React.FC = () => {
     `이름: ${artist?.artistname}`,
     `음악 수: ${artist?.musics.length}`,
     `앨범 수: ${artist?.albums.length}`,
-    `데뷔 일자: ${artist?.debut_at.toDateString()}`,
-    `등록 일자: ${artist?.created_at.toDateString()}`,
+    `데뷔 일자: ${artist?.debut_at}`,
+    `등록 일자: ${artist?.created_at}`,
     `국가: ${artist?.country}`,
   ];
 
@@ -50,7 +50,7 @@ const AdminDetailArtist: React.FC = () => {
       modalOpen: openThisArtistAlbumModal,
       buttonText: "앨범 삭제하기",
     },
-    path: `/artists/${artist?.id}`,
+    path: `/artists/${artist?._id}`,
     deleteFunc: deleteArtist,
   };
 

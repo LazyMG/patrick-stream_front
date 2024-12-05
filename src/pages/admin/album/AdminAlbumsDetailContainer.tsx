@@ -1,10 +1,25 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Outlet, useParams } from "react-router-dom";
-import { _getAlbumInfo } from "../../../shared/lib/testAlbumFunc";
 
 const AdminAlbumsDetailContainer: React.FC = () => {
   const { albumId } = useParams();
-  const album = _getAlbumInfo(albumId || "");
+  const [album, setAlbum] = useState();
+
+  const getAlbum = async (id = "") => {
+    const result = await fetch(
+      `http://localhost:5000/album/${id}`
+    ).then((res) => res.json());
+
+    if (result.ok) {
+      console.log(result.album);
+      setAlbum(result.album);
+    }
+  };
+
+  useEffect(() => {
+    getAlbum(albumId);
+  }, [albumId]);
+
   return <Outlet context={album} />;
 };
 

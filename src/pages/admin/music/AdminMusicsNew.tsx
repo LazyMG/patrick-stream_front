@@ -9,9 +9,28 @@ const AdminMusicsNew: React.FC = () => {
   const { register, handleSubmit, trigger } = useForm<IMusicFormInput>();
   const navigate = useNavigate();
 
-  const onSubmit: SubmitHandler<IMusicFormInput> = (event) => {
+  const onSubmit: SubmitHandler<IMusicFormInput> = async (event) => {
     // 데이터 보내기
     console.log(event);
+
+    const musicData: IMusicFormInput = {
+      title: event.title,
+      duration: event.duration,
+      released_at: event.released_at,
+      ytId: event.ytId,
+      coverImg: event.coverImg,
+      genre: event.genre,
+    };
+
+    const result = await fetch(`http://localhost:5000/music`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ musicData }),
+    }).then((result) => result.json());
+
+    console.log(result);
   };
 
   const submitForm = async () => {

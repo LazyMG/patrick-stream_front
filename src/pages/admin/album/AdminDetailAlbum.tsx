@@ -42,7 +42,7 @@ const AdminDetailAlbum: React.FC = () => {
       modalOpen: openArtistModal,
       buttonText: "아티스트에 등록하기",
     },
-    path: `/albums/${album?.id}`,
+    path: `/albums/${album?._id}`,
     deleteFunc: deleteAblum,
   };
 
@@ -50,8 +50,8 @@ const AdminDetailAlbum: React.FC = () => {
     `제목: ${album?.title}`,
     `아티스트: ${album?.artists}`,
     `재생시간: ${album?.total_duration}`,
-    `등록 일자: ${album?.created_at.toDateString()}`,
-    `발매 일자: ${album?.released_at.toDateString()}`,
+    `등록 일자: ${album?.created_at}`,
+    `발매 일자: ${album?.released_at}`,
     `카테고리: ${album?.category}`,
     `곡 수: ${album?.length}`,
     `현재 곡 수: ${album?.musics.length}`,

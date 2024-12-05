@@ -7,7 +7,7 @@ import { Count } from "./count";
 //Artist[] -> string[]
 //Album -> string
 export interface Music {
-  id: string;
+  _id: string;
   title: string;
   artists: string[];
   album: string;

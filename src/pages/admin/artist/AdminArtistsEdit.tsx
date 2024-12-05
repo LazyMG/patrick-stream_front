@@ -17,7 +17,7 @@ const AdminArtistsEdit: React.FC = () => {
   const defaultValue = {
     artistname: artist?.artistname || "",
     introduction: artist?.introduction || "",
-    debut_at: artist?.debut_at.toDateString() || "",
+    debut_at: artist?.debut_at || "",
     country: artist?.country || "",
     coverImg: artist?.coverImg || "",
   };
@@ -29,7 +29,7 @@ const AdminArtistsEdit: React.FC = () => {
       setCurrentArtist({
         artistname: artist?.artistname,
         introduction: artist?.introduction,
-        debut_at: artist?.debut_at.toDateString(),
+        debut_at: artist?.debut_at,
         country: artist?.country,
         coverImg: artist?.coverImg,
       });

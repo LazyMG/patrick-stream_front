@@ -10,9 +10,27 @@ const AdminArtistsNew: React.FC = () => {
   const { register, handleSubmit, trigger } = useForm<IArtistFormInput>();
   const navigate = useNavigate();
 
-  const onSubmit: SubmitHandler<IArtistFormInput> = (event) => {
+  const onSubmit: SubmitHandler<IArtistFormInput> = async (event) => {
     // 데이터 보내기
     console.log(event);
+
+    const artistData: IArtistFormInput = {
+      artistname: event.artistname,
+      country: event.country,
+      coverImg: event.coverImg,
+      debut_at: event.debut_at,
+      introduction: event.introduction,
+    };
+
+    const result = await fetch(`http://localhost:5000/artist`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ artistData }),
+    }).then((result) => result.json());
+
+    console.log(result);
   };
 
   const submitForm = async () => {

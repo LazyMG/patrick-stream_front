@@ -1,7 +1,4 @@
-import React from "react";
-import { _getMusicsCount } from "../../shared/lib/testMusicFunc";
-import { _getAlbumsCount } from "../../shared/lib/testAlbumFunc";
-import { _getArtistsCount } from "../../shared/lib/testArtistFunc";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -32,11 +29,47 @@ const TabContent = styled.p`
 `;
 
 const AdminMain: React.FC = () => {
-  const musicsCount = _getMusicsCount();
-  const albumsCount = _getAlbumsCount();
-  const artistsCount = _getArtistsCount();
+  const [musicsCount, setMusicCount] = useState<number>(0);
+  const [albumsCount, setAlbumCount] = useState<number>(0);
+  const [artistsCount, setArtistsCount] = useState<number>(0);
 
   const navigate = useNavigate();
+
+  const getMusicCounts = async () => {
+    const result = await fetch(
+      `http://localhost:5000/music/count`
+    ).then((res) => res.json());
+
+    if (result.ok) {
+      setMusicCount(result.counts);
+    }
+  };
+
+  const getAlbumCounts = async () => {
+    const result = await fetch(
+      `http://localhost:5000/album/count`
+    ).then((res) => res.json());
+
+    if (result.ok) {
+      setAlbumCount(result.counts);
+    }
+  };
+
+  const getArtistCounts = async () => {
+    const result = await fetch(
+      `http://localhost:5000/artist/count`
+    ).then((res) => res.json());
+
+    if (result.ok) {
+      setArtistsCount(result.counts);
+    }
+  };
+
+  useEffect(() => {
+    getMusicCounts();
+    getAlbumCounts();
+    getArtistCounts();
+  }, []);
 
   const gotoUploadPage = (
     event: React.MouseEvent<HTMLButtonElement>,

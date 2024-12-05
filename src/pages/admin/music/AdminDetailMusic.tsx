@@ -43,11 +43,11 @@ const AdminDetailMusic: React.FC = () => {
 
   const infoData = [
     `제목: ${music?.title}`,
-    `아티스트: ${music?.artists}`,
-    `앨범: ${music?.album}`,
+    `아티스트: ${music?.artists ?? music?.artists.length ?? "없음"}`,
+    `앨범: ${music?.album || "없음"}`,
     `재생시간: ${music?.duration}`,
     `발매 일자: ${music?.released_at}`,
-    `등록 일자: ${music?.created_at.toDateString()}`,
+    `등록 일자: ${music?.created_at}`,
     `장르: ${music?.genre}`,
   ];
 
@@ -60,7 +60,7 @@ const AdminDetailMusic: React.FC = () => {
       modalOpen: openArtistModal,
       buttonText: "아티스트에 등록하기",
     },
-    path: `/musics/${music?.id}`,
+    path: `/musics/${music?._id}`,
     deleteFunc: deleteMusic,
   };
 

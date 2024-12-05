@@ -18,7 +18,7 @@ const AdminAlbumEdit: React.FC = () => {
   const defaultValue = {
     title: album?.title,
     introduction: album?.introduction,
-    released_at: album?.released_at.toDateString(),
+    released_at: album?.released_at,
     category: album?.category,
     coverImg: album?.coverImg,
     length: album?.length,
@@ -31,7 +31,7 @@ const AdminAlbumEdit: React.FC = () => {
       setCurrentAlbum({
         title: album?.title,
         introduction: album?.introduction,
-        released_at: album?.released_at.toDateString(),
+        released_at: album?.released_at,
         category: album.category,
         coverImg: album.coverImg,
         length: album.length,

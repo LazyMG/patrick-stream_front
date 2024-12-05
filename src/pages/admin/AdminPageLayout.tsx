@@ -4,7 +4,6 @@ import styled from "styled-components";
 import { Music } from "../../shared/models/music";
 import { Album } from "../../shared/models/album";
 import { Artist } from "../../shared/models/artist";
-import { _getArtistName } from "../../shared/lib/testArtistFunc";
 
 const ContentContainer = styled.div`
   display: flex;
@@ -90,35 +89,35 @@ const AdminPageLayout: React.FC<AdminPageLayoutProps> = ({
         {dataType === "music" &&
           isMusicList(dataList) &&
           dataList.map((music) => (
-            <Link to={`./${music.id}`} key={music.id}>
+            <Link to={`./${music._id}`} key={music._id}>
               <Tab>
-                <TabContent>{music.title}</TabContent>
-                <TabContent>{_getArtistName(music.artists[0])}</TabContent>
+                <TabContent>제목: {music.title}</TabContent>
+                <TabContent>가수: {music.artists[0] || "없음"}</TabContent>
               </Tab>
             </Link>
           ))}
         {dataType === "album" &&
           isAlbumList(dataList) &&
           dataList.map((album) => (
-            <Link to={`./${album.id}`} key={album.id}>
+            <Link to={`./${album._id}`} key={album._id}>
               <Tab>
-                <TabContent>{album.title}</TabContent>
+                <TabContent>제목: {album.title}</TabContent>
                 <TabContent>{album.artists.toString()}</TabContent>
-                <TabContent>{album.length}</TabContent>
-                <TabContent>{album.musics.length}</TabContent>
-                <TabContent>{album.created_at.toDateString()}</TabContent>
+                <TabContent>총 곡 수: {album.length}</TabContent>
+                <TabContent>현재 곡 수: {album.musics.length}</TabContent>
+                <TabContent>{album.created_at}</TabContent>
               </Tab>
             </Link>
           ))}
         {dataType === "artist" &&
           isArtistList(dataList) &&
           dataList.map((artist) => (
-            <Link to={`./${artist.id}`} key={artist.id}>
+            <Link to={`./${artist._id}`} key={artist._id}>
               <Tab>
-                <TabContent>{artist.artistname}</TabContent>
-                <TabContent>{artist.albums.length}</TabContent>
-                <TabContent>{artist.musics.length}</TabContent>
-                <TabContent>{artist.created_at.toDateString()}</TabContent>
+                <TabContent>이름: {artist.artistname}</TabContent>
+                <TabContent>앨범 수:{artist.albums.length}</TabContent>
+                <TabContent>음악 수:{artist.musics.length}</TabContent>
+                <TabContent>등록 일자:{artist.created_at}</TabContent>
               </Tab>
             </Link>
           ))}
