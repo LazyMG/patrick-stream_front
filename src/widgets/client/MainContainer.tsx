@@ -1,11 +1,12 @@
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useRef } from "react";
 import styled from "styled-components";
 
 const Wrapper = styled.div`
-  margin-left: 250px;
-  margin-top: 80px;
-  /* background-color: coral; */
+  margin-left: 250.5px;
+  /* margin-top: 80px; */
+  background: radial-gradient(circle at top left, #0a262e 3%, #0a0a0a 20%);
   height: 100%;
+  background-attachment: local;
 
   display: flex;
   justify-content: center;
@@ -14,16 +15,27 @@ const Wrapper = styled.div`
   overflow-y: auto;
 
   position: relative;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 const Content = styled.div`
   width: 100%;
-  /* height: 100vh; */
   height: 100%;
+  padding-top: 80px;
+  /* height: 500vh; */
   display: flex;
   justify-content: center;
-  align-items: center;
-  background-color: aquamarine;
+  color: white;
+  box-sizing: border-box;
+  /* background-color: aquamarine; */
+`;
+
+const ConentContainer = styled.div`
+  width: 100%;
+  padding-top: 50px;
 `;
 
 const Playbar = styled.div`
@@ -32,17 +44,39 @@ const Playbar = styled.div`
   bottom: 0;
   height: 80px;
   width: 100vw;
+
+  display: none;
   /* background-color: chartreuse; */
 `;
 
 interface IMainContainer {
   children: ReactNode;
+  onScroll: (scrollTop: number) => void;
 }
 
-const MainContainer = ({ children }: IMainContainer) => {
+const MainContainer = ({ children, onScroll }: IMainContainer) => {
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (wrapperRef.current) {
+        onScroll(wrapperRef.current.scrollTop);
+      }
+    };
+
+    const wrapper = wrapperRef.current;
+    wrapper?.addEventListener("scroll", handleScroll);
+
+    return () => {
+      wrapper?.removeEventListener("scroll", handleScroll);
+    };
+  }, [onScroll]);
+
   return (
-    <Wrapper>
-      <Content>{children}</Content>
+    <Wrapper ref={wrapperRef}>
+      <Content>
+        <ConentContainer>{children}</ConentContainer>
+      </Content>
       <Playbar />
     </Wrapper>
   );

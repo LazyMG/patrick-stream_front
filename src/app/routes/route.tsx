@@ -3,6 +3,7 @@ import { adminRoute } from "./adminRoute";
 import Layout from "../../pages/Layout";
 import { authRoute } from "./authRoute";
 import YoutubeTest from "../../pages/YoutubeTest";
+import Home from "../../pages/client/Home";
 
 const router = createBrowserRouter([
   ...adminRoute,
@@ -14,6 +15,12 @@ const router = createBrowserRouter([
   {
     path: "",
     element: <Layout />,
+    children: [
+      {
+        path: "",
+        element: <Home />,
+      },
+    ],
   },
 ]);
 

@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { Album } from "../../../shared/models/album";
-import { _getAritsts } from "../../../shared/lib/testArtistFunc";
-import AdminModal from "../../../widgets/admin/AdminModal";
 import AdminDetailLayout from "../AdminDetailLayout";
+import AdminModalProvider from "../../../widgets/admin/AdminModalProvider";
 
 const AdminDetailAlbum: React.FC = () => {
   const album = useOutletContext<Album | undefined>();
@@ -13,8 +12,6 @@ const AdminDetailAlbum: React.FC = () => {
   );
 
   const navigate = useNavigate();
-
-  const artists = _getAritsts();
 
   const deleteAblum = () => {
     if (confirm(`[${album?.title}]을(를) 삭제하시겠습니까?`)) {
@@ -57,20 +54,63 @@ const AdminDetailAlbum: React.FC = () => {
     `현재 곡 수: ${album?.musics.length}`,
   ];
 
+  // 자기 음악 fetch 하는 코드 필요
+  const fetchThisAlbumMusics = async () => {
+    const result = await fetch(
+      `http://localhost:5000/album/${album?._id}/musics`
+    ).then((res) => res.json());
+    if (result.ok) return result.musics;
+    else return [];
+  };
+
+  // 아티스트 데이터 fetch 하는 코드 필요
+  const fetchArtists = async () => {
+    const result = await fetch("http://localhost:5000/artist").then((res) =>
+      res.json()
+    );
+    if (result.ok) {
+      return result.allArtists;
+    } else return [];
+  };
+
+  // 자기 음악 삭제하는 코드 필요
+  const deleteMusicToAlbum = async (musicId: string) => {
+    await fetch(`http://localhost:5000/album/${album?._id}/music`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ musicId }),
+    });
+  };
+
+  // 아티스트에 자기 추가하는 코드 필요
+  const addAlbumToArtist = async (artistId: string) => {
+    await fetch(`http://localhost:5000/artist/${artistId}/album`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ musicId: album?._id }),
+    });
+  };
+
   return (
     <>
       {isThisAlbumModalOpen && (
-        <AdminModal
+        <AdminModalProvider
           closeModal={closeThisAlbumModal}
-          dataList={album!.musics}
-          dataType="test"
+          dataType="music"
+          fetchFunc={fetchThisAlbumMusics}
+          modalFunc={deleteMusicToAlbum}
         />
       )}
       {isArtistModalOpen && (
-        <AdminModal
+        <AdminModalProvider
           closeModal={closeArtistModal}
-          dataList={artists}
           dataType="artist"
+          fetchFunc={fetchArtists}
+          modalFunc={addAlbumToArtist}
         />
       )}
       <AdminDetailLayout

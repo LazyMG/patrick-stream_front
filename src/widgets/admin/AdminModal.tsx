@@ -1,8 +1,8 @@
 import React from "react";
 import styled from "styled-components";
-import { Music } from "../shared/models/music";
-import { Album } from "../shared/models/album";
-import { Artist } from "../shared/models/artist";
+import { Music } from "../../shared/models/music";
+import { Album } from "../../shared/models/album";
+import { Artist } from "../../shared/models/artist";
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -27,6 +27,7 @@ interface IAdminModal {
   closeModal: () => void;
   dataList: Music[] | Album[] | Artist[] | string[];
   dataType: "music" | "album" | "artist" | "test";
+  modalFunc: (id: string) => Promise<void>;
 }
 
 const isMusicList = (list: unknown[]): list is Music[] => {
@@ -51,7 +52,19 @@ const isTestList = (list: unknown[]): list is string[] => {
   return true;
 };
 
-const AdminModal = ({ closeModal, dataList, dataType }: IAdminModal) => {
+const AdminModal = ({
+  closeModal,
+  dataList,
+  dataType,
+  modalFunc,
+}: IAdminModal) => {
+  const handleItemClick = (id: string) => {
+    if (dataType === "album") {
+      modalFunc(id);
+    } else if (dataType === "artist") {
+      modalFunc(id);
+    }
+  };
   return (
     <ModalOverlay onClick={closeModal}>
       <ContentModal
@@ -69,10 +82,21 @@ const AdminModal = ({ closeModal, dataList, dataType }: IAdminModal) => {
               dataList.map((music) => <div>{music.title}</div>)}
             {dataType === "album" &&
               isAlbumList(dataList) &&
-              dataList.map((album) => <div>{album.title}</div>)}
+              dataList.map((album) => (
+                <div key={album._id} onClick={() => handleItemClick(album._id)}>
+                  {album.title}
+                </div>
+              ))}
             {dataType === "artist" &&
               isArtistList(dataList) &&
-              dataList.map((artist) => <div>{artist.artistname}</div>)}
+              dataList.map((artist) => (
+                <div
+                  key={artist._id}
+                  onClick={() => handleItemClick(artist._id)}
+                >
+                  {artist.artistname}
+                </div>
+              ))}
             {dataType === "test" &&
               isTestList(dataList) &&
               dataList.map((data) => <div>{data}</div>)}

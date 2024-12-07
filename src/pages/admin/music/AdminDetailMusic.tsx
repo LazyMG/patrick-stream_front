@@ -1,18 +1,13 @@
 import React, { useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { Music } from "../../../shared/models/music";
-import { _getAlbums } from "../../../shared/lib/testAlbumFunc";
-import { _getAritsts } from "../../../shared/lib/testArtistFunc";
-import AdminModal from "../../../widgets/admin/AdminModal";
 import AdminDetailLayout from "../AdminDetailLayout";
+import AdminModalProvider from "../../../widgets/admin/AdminModalProvider";
 
 const AdminDetailMusic: React.FC = () => {
   const music = useOutletContext<Music | undefined>();
   const [isAlbumModalOpen, setIsAlbumModalOpen] = useState<boolean>(false);
   const [isArtistModalOpen, setIsArtistModalOpen] = useState<boolean>(false);
-
-  const albums = _getAlbums();
-  const artists = _getAritsts();
 
   const navigate = useNavigate();
 
@@ -41,6 +36,7 @@ const AdminDetailMusic: React.FC = () => {
   // 별도 Youtube
   // 공통 Comment
 
+  // infoData 만드는 함수 필요
   const infoData = [
     `제목: ${music?.title}`,
     `아티스트: ${music?.artists ?? music?.artists.length ?? "없음"}`,
@@ -64,20 +60,66 @@ const AdminDetailMusic: React.FC = () => {
     deleteFunc: deleteMusic,
   };
 
+  const fetchAlbums = async () => {
+    const result = await fetch("http://localhost:5000/album").then((res) =>
+      res.json()
+    );
+    if (result.ok) return result.allAlbums;
+    else return [];
+  };
+
+  const fetchArtists = async () => {
+    const result = await fetch("http://localhost:5000/artist").then((res) =>
+      res.json()
+    );
+    if (result.ok) {
+      return result.allArtists;
+    } else return [];
+  };
+
+  // 앨범에 음악 추가하는 코드 필요
+  const addMusicToAlbum = async (albumId: string) => {
+    const result = await fetch(`http://localhost:5000/album/${albumId}/music`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ musicId: music?._id }),
+    });
+    console.log(result);
+  };
+
+  // 아티스트에 음악 추가하는 코드 필요
+  const addMusicToArtist = async (artistId: string) => {
+    const result = await fetch(
+      `http://localhost:5000/artist/${artistId}/music`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ musicId: music?._id }),
+      }
+    );
+    console.log(result);
+  };
+
   return (
     <>
       {isAlbumModalOpen && (
-        <AdminModal
+        <AdminModalProvider
           closeModal={closeAlbumModal}
-          dataList={albums}
           dataType="album"
+          fetchFunc={fetchAlbums}
+          modalFunc={addMusicToAlbum}
         />
       )}
       {isArtistModalOpen && (
-        <AdminModal
+        <AdminModalProvider
           closeModal={closeArtistModal}
-          dataList={artists}
           dataType="artist"
+          fetchFunc={fetchArtists}
+          modalFunc={addMusicToArtist}
         />
       )}
       <AdminDetailLayout
