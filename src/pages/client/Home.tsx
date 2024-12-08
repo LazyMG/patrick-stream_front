@@ -1,10 +1,12 @@
 import styled from "styled-components";
+import FlexList from "../../widgets/client/FlexList";
+import GridList from "../../widgets/client/GridList";
 
 const Wrapper = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 60px;
+  gap: 40px;
 `;
 
 const ContentGenre = styled.div`
@@ -34,12 +36,6 @@ const ContentContainer = styled.div`
   gap: 60px;
 `;
 
-const ContentComponent = styled.div`
-  width: 100%;
-  min-height: 300px;
-  background-color: aquamarine;
-`;
-
 const Home = () => {
   return (
     <Wrapper>
@@ -49,9 +45,11 @@ const Home = () => {
         ))}
       </ContentGenre>
       <ContentContainer>
-        {Array.from({ length: 10 }).map((_, idx) => (
+        <FlexList />
+        <GridList />
+        {/* {Array.from({ length: 10 }).map((_, idx) => (
           <ContentComponent key={idx} />
-        ))}
+        ))} */}
       </ContentContainer>
     </Wrapper>
   );

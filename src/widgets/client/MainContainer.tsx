@@ -1,17 +1,16 @@
 import { ReactNode, useEffect, useRef } from "react";
 import styled from "styled-components";
+import PlayBar from "./PlayBar";
 
 const Wrapper = styled.div`
   margin-left: 250.5px;
-  /* margin-top: 80px; */
   background: radial-gradient(circle at top left, #0a262e 3%, #0a0a0a 20%);
-  height: 100%;
+  min-height: 100vh;
   background-attachment: local;
 
-  display: flex;
+  /* display: flex;
   justify-content: center;
-  align-items: center;
-  padding: 0 12%;
+  align-items: center; */
   overflow-y: auto;
 
   position: relative;
@@ -19,15 +18,24 @@ const Wrapper = styled.div`
   &::-webkit-scrollbar {
     display: none;
   }
+
+  /* 화면 너비에 따라 패딩을 다르게 설정 */
+  @media (max-width: 2800px) {
+    padding: 0 18%; /* 화면이 1200px 이하일 때 패딩을 6%로 설정 */
+  }
+
+  @media (max-width: 1800px) {
+    padding: 0 8%; /* 화면이 1200px 이하일 때 패딩을 6%로 설정 */
+  }
 `;
 
 const Content = styled.div`
   width: 100%;
-  height: 100%;
-  padding-top: 80px;
-  /* height: 500vh; */
   display: flex;
+  flex-direction: column;
   justify-content: center;
+
+  gap: 60px;
   color: white;
   box-sizing: border-box;
   /* background-color: aquamarine; */
@@ -35,19 +43,15 @@ const Content = styled.div`
 
 const ConentContainer = styled.div`
   width: 100%;
-  padding-top: 50px;
+  margin-top: 100px;
 `;
 
-const Playbar = styled.div`
-  position: fixed;
-  left: 0;
-  bottom: 0;
+const Footer = styled.div`
+  width: 100%;
   height: 80px;
-  width: 100vw;
-
-  display: none;
-  /* background-color: chartreuse; */
 `;
+
+// Youtube 여기에 넣기
 
 interface IMainContainer {
   children: ReactNode;
@@ -76,8 +80,9 @@ const MainContainer = ({ children, onScroll }: IMainContainer) => {
     <Wrapper ref={wrapperRef}>
       <Content>
         <ConentContainer>{children}</ConentContainer>
+        <Footer />
       </Content>
-      <Playbar />
+      <PlayBar />
     </Wrapper>
   );
 };

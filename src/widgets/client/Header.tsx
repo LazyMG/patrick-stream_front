@@ -32,13 +32,22 @@ const SearchContainer = styled.div`
   height: 100%;
   width: calc(100% - 250px);
 
-  padding: 0 12%;
+  padding: 0 8%;
   display: flex;
   align-items: center;
   justify-content: space-between;
   box-sizing: border-box;
 
   /* background-color: dimgray; */
+
+  /* 화면 너비에 따라 패딩을 다르게 설정 */
+  @media (max-width: 2800px) {
+    padding: 0 18%; /* 화면이 1200px 이하일 때 패딩을 6%로 설정 */
+  }
+
+  @media (max-width: 1800px) {
+    padding: 0 8%; /* 화면이 1200px 이하일 때 패딩을 6%로 설정 */
+  }
 `;
 
 const SearchForm = styled.form`
@@ -61,7 +70,7 @@ const SearchForm = styled.form`
   }
 
   input {
-    width: 500px;
+    width: 400px;
     outline: none;
     padding: 12px 0;
     padding-left: 50px;

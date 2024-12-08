@@ -27,6 +27,8 @@ const Layout = () => {
     }
   };
 
+  console.log(window.innerHeight);
+
   return (
     <Wrapper>
       <Header $navShow={navShow} />
