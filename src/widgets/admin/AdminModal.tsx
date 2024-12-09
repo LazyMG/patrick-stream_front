@@ -65,6 +65,7 @@ const AdminModal = ({
       modalFunc(id);
     }
   };
+
   return (
     <ModalOverlay onClick={closeModal}>
       <ContentModal

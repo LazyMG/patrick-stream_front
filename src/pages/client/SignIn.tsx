@@ -1,21 +1,5 @@
-import { Link } from "react-router-dom";
 import styled from "styled-components";
-
-const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 40px;
-  width: 30%;
-
-  /* background-color: blue; */
-`;
-
-const Title = styled.h1`
-  font-size: 32px;
-  font-weight: 600;
-`;
+import FormContainer from "../../widgets/client/FormContainer";
 
 const Form = styled.form`
   display: flex;
@@ -23,26 +7,60 @@ const Form = styled.form`
   width: 80%;
   gap: 25px;
 
-  background-color: green;
+  /* background-color: green; */
 `;
 
 const InputRow = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
   width: 100%;
 
   /* background-color: blue; */
+`;
 
-  input {
-    height: 30px;
-    font-size: 20px;
+const Label = styled.label`
+  font-size: 15px;
+  color: #fff;
+  font-weight: bold;
+`;
+
+const Input = styled.input`
+  outline: none;
+  border: 2px solid #5f5f5f;
+  background-color: transparent;
+  padding: 5px 0;
+  padding-left: 10px;
+  border-radius: 8px;
+
+  color: #fff;
+
+  height: 30px;
+  font-size: 18px;
+
+  &:focus {
+    border: 2px solid #dbdbdb;
+  }
+
+  &::placeholder {
+    color: #5f5f5f;
   }
 `;
 
 const SubmitButton = styled.button`
   padding: 10px 0;
   width: 100%;
+
+  border-radius: 15px;
+  font-size: 16px;
+
+  cursor: pointer;
+`;
+
+const Divider = styled.div`
+  width: 100%;
+  height: 1px;
+  border: 1px solid #5f5f5f;
 `;
 
 const SocialButton = styled.div`
@@ -59,45 +77,31 @@ const SocialButton = styled.div`
   cursor: pointer;
 `;
 
-const Message = styled.span`
-  display: flex;
-  justify-content: center;
-
-  a {
-    color: black;
-    text-decoration: underline;
-  }
-`;
-
 const SignIn = () => {
   return (
-    <Wrapper>
-      <Title>SignIn</Title>
+    <FormContainer formType="signIn">
       <Form>
         <InputRow>
-          <label>이메일</label>
-          <input type="text" placeholder="Email" />
+          <Label>이메일</Label>
+          <Input type="text" placeholder="Email" />
         </InputRow>
         <InputRow>
-          <label>사용자 이름</label>
-          <input type="text" placeholder="Username" />
+          <Label>사용자 이름</Label>
+          <Input type="text" placeholder="Username" />
         </InputRow>
         <InputRow>
-          <label>비밀번호</label>
-          <input type="password" placeholder="Password" />
+          <Label>비밀번호</Label>
+          <Input type="password" placeholder="Password" />
         </InputRow>
         <InputRow>
-          <label>비밀번호 확인</label>
-          <input type="password" placeholder="Password" />
+          <Label>비밀번호 확인</Label>
+          <Input type="password" placeholder="Password" />
         </InputRow>
         <SubmitButton>회원가입</SubmitButton>
-
+        <Divider />
         <SocialButton>소셜 로그인</SocialButton>
       </Form>
-      <Message>
-        이미 계정이 있다면? <Link to={"/login"}>로그인하기</Link>
-      </Message>
-    </Wrapper>
+    </FormContainer>
   );
 };
 

@@ -4,8 +4,11 @@ import styled from "styled-components";
 const PageContainer = styled.div`
   display: flex;
   justify-content: center;
+  padding-top: 50px;
   box-sizing: border-box;
-  margin-top: 100px;
+  background-color: #000;
+  width: 100vw;
+  height: 100vh;
 `;
 
 const AuthLayout = ({ children }: { children: ReactNode }) => {

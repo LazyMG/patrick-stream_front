@@ -1,4 +1,6 @@
+import { useState } from "react";
 import styled from "styled-components";
+import CreatePlaylistModal from "./CreatePlaylistModal";
 
 const Wrapper = styled.div`
   display: flex;
@@ -73,31 +75,40 @@ const ListItem = styled.div`
 `;
 
 const PlayListContainer = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => setIsModalOpen(true);
+
+  const closeModal = () => setIsModalOpen(false);
+
   return (
-    <Wrapper>
-      <CreateButton>
-        <svg
-          fill="none"
-          strokeWidth={1.5}
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-          aria-hidden="true"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M12 4.5v15m7.5-7.5h-15"
-          />
-        </svg>
-        <span>새 재생목록 추가</span>
-      </CreateButton>
-      <PlaylistView>
-        {Array.from({ length: 50 }).map((_, idx) => (
-          <ListItem key={idx} />
-        ))}
-      </PlaylistView>
-    </Wrapper>
+    <>
+      {isModalOpen && <CreatePlaylistModal closeModal={closeModal} />}
+      <Wrapper>
+        <CreateButton onClick={openModal}>
+          <svg
+            fill="none"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M12 4.5v15m7.5-7.5h-15"
+            />
+          </svg>
+          <span>새 재생목록 추가</span>
+        </CreateButton>
+        <PlaylistView>
+          {Array.from({ length: 50 }).map((_, idx) => (
+            <ListItem key={idx} />
+          ))}
+        </PlaylistView>
+      </Wrapper>
+    </>
   );
 };
 
