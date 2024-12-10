@@ -1,32 +1,17 @@
 import styled from "styled-components";
+import { DefaultButton } from "../../shared/ui/DefaultButton";
 
 const ButtonSection = styled.div`
   display: flex;
   gap: 26px;
-
-  button {
-    display: flex;
-    align-items: center;
-    border: 0;
-    background-color: black;
-
-    color: #fff;
-
-    box-sizing: border-box;
-
-    border: 0.5px solid #2c2c2c;
-
-    &:focus {
-      outline: none;
-    }
-  }
 `;
 
-const MoreButton = styled.button`
-  padding: 6px 15px;
-  border-radius: 15px;
-  font-size: 15px;
-  cursor: pointer;
+const MoreButton = styled(DefaultButton)`
+  display: flex;
+  align-items: center;
+  background-color: black;
+  color: #fff;
+  border: 0.5px solid #2c2c2c;
 
   &:hover {
     background-color: #2c2c2c;
@@ -39,12 +24,26 @@ const ControlSection = styled.div`
 `;
 
 const MoveButton = styled.button<{ $isAbled: boolean }>`
+  border: 0;
+  box-sizing: border-box;
+  display: flex;
+  border-radius: 50%;
+
+  background-color: black;
+
+  border: 0.5px solid #2c2c2c;
+
+  &:focus {
+    outline: none;
+  }
+
   width: 35px;
   height: 35px;
-  border-radius: 50%;
-  display: flex;
+
   align-items: center;
   justify-content: center;
+
+  color: #fff;
 
   cursor: pointer;
 
@@ -57,7 +56,11 @@ const MoveButton = styled.button<{ $isAbled: boolean }>`
 
   svg {
     color: #fff;
+    /* fill: currentColor; */
+    fill: #fff;
     width: 18px;
+    height: 18px;
+    display: block;
   }
 `;
 

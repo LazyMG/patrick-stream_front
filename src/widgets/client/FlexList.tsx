@@ -5,8 +5,11 @@ import { Scrollbar } from "swiper/modules";
 
 import "swiper/swiper-bundle.css";
 import "swiper/css/scrollbar";
-import { useRef, useState } from "react";
+import { ReactNode, useRef, useState } from "react";
 import SliderButtonSection from "./SliderButtonSection";
+import { Link } from "react-router-dom";
+import { useSetRecoilState } from "recoil";
+import { ytIdState } from "../../app/entities/music/atom";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -92,6 +95,8 @@ const Info = styled.div`
 
 const Title = styled.span`
   font-weight: bold;
+
+  cursor: pointer;
 `;
 
 const Description = styled.div`
@@ -101,7 +106,12 @@ const Description = styled.div`
 
 const Category = styled.span``;
 
-const Aritst = styled.span``;
+const Aritst = styled.span`
+  a {
+    color: #fff;
+    text-decoration: none;
+  }
+`;
 
 // 전체 컨테이너
 const ListContainer = styled.div`
@@ -128,10 +138,19 @@ const ListContainer = styled.div`
   }
 `;
 
-const FlexList = () => {
+interface IFlexList {
+  isCustom: boolean;
+  icon?: ReactNode;
+  title: string;
+  info?: string;
+}
+
+const FlexList = ({ isCustom, icon, title, info }: IFlexList) => {
   const swiperRef = useRef<Swiper | null>(null);
   const [isBeginning, setIsBeginning] = useState(true);
   const [isEnd, setIsEnd] = useState(false);
+
+  const setYtId = useSetRecoilState(ytIdState);
 
   const goNext = () => {
     if (swiperRef.current) {
@@ -144,30 +163,25 @@ const FlexList = () => {
       swiperRef.current.slidePrev();
     }
   };
+
+  const changeYtId = (ytId: string) => {
+    setYtId(ytId);
+  };
+
   return (
     <Wrapper>
       <ListHeader>
-        {/* <DefaultSection>최신 음악</DefaultSection> */}
-        <CustomSection>
-          <CustomIcon>
-            <svg
-              fill="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-              aria-hidden="true"
-            >
-              <path
-                clipRule="evenodd"
-                fillRule="evenodd"
-                d="M18.685 19.097A9.723 9.723 0 0 0 21.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 0 0 3.065 7.097A9.716 9.716 0 0 0 12 21.75a9.716 9.716 0 0 0 6.685-2.653Zm-12.54-1.285A7.486 7.486 0 0 1 12 15a7.486 7.486 0 0 1 5.855 2.812A8.224 8.224 0 0 1 12 20.25a8.224 8.224 0 0 1-5.855-2.438ZM15.75 9a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"
-              />
-            </svg>
-          </CustomIcon>
-          <CustomUserInfo>
-            <CustomUserName>이마가</CustomUserName>
-            <CustomTitle>다시 듣기</CustomTitle>
-          </CustomUserInfo>
-        </CustomSection>
+        {isCustom ? (
+          <CustomSection>
+            <CustomIcon>{icon}</CustomIcon>
+            <CustomUserInfo>
+              {info && <CustomUserName>{info}</CustomUserName>}
+              <CustomTitle>{title}</CustomTitle>
+            </CustomUserInfo>
+          </CustomSection>
+        ) : (
+          <DefaultSection>{title}</DefaultSection>
+        )}
         <SliderButtonSection
           isBeginning={isBeginning}
           isEnd={isEnd}
@@ -198,10 +212,14 @@ const FlexList = () => {
                 <ListItem>
                   <Image />
                   <Info>
-                    <Title>세탁소</Title>
+                    <Title onClick={() => changeYtId("3xcIJAWchdk")}>
+                      세탁소
+                    </Title>
                     <Description>
                       <Category>앨범</Category>
-                      <Aritst>유라</Aritst>
+                      <Aritst onClick={() => console.log("artist")}>
+                        <Link to={"/artists/123"}>유라</Link>
+                      </Aritst>
                     </Description>
                   </Info>
                 </ListItem>

@@ -1,3 +1,6 @@
+import { useSetRecoilState } from "recoil";
+import { playingState } from "../app/entities/music/atom";
+
 interface IYoutubeButtonContainer {
   setYtId: (ytid: string) => void;
   player: YT.Player | null;
@@ -7,6 +10,8 @@ const YoutubeButtonContainer = ({
   player,
   setYtId,
 }: IYoutubeButtonContainer) => {
+  const setPlayingState = useSetRecoilState(playingState);
+
   const handlePlay1 = () => {
     setYtId("UGEUGJPk7jg");
     if (player) {
@@ -24,6 +29,7 @@ const YoutubeButtonContainer = ({
   const handlePause = () => {
     if (player) {
       player.pauseVideo();
+      setPlayingState(2);
     }
   };
   return (

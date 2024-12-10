@@ -1,16 +1,20 @@
-import { ReactNode, useEffect, useRef } from "react";
+import { ReactNode, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import PlayBar from "./PlayBar";
+import YoutubeContainer from "../../pages/YoutubeContainer";
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ $backImg?: string }>`
   margin-left: 250.5px;
-  background: radial-gradient(circle at top left, #0a262e 3%, #0a0a0a 20%);
+  padding-left: 250.5px;
+  background: ${(props) =>
+    props?.$backImg
+      ? `none`
+      : `radial-gradient(circle at top left, #0a262e 3%, #0a0a0a 20%)`};
+
   min-height: 100vh;
+
   background-attachment: local;
 
-  /* display: flex;
-  justify-content: center;
-  align-items: center; */
   overflow-y: auto;
 
   position: relative;
@@ -51,7 +55,44 @@ const Footer = styled.div`
   height: 80px;
 `;
 
-// Youtube 여기에 넣기
+const BackImage = styled.div<{ $backImg: string }>`
+  position: absolute; /* fixed 대신 absolute로 설정 */
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 80vh;
+  display: flex;
+  justify-content: center;
+  z-index: 0;
+
+  background-image: ${(props) =>
+    props.$backImg ? `url(${props.$backImg})` : "none"};
+
+  background-repeat: no-repeat;
+  background-position: top center; /* 이미지의 상단이 화면 위에 붙도록 설정 */
+  background-size: auto 100%; // 높이를 요소에 맞추고, 너비는 비율 유지
+
+  /* 그라데이션으로 아래쪽 페이드 효과 적용 */
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 1),
+    rgba(0, 0, 0, 0)
+  );
+
+  /* 반응형으로 높이를 점진적으로 조정 */
+  @media (max-width: 1200px) {
+    height: 60vh;
+  }
+
+  @media (max-width: 768px) {
+    height: 50vh;
+  }
+
+  @media (max-width: 480px) {
+    height: 40vh;
+  }
+`;
 
 interface IMainContainer {
   children: ReactNode;
@@ -60,6 +101,8 @@ interface IMainContainer {
 
 const MainContainer = ({ children, onScroll }: IMainContainer) => {
   const wrapperRef = useRef<HTMLDivElement>(null);
+
+  const [player, setPlayer] = useState<YT.Player | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -76,13 +119,22 @@ const MainContainer = ({ children, onScroll }: IMainContainer) => {
     };
   }, [onScroll]);
 
+  const isImage = false;
+
   return (
-    <Wrapper ref={wrapperRef}>
+    <Wrapper
+      ref={wrapperRef}
+      $backImg="https://i.scdn.co/image/ab6761610000517428f845b9a1c6e8bccb255f0c"
+    >
+      {isImage && (
+        <BackImage $backImg="https://i.scdn.co/image/ab67618600001016ada2ac93d92a298d8f54ebc8" />
+      )}
       <Content>
         <ConentContainer>{children}</ConentContainer>
         <Footer />
       </Content>
-      <PlayBar />
+      <PlayBar player={player} setPlayer={setPlayer} />
+      <YoutubeContainer player={player} setPlayer={setPlayer} />
     </Wrapper>
   );
 };

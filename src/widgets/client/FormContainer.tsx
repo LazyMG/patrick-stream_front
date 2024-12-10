@@ -38,7 +38,10 @@ interface IFormContainer {
 const FormContainer = ({ children, formType }: IFormContainer) => {
   return (
     <Wrapper>
-      <Title>{formType === "signIn" ? "SignIn" : "Login"}</Title>
+      <Title>
+        <Link to={"/"}>Home</Link>
+        {formType === "signIn" ? "SignIn" : "Login"}
+      </Title>
       {children}
       <Message>
         {formType === "signIn" ? (

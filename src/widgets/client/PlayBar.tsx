@@ -1,4 +1,7 @@
+import { ChangeEvent, useEffect, useState } from "react";
+import { useRecoilValue } from "recoil";
 import styled from "styled-components";
+import { playingState, ytIdState } from "../../app/entities/music/atom";
 
 const Wrapper = styled.div`
   position: fixed;
@@ -17,7 +20,14 @@ const Wrapper = styled.div`
   background-color: chartreuse;
 `;
 
-const PlayBarTimeline = styled.input`
+interface PlayBarTimelineProps {
+  value: number;
+  min: number;
+  max: number;
+  showThumb?: boolean; // 선택적 프로퍼티
+}
+
+const PlayBarTimeline = styled.input<PlayBarTimelineProps>`
   -webkit-appearance: none;
   position: absolute;
   top: -2px;
@@ -25,7 +35,7 @@ const PlayBarTimeline = styled.input`
   height: 2px;
   //background-color: red;
 
-  /* background: ${(props) => {
+  background: ${(props) => {
     const percentage =
       ((props.value - props.min) / (props.max - props.min)) * 100;
     return `
@@ -33,28 +43,28 @@ const PlayBarTimeline = styled.input`
         red ${percentage}%, 
         gray ${percentage}%)
     `;
-  }}; */
+  }};
   transition: height 0.2s ease;
 
   &:hover {
     height: 4px;
-    &::-webkit-slider-thumb{
-      width:15px;
-      height:15px;
+    &::-webkit-slider-thumb {
+      width: 15px;
+      height: 15px;
     }
-    &::-moz-range-thumb{
-      width:15px;
-      height:15px;
+    &::-moz-range-thumb {
+      width: 15px;
+      height: 15px;
     }
   }
 
   &::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
-    //width: ${(props) => (props.showThumb ? "12px" : "0")};
-    //height: ${(props) => (props.showThumb ? "12px" : "0")};
-    width:12px;
-    height:12px;
+    width: ${(props) => (props.showThumb ? "12px" : "0")};
+    height: ${(props) => (props.showThumb ? "12px" : "0")};
+    width: 12px;
+    height: 12px;
     border-radius: 50%;
     background: red;
     cursor: pointer;
@@ -62,12 +72,12 @@ const PlayBarTimeline = styled.input`
   }
 
   &::-moz-range-thumb {
-    //width: ${(props) => (props.showThumb ? "12px" : "0")};
-    //height: ${(props) => (props.showThumb ? "12px" : "0")};
+    width: ${(props) => (props.showThumb ? "12px" : "0")};
+    height: ${(props) => (props.showThumb ? "12px" : "0")};
     border-radius: 50%;
     background: red;
-    width:12px;
-    height:12px;
+    width: 12px;
+    height: 12px;
     cursor: pointer;
     transition: width 0.2s ease, height 0.2s ease;
   }
@@ -269,11 +279,11 @@ const PlayBarContentRepeatButton = styled.div`
 
   cursor: pointer;
 
-  /* opacity: ${({ $isRepeat }) => ($isRepeat ? "1" : "0.6")}; */
+  opacity: ${({ $isRepeat }) => ($isRepeat ? "1" : "0.6")};
 
-  /* &:hover {
+  &:hover {
     opacity: ${({ $isRepeat }) => ($isRepeat ? "0.6" : "1")};
-  } */
+  }
 `;
 
 const PlayBarContentUtilButton = styled.div`
@@ -286,11 +296,74 @@ const PlayBarContentUtilButton = styled.div`
   }
 `;
 
-const PlayBar = () => {
+interface IPlayBar {
+  setPlayer: React.Dispatch<React.SetStateAction<YT.Player | null>>;
+  player: YT.Player | null;
+}
+
+const PlayBar = ({ player }: IPlayBar) => {
+  const [timeline, setTimeline] = useState(0);
+  const [time, setTime] = useState("00:00");
+  const playing = useRecoilValue(playingState);
+  const ytId = useRecoilValue(ytIdState);
+
+  //노래 재생될 때
+
+  useEffect(() => {
+    if (player && player.getPlayerState() === 1) {
+      console.log("playbar", player);
+      player.stopVideo();
+      player.playVideo();
+      setTime("00:00");
+      setTimeline(0);
+    }
+  }, [player, ytId]);
+
+  useEffect(() => {
+    let updateTimer: number;
+
+    if (player) {
+      // console.log("time | isPlaying?", playing, playing === 1);
+      if (player.getPlayerState() === 1) {
+        updateTimer = setInterval(async () => {
+          const currentTime = await player.getCurrentTime();
+          setTimeline(Math.floor(currentTime));
+          const formatedTime = new Date(currentTime * 1000)
+            .toISOString()
+            .substring(14, 19);
+          setTime(formatedTime);
+        }, 1000);
+      }
+    }
+    // 매 초마다 업데이트
+    return () => clearInterval(updateTimer);
+  }, [time, player, playing]);
+
+  //노래 끝났을 때 처리
+  const timelineChange = (event: ChangeEvent<HTMLInputElement>) => {
+    if (player) {
+      const newTimeline = +event.target.value;
+      setTimeline(newTimeline);
+
+      const formatedTime = new Date(newTimeline * 1000)
+        .toISOString()
+        .substring(14, 19);
+      setTime(formatedTime);
+
+      player.seekTo(newTimeline, true);
+    }
+  };
+
   return (
     <Wrapper>
       <>
-        <PlayBarTimeline type="range" min={0} />
+        <PlayBarTimeline
+          type="range"
+          value={timeline}
+          min={0}
+          max={player?.getDuration() || 0}
+          onChange={timelineChange}
+        />
         <PlayBarContentContainer>
           <PlayBarContentControlContainer>
             <PlayBarContentControlButtons>

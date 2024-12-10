@@ -6,6 +6,8 @@ import "swiper/swiper-bundle.css";
 import "swiper/css/scrollbar";
 import { useRef, useState } from "react";
 import SliderButtonSection from "./SliderButtonSection";
+import { useSetRecoilState } from "recoil";
+import { ytIdState } from "../../app/entities/music/atom";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -124,6 +126,11 @@ const GridList = () => {
     }
   };
 
+  const setYtId = useSetRecoilState(ytIdState);
+  const changeYtId = (ytId: string) => {
+    setYtId(ytId);
+  };
+
   return (
     <Wrapper>
       <ListHeader>
@@ -146,7 +153,6 @@ const GridList = () => {
             }}
             slidesPerView={3} // 한 번에 3개의 슬라이드 보이게 설정
             spaceBetween={10} // 슬라이드 간의 간격 설정
-            // style={{ width: "600px" }} // 보이는 영역의 너비를 설정하여 3열이 보이도록 조절
             allowTouchMove={false}
             scrollbar={{ draggable: true }}
             onReachBeginning={() => setIsBeginning(true)}
@@ -166,7 +172,9 @@ const GridList = () => {
                     }
                   />
                   <Info>
-                    <Title>{"세탁소"}</Title>
+                    <Title onClick={() => changeYtId("DhQyzPJf0X4")}>
+                      {"세탁소"}
+                    </Title>
                     <Description>
                       {"유라"}|{"세탁소"}
                     </Description>

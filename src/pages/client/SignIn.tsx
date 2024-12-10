@@ -1,5 +1,9 @@
 import styled from "styled-components";
 import FormContainer from "../../widgets/client/FormContainer";
+import SocialButton from "../../shared/ui/SocialButton";
+import Input from "../../shared/ui/Input";
+import Divider from "../../shared/ui/Divider";
+import SubmitButton from "../../shared/ui/SubmitButton";
 
 const Form = styled.form`
   display: flex;
@@ -25,81 +29,29 @@ const Label = styled.label`
   font-weight: bold;
 `;
 
-const Input = styled.input`
-  outline: none;
-  border: 2px solid #5f5f5f;
-  background-color: transparent;
-  padding: 5px 0;
-  padding-left: 10px;
-  border-radius: 8px;
-
-  color: #fff;
-
-  height: 30px;
-  font-size: 18px;
-
-  &:focus {
-    border: 2px solid #dbdbdb;
-  }
-
-  &::placeholder {
-    color: #5f5f5f;
-  }
-`;
-
-const SubmitButton = styled.button`
-  padding: 10px 0;
-  width: 100%;
-
-  border-radius: 15px;
-  font-size: 16px;
-
-  cursor: pointer;
-`;
-
-const Divider = styled.div`
-  width: 100%;
-  height: 1px;
-  border: 1px solid #5f5f5f;
-`;
-
-const SocialButton = styled.div`
-  width: 100%;
-  padding: 10px 15px;
-  box-sizing: border-box;
-  font-size: 20px;
-  background-color: red;
-  border: 1px solid red;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  cursor: pointer;
-`;
-
 const SignIn = () => {
   return (
     <FormContainer formType="signIn">
       <Form>
         <InputRow>
           <Label>이메일</Label>
-          <Input type="text" placeholder="Email" />
+          <Input type="text" placeholder="Email" id="email" />
         </InputRow>
         <InputRow>
           <Label>사용자 이름</Label>
-          <Input type="text" placeholder="Username" />
+          <Input type="text" placeholder="Username" id="username" />
         </InputRow>
         <InputRow>
           <Label>비밀번호</Label>
-          <Input type="password" placeholder="Password" />
+          <Input type="password" placeholder="Password" id="password" />
         </InputRow>
         <InputRow>
           <Label>비밀번호 확인</Label>
-          <Input type="password" placeholder="Password" />
+          <Input type="password" placeholder="Password" id="passwordConfirm" />
         </InputRow>
-        <SubmitButton>회원가입</SubmitButton>
+        <SubmitButton text="회원가입" />
         <Divider />
-        <SocialButton>소셜 로그인</SocialButton>
+        <SocialButton />
       </Form>
     </FormContainer>
   );

@@ -71,7 +71,7 @@ const ListItem = styled.div`
     background-color: #424242;
   }
 
-  background-color: yellowgreen;
+  /* background-color: yellowgreen; */
 `;
 
 const PlayListContainer = () => {
