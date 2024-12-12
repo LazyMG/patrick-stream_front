@@ -2,6 +2,8 @@ import { ReactNode, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import PlayBar from "./PlayBar";
 import YoutubeContainer from "../../pages/YoutubeContainer";
+import { useRecoilValue } from "recoil";
+import { isPlayerOnState } from "../../app/entities/player/atom";
 
 const Wrapper = styled.div<{ $backImg?: string }>`
   margin-left: 250.5px;
@@ -103,6 +105,7 @@ const MainContainer = ({ children, onScroll }: IMainContainer) => {
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   const [player, setPlayer] = useState<YT.Player | null>(null);
+  const isPlayerOn = useRecoilValue(isPlayerOnState);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -133,7 +136,7 @@ const MainContainer = ({ children, onScroll }: IMainContainer) => {
         <ConentContainer>{children}</ConentContainer>
         <Footer />
       </Content>
-      <PlayBar player={player} setPlayer={setPlayer} />
+      {isPlayerOn && <PlayBar player={player} setPlayer={setPlayer} />}
       <YoutubeContainer player={player} setPlayer={setPlayer} />
     </Wrapper>
   );

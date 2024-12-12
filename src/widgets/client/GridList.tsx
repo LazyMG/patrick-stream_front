@@ -8,6 +8,7 @@ import { useRef, useState } from "react";
 import SliderButtonSection from "./SliderButtonSection";
 import { useSetRecoilState } from "recoil";
 import { ytIdState } from "../../app/entities/music/atom";
+import { isPlayerOnState } from "../../app/entities/player/atom";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -113,6 +114,7 @@ const GridList = () => {
   const swiperRef = useRef<Swiper | null>(null);
   const [isBeginning, setIsBeginning] = useState(true);
   const [isEnd, setIsEnd] = useState(false);
+  const setIsPlayerOn = useSetRecoilState(isPlayerOnState);
 
   const goNext = () => {
     if (swiperRef.current) {
@@ -129,6 +131,7 @@ const GridList = () => {
   const setYtId = useSetRecoilState(ytIdState);
   const changeYtId = (ytId: string) => {
     setYtId(ytId);
+    setIsPlayerOn(true);
   };
 
   return (

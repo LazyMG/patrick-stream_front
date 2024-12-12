@@ -10,6 +10,10 @@ import SliderButtonSection from "./SliderButtonSection";
 import { Link } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
 import { ytIdState } from "../../app/entities/music/atom";
+import {
+  currentPlayerState,
+  isPlayerOnState,
+} from "../../app/entities/player/atom";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -74,11 +78,14 @@ const ListItem = styled.div`
   /* background-color: coral; */
 `;
 
-const Image = styled.div`
+const Image = styled.div<{ $imgUrl: string }>`
   width: 100%; /* 부모에 맞춰 너비 설정 */
   aspect-ratio: 1 / 1; /* 정사각형 비율 유지 */
 
   background-color: brown;
+
+  background-image: ${(props) => props.$imgUrl && `url(${props.$imgUrl})`};
+  background-size: cover;
 
   border-radius: 10px;
 `;
@@ -149,8 +156,9 @@ const FlexList = ({ isCustom, icon, title, info }: IFlexList) => {
   const swiperRef = useRef<Swiper | null>(null);
   const [isBeginning, setIsBeginning] = useState(true);
   const [isEnd, setIsEnd] = useState(false);
-
+  const setIsPlayerOn = useSetRecoilState(isPlayerOnState);
   const setYtId = useSetRecoilState(ytIdState);
+  const setCurrentPlayer = useSetRecoilState(currentPlayerState);
 
   const goNext = () => {
     if (swiperRef.current) {
@@ -166,6 +174,13 @@ const FlexList = ({ isCustom, icon, title, info }: IFlexList) => {
 
   const changeYtId = (ytId: string) => {
     setYtId(ytId);
+    setIsPlayerOn(true);
+    setCurrentPlayer((prev) => {
+      return {
+        ...prev,
+        isPlaying: true,
+      };
+    });
   };
 
   return (
@@ -210,7 +225,11 @@ const FlexList = ({ isCustom, icon, title, info }: IFlexList) => {
             {Array.from({ length: 10 }).map((_, index) => (
               <SwiperSlide key={index}>
                 <ListItem>
-                  <Image />
+                  <Image
+                    $imgUrl={
+                      "https://i.scdn.co/image/ab67616d00001e02ff1533e6c9c6435c37759764"
+                    }
+                  />
                   <Info>
                     <Title onClick={() => changeYtId("3xcIJAWchdk")}>
                       세탁소

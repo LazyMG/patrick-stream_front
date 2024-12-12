@@ -1,7 +1,11 @@
 import { ChangeEvent, useEffect, useState } from "react";
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import styled from "styled-components";
-import { playingState, ytIdState } from "../../app/entities/music/atom";
+import { ytIdState } from "../../app/entities/music/atom";
+import {
+  currentPlayerState,
+  ytPlayerState,
+} from "../../app/entities/player/atom";
 
 const Wrapper = styled.div`
   position: fixed;
@@ -31,6 +35,7 @@ const PlayBarTimeline = styled.input<PlayBarTimelineProps>`
   -webkit-appearance: none;
   position: absolute;
   top: -2px;
+  left: -2px;
   width: 100%;
   height: 2px;
   //background-color: red;
@@ -304,8 +309,9 @@ interface IPlayBar {
 const PlayBar = ({ player }: IPlayBar) => {
   const [timeline, setTimeline] = useState(0);
   const [time, setTime] = useState("00:00");
-  const playing = useRecoilValue(playingState);
+  const [ytPlayer, setYtPlayer] = useRecoilState(ytPlayerState);
   const ytId = useRecoilValue(ytIdState);
+  const [currentPlayer, setCurrentPlayer] = useRecoilState(currentPlayerState);
 
   //노래 재생될 때
 
@@ -318,6 +324,10 @@ const PlayBar = ({ player }: IPlayBar) => {
       setTimeline(0);
     }
   }, [player, ytId]);
+
+  useEffect(() => {
+    console.log("test", ytPlayer);
+  }, [ytPlayer]);
 
   useEffect(() => {
     let updateTimer: number;
@@ -337,9 +347,9 @@ const PlayBar = ({ player }: IPlayBar) => {
     }
     // 매 초마다 업데이트
     return () => clearInterval(updateTimer);
-  }, [time, player, playing]);
+  }, [time, player, ytPlayer]);
 
-  //노래 끝났을 때 처리
+  //노래 끝났을 때 처리 필요
   const timelineChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (player) {
       const newTimeline = +event.target.value;
@@ -351,6 +361,26 @@ const PlayBar = ({ player }: IPlayBar) => {
       setTime(formatedTime);
 
       player.seekTo(newTimeline, true);
+    }
+  };
+
+  const togglePlaying = () => {
+    if (player && currentPlayer.isPlaying) {
+      player.pauseVideo();
+      setYtPlayer(2);
+      setCurrentPlayer((prev) => ({
+        ...prev,
+        isPlaying: false,
+        isPaused: true,
+      }));
+    } else if (player && currentPlayer.isPaused) {
+      player.playVideo();
+      setYtPlayer(1);
+      setCurrentPlayer((prev) => ({
+        ...prev,
+        isPlaying: true,
+        isPaused: false,
+      }));
     }
   };
 
@@ -383,35 +413,39 @@ const PlayBar = ({ player }: IPlayBar) => {
                   />
                 </svg>
               </PlayBarContentControlMoveButton>
-              <PlayBarContentControlPlayButton>
-                <svg
-                  fill="none"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                  aria-hidden="true"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M15.75 5.25v13.5m-7.5-13.5v13.5"
-                  />
-                </svg>
-                {/* <svg
-                fill="none"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-                aria-hidden="true"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z"
-                />
-              </svg> */}
+              {(ytPlayer === -1 || ytPlayer === 3) && <div>Loading...</div>}
+              <PlayBarContentControlPlayButton onClick={togglePlaying}>
+                {currentPlayer.isPlaying ? (
+                  <svg
+                    fill="none"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M15.75 5.25v13.5m-7.5-13.5v13.5"
+                    />
+                  </svg>
+                ) : (
+                  <svg
+                    fill="none"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z"
+                    />
+                  </svg>
+                )}
 
                 {/* <svg
                 fill="none"
@@ -446,7 +480,7 @@ const PlayBar = ({ player }: IPlayBar) => {
               </PlayBarContentControlMoveButton>
             </PlayBarContentControlButtons>
             <PlayBarContentControlDuration>
-              {11}/{123}
+              {time}/{timeline}
             </PlayBarContentControlDuration>
           </PlayBarContentControlContainer>
           <PlayBarContentMainContainer>
@@ -467,27 +501,22 @@ const PlayBar = ({ player }: IPlayBar) => {
             <PlayBarContentMainUtil>
               <PlayBarContentMainButton>
                 <svg
-                  fill="currentColor"
+                  fill="none"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
                   viewBox="0 0 24 24"
                   xmlns="http://www.w3.org/2000/svg"
                   aria-hidden="true"
                 >
-                  <path d="M7.493 18.5c-.425 0-.82-.236-.975-.632A7.48 7.48 0 0 1 6 15.125c0-1.75.599-3.358 1.602-4.634.151-.192.373-.309.6-.397.473-.183.89-.514 1.212-.924a9.042 9.042 0 0 1 2.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 0 0 .322-1.672V2.75A.75.75 0 0 1 15 2a2.25 2.25 0 0 1 2.25 2.25c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 0 1-2.649 7.521c-.388.482-.987.729-1.605.729H14.23c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 0 0-1.423-.23h-.777ZM2.331 10.727a11.969 11.969 0 0 0-.831 4.398 12 12 0 0 0 .52 3.507C2.28 19.482 3.105 20 3.994 20H4.9c.445 0 .72-.498.523-.898a8.963 8.963 0 0 1-.924-3.977c0-1.708.476-3.305 1.302-4.666.245-.403-.028-.959-.5-.959H4.25c-.832 0-1.612.453-1.918 1.227Z" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z"
+                  />
                 </svg>
-                {/* <svg
-                fill={"none"}
-                strokeWidth={1.5}
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-                aria-hidden="true"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M6.633 10.25c.806 0 1.533-.446 2.031-1.08a9.041 9.041 0 0 1 2.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 0 0 .322-1.672V2.75a.75.75 0 0 1 .75-.75 2.25 2.25 0 0 1 2.25 2.25c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282m0 0h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 0 1-2.649 7.521c-.388.482-.987.729-1.605.729H13.48c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 0 0-1.423-.23H5.904m10.598-9.75H14.25M5.904 18.5c.083.205.173.405.27.602.197.4-.078.898-.523.898h-.908c-.889 0-1.713-.518-1.972-1.368a12 12 0 0 1-.521-3.507c0-1.553.295-3.036.831-4.398C3.387 9.953 4.167 9.5 5 9.5h1.053c.472 0 .745.556.5.96a8.958 8.958 0 0 0-1.302 4.665c0 1.194.232 2.333.654 3.375Z"
-                />
-              </svg> */}
+                {/* <svg  fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <path clipRule="evenodd" fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z" />
+</svg> */}
               </PlayBarContentMainButton>
               <PlayBarContentMainButton>
                 <svg

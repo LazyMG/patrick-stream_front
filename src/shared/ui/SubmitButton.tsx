@@ -18,7 +18,11 @@ const Wrapper = styled.button`
   }
 `;
 
-const SubmitButton = ({ text }: { text: string }) => {
+interface ISubmitButton {
+  text: string;
+}
+
+const SubmitButton = ({ text }: ISubmitButton) => {
   return <Wrapper>{text}</Wrapper>;
 };
 

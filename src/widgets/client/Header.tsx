@@ -1,5 +1,7 @@
 import { useNavigate } from "react-router-dom";
+import { useRecoilValue } from "recoil";
 import styled from "styled-components";
+import { userState } from "../../app/entities/user/atom";
 
 const Wrapper = styled.header<{ $navShow: boolean }>`
   position: fixed;
@@ -95,6 +97,7 @@ const SearchForm = styled.form`
 
 const ButtonContainer = styled.div`
   display: flex;
+  justify-content: flex-end;
   gap: 12px;
 `;
 
@@ -116,12 +119,23 @@ const Button = styled.button<{ $alter: boolean }>`
   cursor: pointer;
 `;
 
+const Profile = styled.span`
+  cursor: pointer;
+
+  svg {
+    width: 50px;
+    height: 50px;
+    color: #fff;
+  }
+`;
+
 interface IHeader {
   $navShow: boolean;
 }
 
 const Header = ({ $navShow }: IHeader) => {
   const navigate = useNavigate();
+  const user = useRecoilValue(userState);
 
   const alter = true;
 
@@ -147,12 +161,33 @@ const Header = ({ $navShow }: IHeader) => {
           </button>
         </SearchForm>
         <ButtonContainer>
-          <Button $alter={alter} onClick={() => navigate("/login")}>
-            로그인
-          </Button>
-          <Button $alter={!alter} onClick={() => navigate("/signIn")}>
-            가입하기
-          </Button>
+          {user ? (
+            <Profile>
+              <svg
+                fill="none"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                />
+              </svg>
+            </Profile>
+          ) : (
+            <>
+              <Button $alter={alter} onClick={() => navigate("/login")}>
+                로그인
+              </Button>
+              <Button $alter={!alter} onClick={() => navigate("/signIn")}>
+                가입하기
+              </Button>
+            </>
+          )}
         </ButtonContainer>
       </SearchContainer>
     </Wrapper>

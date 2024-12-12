@@ -1,9 +1,11 @@
 import styled from "styled-components";
 import FormContainer from "../../widgets/client/FormContainer";
 import SocialButton from "../../shared/ui/SocialButton";
-import Input from "../../shared/ui/Input";
 import Divider from "../../shared/ui/Divider";
 import SubmitButton from "../../shared/ui/SubmitButton";
+import { SubmitHandler, useForm } from "react-hook-form";
+import InputRow from "../../shared/ui/InputRow";
+import { useNavigate } from "react-router-dom";
 
 const Form = styled.form`
   display: flex;
@@ -14,41 +16,68 @@ const Form = styled.form`
   /* background-color: green; */
 `;
 
-const InputRow = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  width: 100%;
-
-  /* background-color: blue; */
-`;
-
-const Label = styled.label`
-  font-size: 15px;
-  color: #fff;
-  font-weight: bold;
-`;
+interface LoginFormValues {
+  email: string;
+  username: string;
+  password: string;
+  passwordConfirm: string;
+}
 
 const SignIn = () => {
+  const { register, handleSubmit } = useForm<LoginFormValues>();
+  const navigate = useNavigate();
+
+  const onValid: SubmitHandler<LoginFormValues> = async (data) => {
+    console.log(data);
+
+    //validate
+
+    // fetch
+
+    const result = await fetch(`http://localhost:5000/auth/signIn`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ data }),
+      credentials: "include",
+    }).then((res) => res.json());
+
+    if (result.ok) {
+      navigate("/login");
+    }
+  };
   return (
     <FormContainer formType="signIn">
-      <Form>
-        <InputRow>
-          <Label>이메일</Label>
-          <Input type="text" placeholder="Email" id="email" />
-        </InputRow>
-        <InputRow>
-          <Label>사용자 이름</Label>
-          <Input type="text" placeholder="Username" id="username" />
-        </InputRow>
-        <InputRow>
-          <Label>비밀번호</Label>
-          <Input type="password" placeholder="Password" id="password" />
-        </InputRow>
-        <InputRow>
-          <Label>비밀번호 확인</Label>
-          <Input type="password" placeholder="Password" id="passwordConfirm" />
-        </InputRow>
+      <Form onSubmit={handleSubmit(onValid)}>
+        <InputRow
+          id="email"
+          name="이메일"
+          placeHolder="Email"
+          type="email"
+          register={register("email")}
+        />
+        <InputRow
+          id="username"
+          name="사용자 이름"
+          placeHolder="Username"
+          type="text"
+          register={register("username")}
+        />
+        <InputRow
+          id="password"
+          name="비밀번호"
+          placeHolder="Password"
+          type="password"
+          register={register("password")}
+        />
+        <InputRow
+          id="passwordConfirm"
+          name="비밀번호 확인"
+          placeHolder="Password Confirm"
+          type="password"
+          register={register("passwordConfirm")}
+        />
         <SubmitButton text="회원가입" />
         <Divider />
         <SocialButton />

@@ -2,8 +2,9 @@ import { useState } from "react";
 import YouTube, { YouTubeProps } from "react-youtube";
 import YoutubeButtonContainer from "./YoutubeButtonContainer";
 import YoutubeController from "./YoutubeController";
-import { playingState, ytIdState } from "../app/entities/music/atom";
+import { ytIdState } from "../app/entities/music/atom";
 import { useRecoilState, useSetRecoilState } from "recoil";
+import { ytPlayerState } from "../app/entities/player/atom";
 
 interface IYoutubeContainer {
   setPlayer: React.Dispatch<React.SetStateAction<YT.Player | null>>;
@@ -12,10 +13,11 @@ interface IYoutubeContainer {
 
 function YoutubeContainer({ player, setPlayer }: IYoutubeContainer) {
   const [ytId, setYtId] = useRecoilState(ytIdState);
-  const setPlayingState = useSetRecoilState(playingState);
+  const setytPlayer = useSetRecoilState(ytPlayerState);
 
   const [isMute, setIsMute] = useState<boolean>(false);
 
+  // 전체 플레이어 관리
   const onPlayerReady: YouTubeProps["onReady"] = (event) => {
     setPlayer(event.target);
     // console.dir(event.target);
@@ -34,13 +36,15 @@ function YoutubeContainer({ player, setPlayer }: IYoutubeContainer) {
     //   player.mute();
     // }
     if (player) {
-      console.log("onPlayerPlay", player.getPlayerState());
+      console.log("ytplayer i'm ready!");
     }
   };
 
   const onStateChange: YouTubeProps["onStateChange"] = (event) => {
-    console.log("change!", event.target);
-    setPlayingState(event.target.getPlayerState());
+    // console.log("change!", event.target);
+    // console.log("player's state", event.target.getPlayerState());
+
+    setytPlayer(event.target.getPlayerState());
   };
 
   const opts: YouTubeProps["opts"] = {

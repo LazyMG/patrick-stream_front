@@ -9,25 +9,23 @@ const Wrapper = styled.div`
   gap: 40px;
 `;
 
-const ContentGenre = styled.div`
-  width: 100%;
-  display: flex;
-  gap: 15px;
+// const ContentGenre = styled.div`
+//   width: 100%;
+//   display: flex;
+//   gap: 15px;
+// `;
 
-  /* background-color: blue; */
-`;
+// const GenreItem = styled.div`
+//   width: 120px;
+//   display: flex;
+//   justify-content: center;
+//   padding: 10px 0;
 
-const GenreItem = styled.div`
-  width: 120px;
-  display: flex;
-  justify-content: center;
-  padding: 10px 0;
+//   border-radius: 15px;
 
-  border-radius: 15px;
-
-  cursor: pointer;
-  background-color: green;
-`;
+//   cursor: pointer;
+//   background-color: green;
+// `;
 
 const ContentContainer = styled.div`
   width: 100%;
@@ -39,11 +37,11 @@ const ContentContainer = styled.div`
 const Home = () => {
   return (
     <Wrapper>
-      <ContentGenre>
+      {/* <ContentGenre>
         {Array.from({ length: 5 }).map((_, idx) => (
           <GenreItem key={idx}>장르1</GenreItem>
         ))}
-      </ContentGenre>
+      </ContentGenre> */}
       <ContentContainer>
         <FlexList
           isCustom={true}

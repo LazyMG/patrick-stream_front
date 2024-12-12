@@ -1,3 +1,4 @@
+import { forwardRef } from "react";
 import styled from "styled-components";
 
 const Wrapper = styled.input`
@@ -22,13 +23,23 @@ const Wrapper = styled.input`
   }
 `;
 
-interface IInput {
+interface IInput extends React.InputHTMLAttributes<HTMLInputElement> {
   type: string;
   placeholder: string;
   id: string;
 }
-const Input = ({ type, placeholder, id }: IInput) => {
-  return <Wrapper type={type} placeholder={placeholder} id={id} />;
-};
+const Input = forwardRef<HTMLInputElement, IInput>(
+  ({ type, placeholder, id, ...rest }, ref) => {
+    return (
+      <Wrapper
+        type={type}
+        placeholder={placeholder}
+        id={id}
+        ref={ref}
+        {...rest}
+      />
+    );
+  }
+);
 
 export default Input;
