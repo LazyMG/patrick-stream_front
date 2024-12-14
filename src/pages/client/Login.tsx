@@ -43,8 +43,17 @@ const Login = () => {
       credentials: "include",
     }).then((res) => res.json());
     if (result.ok) {
-      setUser(result.user);
+      setUser({ userId: result.userId, loading: false });
+      // await fetch("http://localhost:5000/auth/session", {
+      //   credentials: "include",
+      // });
       navigate("/");
+    } else {
+      // 에러 처리
+      // 1. 비밀번호 에러
+      // 2. 존재하지 않는 이메일
+      // 3. DB 에러
+      console.log(result.message);
     }
   };
 

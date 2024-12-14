@@ -1,6 +1,10 @@
 import styled from "styled-components";
 import FlexList from "../../widgets/client/FlexList";
 import GridList from "../../widgets/client/GridList";
+import { useSetRecoilState } from "recoil";
+import { backgroundState } from "../../app/entities/global/atom";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -35,6 +39,17 @@ const ContentContainer = styled.div`
 `;
 
 const Home = () => {
+  const setBackground = useSetRecoilState(backgroundState);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    setBackground(null);
+  }, [setBackground]);
+
+  const gotoProfile = () => {
+    navigate("/users/675d0657eea62acd6ff079cd");
+  };
+
   return (
     <Wrapper>
       {/* <ContentGenre>
@@ -44,6 +59,7 @@ const Home = () => {
       </ContentGenre> */}
       <ContentContainer>
         <FlexList
+          onClick={gotoProfile}
           isCustom={true}
           title={"다시 듣기"}
           icon={

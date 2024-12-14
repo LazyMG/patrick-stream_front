@@ -1,6 +1,9 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import CreatePlaylistModal from "./CreatePlaylistModal";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { userState } from "../../app/entities/user/atom";
+import { currentUserPlaylistState } from "../../app/playlist/atom";
 
 const Wrapper = styled.div`
   display: flex;
@@ -71,15 +74,50 @@ const ListItem = styled.div`
     background-color: #424242;
   }
 
-  /* background-color: yellowgreen; */
+  background-color: yellowgreen;
 `;
 
-const PlayListContainer = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+interface APIUserPlaylist {
+  id: string;
+  title: string;
+  duration: number;
+  introduction: string;
+  followersCount: number;
+}
 
-  const openModal = () => setIsModalOpen(true);
+const PlayListContainer = () => {
+  const user = useRecoilValue(userState);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentUserPlaylist, setCurrentUserPlaylist] = useRecoilState(
+    currentUserPlaylistState
+  );
+  const [isLoading, setIsLoading] = useState(true);
+
+  const openModal = () => {
+    if (user.userId !== "") {
+      setIsModalOpen(true);
+    }
+  };
 
   const closeModal = () => setIsModalOpen(false);
+
+  const getCurrentUserPlaylist = useCallback(async () => {
+    const result = await fetch(
+      `http://localhost:5000/user/${user.userId}/allPlaylists`
+    ).then((res) => res.json());
+    console.log(result);
+    if (result.ok) {
+      console.log(result);
+      setCurrentUserPlaylist(result.playlists as APIUserPlaylist[]);
+      setIsLoading(false);
+    }
+  }, [user.userId, setCurrentUserPlaylist]);
+
+  useEffect(() => {
+    if (user.userId !== "") {
+      getCurrentUserPlaylist();
+    }
+  }, [getCurrentUserPlaylist, user.userId]);
 
   return (
     <>
@@ -103,9 +141,11 @@ const PlayListContainer = () => {
           <span>새 재생목록 추가</span>
         </CreateButton>
         <PlaylistView>
-          {Array.from({ length: 50 }).map((_, idx) => (
+          {/* {Array.from({ length: 50 }).map((_, idx) => (
             <ListItem key={idx} />
-          ))}
+          ))} */}
+          {!isLoading &&
+            currentUserPlaylist.map((item) => <ListItem key={item.id} />)}
         </PlaylistView>
       </Wrapper>
     </>

@@ -44,6 +44,7 @@ const CustomSection = styled.div`
 `;
 
 const CustomIcon = styled.div`
+  cursor: pointer;
   svg {
     width: 75px;
   }
@@ -150,9 +151,10 @@ interface IFlexList {
   icon?: ReactNode;
   title: string;
   info?: string;
+  onClick?: () => void;
 }
 
-const FlexList = ({ isCustom, icon, title, info }: IFlexList) => {
+const FlexList = ({ isCustom, icon, title, info, onClick }: IFlexList) => {
   const swiperRef = useRef<Swiper | null>(null);
   const [isBeginning, setIsBeginning] = useState(true);
   const [isEnd, setIsEnd] = useState(false);
@@ -188,7 +190,7 @@ const FlexList = ({ isCustom, icon, title, info }: IFlexList) => {
       <ListHeader>
         {isCustom ? (
           <CustomSection>
-            <CustomIcon>{icon}</CustomIcon>
+            <CustomIcon onClick={onClick}>{icon}</CustomIcon>
             <CustomUserInfo>
               {info && <CustomUserName>{info}</CustomUserName>}
               <CustomTitle>{title}</CustomTitle>
@@ -237,7 +239,9 @@ const FlexList = ({ isCustom, icon, title, info }: IFlexList) => {
                     <Description>
                       <Category>앨범</Category>
                       <Aritst onClick={() => console.log("artist")}>
-                        <Link to={"/artists/123"}>유라</Link>
+                        <Link to={"/artists/67515909174720e8da305b8f"}>
+                          유라
+                        </Link>
                       </Aritst>
                     </Description>
                   </Info>

@@ -1,5 +1,6 @@
 import { Artist } from "./artist";
 import { Music } from "./music";
+import { User } from "./user";
 
 // comment, followers 추가 필
 //id number -> string
@@ -17,4 +18,22 @@ export interface Album {
   length: number;
   coverImg: string;
   created_at: string;
+}
+
+// 수정 필요
+export interface APIAlbum {
+  artists?: Artist[];
+  category?: string;
+  comments?: string[];
+  coverImg?: string;
+  created_at?: string;
+  followers?: User[];
+  introduction?: string;
+  length?: number;
+  musics?: Music[];
+  released_at?: string;
+  title: string;
+  total_duration?: number;
+  __v?: number;
+  _id: string;
 }

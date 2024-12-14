@@ -6,10 +6,18 @@ const Wrapper = styled.div`
 
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 20px;
 `;
 
-const ListHeader = styled.div``;
+const ListHeader = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+`;
+
+const ListSubTitle = styled.span`
+  font-size: 15px;
+`;
 
 const ListTitle = styled.h1`
   color: #fff;
@@ -77,12 +85,14 @@ const MoreButton = styled(DefaultButton)`
 
 interface IRowList {
   title: string;
+  subTitle?: string;
 }
 
-const RowList = ({ title }: IRowList) => {
+const RowList = ({ title, subTitle }: IRowList) => {
   return (
     <Wrapper>
       <ListHeader>
+        {subTitle && <ListSubTitle>{subTitle}</ListSubTitle>}
         <ListTitle>{title}</ListTitle>
       </ListHeader>
       <ListContainer>

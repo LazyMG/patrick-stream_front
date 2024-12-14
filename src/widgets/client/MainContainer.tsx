@@ -4,8 +4,9 @@ import PlayBar from "./PlayBar";
 import YoutubeContainer from "../../pages/YoutubeContainer";
 import { useRecoilValue } from "recoil";
 import { isPlayerOnState } from "../../app/entities/player/atom";
+import { backgroundState } from "../../app/entities/global/atom";
 
-const Wrapper = styled.div<{ $backImg?: string }>`
+const Wrapper = styled.div<{ $backImg?: string | null }>`
   margin-left: 250.5px;
   padding-left: 250.5px;
   background: ${(props) =>
@@ -57,8 +58,62 @@ const Footer = styled.div`
   height: 80px;
 `;
 
-const BackImage = styled.div<{ $backImg: string }>`
-  position: absolute; /* fixed 대신 absolute로 설정 */
+const BlurBackImage = styled.div<{ $backImg: string }>`
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 80vh;
+  display: flex;
+  justify-content: center;
+  z-index: 0;
+  overflow: hidden; /* 넘치는 부분을 가리기 위해 추가 */
+
+  /* 블러 처리된 배경 이미지 */
+  &::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: ${(props) =>
+      props.$backImg ? `url(${props.$backImg})` : "none"};
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover; /* 이미지가 너비와 높이를 모두 채우도록 설정 */
+    filter: blur(20px); /* 블러 강도 조정 */
+    z-index: -2; /* 가장 뒤에 배치 */
+  }
+
+  /* 페이드 아웃을 위한 어두운 그라데이션 오버레이 */
+  &::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0) 60%,
+      rgba(0, 0, 0, 0.9) 90%,
+      #000 100%
+    );
+    z-index: -1;
+  }
+
+  @media (max-width: 1200px) {
+    height: 60vh;
+  }
+
+  @media (max-width: 768px) {
+    height: 50vh;
+  }
+
+  @media (max-width: 480px) {
+    height: 40vh;
+  }
+`;
+
+const SimpleBackImage = styled.div<{ $backImg: string }>`
+  position: absolute;
   left: 0;
   top: 0;
   width: 100%;
@@ -71,8 +126,8 @@ const BackImage = styled.div<{ $backImg: string }>`
     props.$backImg ? `url(${props.$backImg})` : "none"};
 
   background-repeat: no-repeat;
-  background-position: top center; /* 이미지의 상단이 화면 위에 붙도록 설정 */
-  background-size: auto 100%; // 높이를 요소에 맞추고, 너비는 비율 유지
+  background-position: top center; // 이미지의 상단이 화면 위에 붙도록 설정
+  background-size: auto 100%; // 높이를 요소에 맞추고, 너비는 비율 유지 */
 
   /* 그라데이션으로 아래쪽 페이드 효과 적용 */
   mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
@@ -105,6 +160,7 @@ const MainContainer = ({ children, onScroll }: IMainContainer) => {
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   const [player, setPlayer] = useState<YT.Player | null>(null);
+  const background = useRecoilValue(backgroundState);
   const isPlayerOn = useRecoilValue(isPlayerOnState);
 
   useEffect(() => {
@@ -122,22 +178,20 @@ const MainContainer = ({ children, onScroll }: IMainContainer) => {
     };
   }, [onScroll]);
 
-  const isImage = false;
-
   return (
-    <Wrapper
-      ref={wrapperRef}
-      $backImg="https://i.scdn.co/image/ab6761610000517428f845b9a1c6e8bccb255f0c"
-    >
-      {isImage && (
-        <BackImage $backImg="https://i.scdn.co/image/ab67618600001016ada2ac93d92a298d8f54ebc8" />
-      )}
+    <Wrapper ref={wrapperRef} $backImg={background?.src}>
+      {background &&
+        (background.type === "blur" ? (
+          <BlurBackImage $backImg={background.src} />
+        ) : (
+          <SimpleBackImage $backImg={background.src} />
+        ))}
       <Content>
         <ConentContainer>{children}</ConentContainer>
         <Footer />
       </Content>
       {isPlayerOn && <PlayBar player={player} setPlayer={setPlayer} />}
-      <YoutubeContainer player={player} setPlayer={setPlayer} />
+      {/* <YoutubeContainer player={player} setPlayer={setPlayer} /> */}
     </Wrapper>
   );
 };

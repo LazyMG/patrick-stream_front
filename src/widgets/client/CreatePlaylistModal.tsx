@@ -1,12 +1,16 @@
 import styled from "styled-components";
 import { createPortal } from "react-dom";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { userState } from "../../app/entities/user/atom";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { currentUserPlaylistState } from "../../app/playlist/atom";
 
 const ModalOverlay = styled.div`
   position: fixed;
   width: 100vw;
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.8);
-  z-index: 1;
+  z-index: 99;
   top: 0;
   left: 0;
   display: flex;
@@ -65,6 +69,7 @@ const ModalForm = styled.form`
       outline: none;
       color: #fff;
       border-bottom: 0.1px solid #fff;
+      transition: border-bottom 0.2s ease-in;
     }
   }
 `;
@@ -92,7 +97,46 @@ interface ICreatePlaylistModal {
   closeModal: () => void;
 }
 
+interface PlaylistFormValues {
+  title: string;
+  info: string;
+}
+
 const CreatePlaylistModal = ({ closeModal }: ICreatePlaylistModal) => {
+  const user = useRecoilValue(userState);
+  const { register, handleSubmit } = useForm<PlaylistFormValues>();
+  const setCurrentUserPlaylist = useSetRecoilState(currentUserPlaylistState);
+
+  const createPlaylist: SubmitHandler<PlaylistFormValues> = async (data) => {
+    //validate
+
+    if (user.userId !== "") {
+      const result = await fetch(
+        `http://localhost:5000/user/${user.userId}/playlist`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ data }),
+        }
+      ).then((res) => res.json());
+      if (result.ok) {
+        setCurrentUserPlaylist((prev) => [
+          {
+            id: result.id,
+            title: data.title,
+            duration: 0,
+            introduction: data.info,
+            followersCount: 0,
+          },
+          ...prev,
+        ]);
+        closeModal();
+      }
+    }
+  };
+
   return createPortal(
     <ModalOverlay onClick={closeModal}>
       <ContentModal
@@ -102,12 +146,20 @@ const CreatePlaylistModal = ({ closeModal }: ICreatePlaylistModal) => {
       >
         <Content>
           <Title>새 재생목록</Title>
-          <ModalForm>
-            <input placeholder="제목" />
-            <input placeholder="설명" />
+          <ModalForm onSubmit={handleSubmit(createPlaylist)}>
+            <input
+              placeholder="제목"
+              type="text"
+              {...register("title", {
+                required: true,
+              })}
+            />
+            <input placeholder="설명" type="text" {...register("info")} />
             <ButtonRow>
-              <button onClick={closeModal}>취소</button>
-              <button>만들기</button>
+              <button onClick={closeModal} type="button">
+                취소
+              </button>
+              <button type="submit">만들기</button>
             </ButtonRow>
           </ModalForm>
         </Content>

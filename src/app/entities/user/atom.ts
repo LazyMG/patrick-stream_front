@@ -1,11 +1,15 @@
 import { atom } from "recoil";
 
-interface ITestUser {
-  id: number;
-  username: string;
+interface IUserState {
+  loading: boolean;
+  userId: string;
 }
 
-export const userState = atom<ITestUser | null>({
+// id만 가져오기
+export const userState = atom<IUserState>({
   key: "userState",
-  default: null,
+  default: {
+    userId: "",
+    loading: true,
+  },
 });

@@ -2,6 +2,10 @@ import styled from "styled-components";
 import RowList from "../../widgets/client/RowList";
 import { DefaultButton } from "../../shared/ui/DefaultButton";
 import FlexList from "../../widgets/client/FlexList";
+import { useCallback, useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { useSetRecoilState } from "recoil";
+import { backgroundState } from "../../app/entities/global/atom";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -76,6 +80,33 @@ const ContentContainer = styled.div`
 `;
 
 const Artist = () => {
+  const { artistId } = useParams();
+  const setBackground = useSetRecoilState(backgroundState);
+  const [isLoading, setIsLoading] = useState(false);
+  const [artistData, setArtistData] = useState(null);
+
+  const getArtist = useCallback(
+    async (id: string) => {
+      const result = await fetch(
+        `http://localhost:5000/artist/${id}`
+      ).then((res) => res.json());
+
+      if (result.ok) {
+        setArtistData(result.artist);
+        setBackground({ src: result.artist.coverImg, type: "simple" });
+      }
+    },
+    [setBackground]
+  );
+
+  useEffect(() => {
+    if (artistId) {
+      setIsLoading(true);
+      getArtist(artistId);
+      setIsLoading(false);
+    }
+  }, [artistId, getArtist]);
+
   return (
     <Wrapper>
       <InfoHeader>

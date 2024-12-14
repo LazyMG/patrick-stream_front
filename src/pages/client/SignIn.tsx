@@ -33,18 +33,23 @@ const SignIn = () => {
     //validate
 
     // fetch
-
     const result = await fetch(`http://localhost:5000/auth/signIn`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ data }),
-      credentials: "include",
     }).then((res) => res.json());
 
     if (result.ok) {
       navigate("/login");
+    } else {
+      // 에러 처리
+      // 1. 비밀번호 불일치
+      // 2. 이미 존재하는 아이디
+      // 3. 이미 존재하는 사용자 이름
+      // 4. DB 에러
+      console.log(result.message);
     }
   };
   return (

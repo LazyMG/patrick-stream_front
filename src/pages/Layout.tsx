@@ -4,6 +4,7 @@ import Header from "../widgets/client/Header";
 import Sidebar from "../widgets/client/Sidebar";
 import MainContainer from "../widgets/client/MainContainer";
 import { useState } from "react";
+import { useAuth } from "../shared/hooks/useAuth";
 
 const Wrapper = styled.div`
   width: 100vw;
@@ -18,6 +19,8 @@ const Wrapper = styled.div`
 
 const Layout = () => {
   const [navShow, setNavShow] = useState(false);
+
+  useAuth();
 
   const handleScroll = (scrollTop: number) => {
     if (scrollTop > 30) {
