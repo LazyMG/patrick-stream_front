@@ -1,12 +1,5 @@
 import { atom } from "recoil";
-
-interface APIUserPlaylist {
-  id: string;
-  title: string;
-  duration: number;
-  introduction: string;
-  followersCount: number;
-}
+import { APIUserPlaylist } from "../../shared/models/playlist";
 
 export const currentUserPlaylistState = atom<APIUserPlaylist[]>({
   key: "currentUserPlaylistState",

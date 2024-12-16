@@ -113,7 +113,7 @@ const User = () => {
     }).then((res) => res.json());
     console.log(result);
     if (result.ok) {
-      setUser({ userId: "", loading: false });
+      setUser({ userId: "", loading: false, username: "" });
       setIsMyPage(false);
     }
   };

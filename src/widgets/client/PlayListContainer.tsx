@@ -4,6 +4,9 @@ import CreatePlaylistModal from "./CreatePlaylistModal";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { userState } from "../../app/entities/user/atom";
 import { currentUserPlaylistState } from "../../app/playlist/atom";
+import { Link } from "react-router-dom";
+import PlaylistItem from "../../shared/ui/PlaylistItem";
+import { APIUserPlaylist } from "../../shared/models/playlist";
 
 const Wrapper = styled.div`
   display: flex;
@@ -59,32 +62,6 @@ const PlaylistView = styled.div`
   overflow-y: auto; // scroll에서 auto로 변경
 `;
 
-const ListItem = styled.div`
-  width: 100%;
-  min-height: 50px; // height에서 min-height로 변경
-  flex-shrink: 0; // 추가: 아이템의 크기 유지
-
-  border-radius: 15px;
-
-  color: #dddddd;
-
-  cursor: pointer;
-
-  &:hover {
-    background-color: #424242;
-  }
-
-  background-color: yellowgreen;
-`;
-
-interface APIUserPlaylist {
-  id: string;
-  title: string;
-  duration: number;
-  introduction: string;
-  followersCount: number;
-}
-
 const PlayListContainer = () => {
   const user = useRecoilValue(userState);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -105,9 +82,7 @@ const PlayListContainer = () => {
     const result = await fetch(
       `http://localhost:5000/user/${user.userId}/allPlaylists`
     ).then((res) => res.json());
-    console.log(result);
     if (result.ok) {
-      console.log(result);
       setCurrentUserPlaylist(result.playlists as APIUserPlaylist[]);
       setIsLoading(false);
     }
@@ -141,11 +116,12 @@ const PlayListContainer = () => {
           <span>새 재생목록 추가</span>
         </CreateButton>
         <PlaylistView>
-          {/* {Array.from({ length: 50 }).map((_, idx) => (
-            <ListItem key={idx} />
-          ))} */}
           {!isLoading &&
-            currentUserPlaylist.map((item) => <ListItem key={item.id} />)}
+            currentUserPlaylist.map((item) => (
+              <Link state={item} to={`/playlists/${item.id}`} key={item.id}>
+                <PlaylistItem title={item.title} username={item.username} />
+              </Link>
+            ))}
         </PlaylistView>
       </Wrapper>
     </>

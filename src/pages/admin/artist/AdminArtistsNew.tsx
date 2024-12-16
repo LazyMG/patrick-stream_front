@@ -30,7 +30,9 @@ const AdminArtistsNew: React.FC = () => {
       body: JSON.stringify({ artistData }),
     }).then((result) => result.json());
 
-    console.log(result);
+    if (result.ok) {
+      navigate("/admin/artists");
+    }
   };
 
   const submitForm = async () => {

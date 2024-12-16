@@ -43,10 +43,11 @@ const Login = () => {
       credentials: "include",
     }).then((res) => res.json());
     if (result.ok) {
-      setUser({ userId: result.userId, loading: false });
-      // await fetch("http://localhost:5000/auth/session", {
-      //   credentials: "include",
-      // });
+      setUser({
+        userId: result.userId,
+        loading: false,
+        username: result.username,
+      });
       navigate("/");
     } else {
       // 에러 처리

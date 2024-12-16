@@ -61,10 +61,10 @@ const AdminDetailMusic: React.FC = () => {
   };
 
   const fetchAlbums = async () => {
-    const result = await fetch("http://localhost:5000/album").then((res) =>
-      res.json()
-    );
-    if (result.ok) return result.allAlbums;
+    const result = await fetch(
+      "http://localhost:5000/album/filteredAlbums"
+    ).then((res) => res.json());
+    if (result.ok) return result.albums;
     else return [];
   };
 

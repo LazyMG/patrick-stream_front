@@ -31,7 +31,9 @@ const AdminAlbumsNew: React.FC = () => {
       body: JSON.stringify({ albumData }),
     }).then((result) => result.json());
 
-    console.log(result);
+    if (result.ok) {
+      navigate("/admin/albums");
+    }
   };
 
   const submitForm = async () => {

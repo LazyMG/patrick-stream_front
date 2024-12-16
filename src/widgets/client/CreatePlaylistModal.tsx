@@ -129,6 +129,8 @@ const CreatePlaylistModal = ({ closeModal }: ICreatePlaylistModal) => {
             duration: 0,
             introduction: data.info,
             followersCount: 0,
+            username: user.username,
+            userId: user.userId,
           },
           ...prev,
         ]);
