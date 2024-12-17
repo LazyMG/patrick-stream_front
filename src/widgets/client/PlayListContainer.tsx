@@ -3,7 +3,7 @@ import styled from "styled-components";
 import CreatePlaylistModal from "./CreatePlaylistModal";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { userState } from "../../app/entities/user/atom";
-import { currentUserPlaylistState } from "../../app/playlist/atom";
+import { currentUserPlaylistState } from "../../app/entities/playlist/atom";
 import { Link } from "react-router-dom";
 import PlaylistItem from "../../shared/ui/PlaylistItem";
 import { APIUserPlaylist } from "../../shared/models/playlist";
@@ -122,6 +122,9 @@ const PlayListContainer = () => {
                 <PlaylistItem title={item.title} username={item.username} />
               </Link>
             ))}
+          {Array.from({ length: 20 }).map((_, idx) => (
+            <PlaylistItem key={idx} title={"test"} username={"test"} />
+          ))}
         </PlaylistView>
       </Wrapper>
     </>

@@ -28,14 +28,6 @@ const AdminDetailMusic: React.FC = () => {
 
   const closeArtistModal = () => setIsArtistModalOpen(false);
 
-  // 데이터 주입
-  // 모달은 밖에서
-  // config prop으로
-  // 공통 Info -> 세부 항목은 다름
-  // 공통 Image
-  // 별도 Youtube
-  // 공통 Comment
-
   // infoData 만드는 함수 필요
   const infoData = [
     `제목: ${music?.title}`,
@@ -60,14 +52,15 @@ const AdminDetailMusic: React.FC = () => {
     deleteFunc: deleteMusic,
   };
 
-  const fetchAlbums = async () => {
+  const fetchFilteredAlbums = async () => {
     const result = await fetch(
-      "http://localhost:5000/album/filteredAlbums"
+      "http://localhost:5000/album?filterByMusicsLength=true"
     ).then((res) => res.json());
     if (result.ok) return result.albums;
     else return [];
   };
 
+  // 이미 포함된 아티스트 제외
   const fetchArtists = async () => {
     const result = await fetch("http://localhost:5000/artist").then((res) =>
       res.json()
@@ -78,30 +71,47 @@ const AdminDetailMusic: React.FC = () => {
   };
 
   // 앨범에 음악 추가하는 코드 필요
-  const addMusicToAlbum = async (albumId: string) => {
-    const result = await fetch(`http://localhost:5000/album/${albumId}/music`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ musicId: music?._id }),
-    });
-    console.log(result);
+  const addMusicToAlbum = async (albumId: string, albumTitle?: string) => {
+    if (confirm(`${music?.title}을(를) ${albumTitle}에 추가하시겠습니까?`)) {
+      const result = await fetch(
+        `http://localhost:5000/album/${albumId}/music`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ musicId: music?._id }),
+        }
+      ).then((res) => res.json());
+      if (result.ok) {
+        alert("추가되었습니다.");
+        closeAlbumModal();
+        navigate("/admin/musics");
+      }
+    }
   };
 
   // 아티스트에 음악 추가하는 코드 필요
-  const addMusicToArtist = async (artistId: string) => {
-    const result = await fetch(
-      `http://localhost:5000/artist/${artistId}/music`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ musicId: music?._id }),
+  const addMusicToArtist = async (artistId: string, artistname?: string) => {
+    if (confirm(`${music?.title}을(를) ${artistname}에 추가하시겠습니까?`)) {
+      const result = await fetch(
+        `http://localhost:5000/artist/${artistId}/music`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ musicId: music?._id }),
+        }
+      ).then((res) => res.json());
+      if (result.ok) {
+        alert("추가되었습니다.");
+        closeArtistModal();
+        navigate("/admin/musics");
+      } else {
+        console.log(result);
       }
-    );
-    console.log(result);
+    }
   };
 
   return (
@@ -110,7 +120,7 @@ const AdminDetailMusic: React.FC = () => {
         <AdminModalProvider
           closeModal={closeAlbumModal}
           dataType="album"
-          fetchFunc={fetchAlbums}
+          fetchFunc={fetchFilteredAlbums}
           modalFunc={addMusicToAlbum}
         />
       )}

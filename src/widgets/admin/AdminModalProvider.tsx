@@ -8,7 +8,7 @@ interface IAdminModalProvider {
   dataType: "music" | "album" | "artist" | "test";
   closeModal: () => void;
   fetchFunc: () => Promise<Album[] | Music[] | Artist[]>;
-  modalFunc: (id: string) => Promise<void>;
+  modalFunc: (id: string, name?: string) => Promise<void>;
 }
 
 const AdminModalProvider = ({
@@ -24,6 +24,7 @@ const AdminModalProvider = ({
     // setIsLoading(true);
     const result = await fetchFunc();
     setData(result);
+    console.log(result);
     // setIsLoading(false);
   }, [fetchFunc]);
 

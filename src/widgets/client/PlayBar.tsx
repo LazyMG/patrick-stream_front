@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import styled from "styled-components";
 import { ytIdState } from "../../app/entities/music/atom";
@@ -313,21 +313,26 @@ const PlayBar = ({ player }: IPlayBar) => {
   const ytId = useRecoilValue(ytIdState);
   const [currentPlayer, setCurrentPlayer] = useRecoilState(currentPlayerState);
 
+  const [isMusicMuted, setMusicIsMuted] = useState(false);
+  const [musicVolume, setMusicVolume] = useState<number>(50);
+  const volumeRef = useRef<HTMLInputElement>(null);
+
   //노래 재생될 때
 
   useEffect(() => {
     if (player && player.getPlayerState() === 1) {
-      console.log("playbar", player);
+      // console.log("playbar", player);
       player.stopVideo();
       player.playVideo();
       setTime("00:00");
       setTimeline(0);
+      console.log("playbar volume", player.getVolume());
     }
   }, [player, ytId]);
 
-  useEffect(() => {
-    console.log("test", ytPlayer);
-  }, [ytPlayer]);
+  // useEffect(() => {
+  //   console.log("test", ytPlayer);
+  // }, [ytPlayer]);
 
   useEffect(() => {
     let updateTimer: number;
@@ -365,6 +370,7 @@ const PlayBar = ({ player }: IPlayBar) => {
   };
 
   const togglePlaying = () => {
+    // console.log("currentPlayer", currentPlayer);
     if (player && currentPlayer.isPlaying) {
       player.pauseVideo();
       setYtPlayer(2);
@@ -381,6 +387,58 @@ const PlayBar = ({ player }: IPlayBar) => {
         isPlaying: true,
         isPaused: false,
       }));
+    }
+  };
+
+  const clickToggleMute = () => {
+    if (player) {
+      const isMuted = player.isMuted();
+      if (isMuted) {
+        //음소거 상태에서 이전 볼륨으로 복귀
+        setMusicIsMuted(false);
+        setMusicVolume(currentPlayer.volume);
+        setCurrentPlayer((prev) => ({
+          ...prev,
+          isMuted: false,
+        }));
+        player.unMute();
+      } else {
+        //재생 상태에서 음소거 상태로, 현재 볼륨 저장
+        setMusicIsMuted(true);
+        setMusicVolume(0);
+        setCurrentPlayer((prev) => ({
+          ...prev,
+          isMuted: true,
+        }));
+        player.mute();
+      }
+    }
+  };
+
+  const changeVolume = (event: ChangeEvent<HTMLInputElement>) => {
+    if (player) {
+      if (volumeRef.current) {
+        volumeRef.current.value = event.target.value;
+      }
+      setMusicVolume(+event.target.value);
+
+      player.setVolume(+event.target.value);
+
+      setCurrentPlayer((prev) => ({
+        ...prev,
+        volume: +event.target.value,
+      }));
+
+      if (+event.target.value === 0) {
+        setMusicIsMuted(true);
+        setCurrentPlayer((prev) => ({
+          ...prev,
+          isMuted: true,
+          volume: 0,
+        }));
+      } else {
+        setMusicIsMuted(false);
+      }
     }
   };
 
@@ -538,36 +596,47 @@ const PlayBar = ({ player }: IPlayBar) => {
           </PlayBarContentMainContainer>
           <PlayBarContentUtilContainer>
             <PlayBarContentUtilVolumeButton>
-              <svg
-                fill="none"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-                aria-hidden="true"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M17.25 9.75 19.5 12m0 0 2.25 2.25M19.5 12l2.25-2.25M19.5 12l-2.25 2.25m-10.5-6 4.72-4.72a.75.75 0 0 1 1.28.53v15.88a.75.75 0 0 1-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.009 9.009 0 0 1 2.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75Z"
-                />
-              </svg>
-              {/* <svg
-              fill="none"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-              aria-hidden="true"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M19.114 5.636a9 9 0 0 1 0 12.728M16.463 8.288a5.25 5.25 0 0 1 0 7.424M6.75 8.25l4.72-4.72a.75.75 0 0 1 1.28.53v15.88a.75.75 0 0 1-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.009 9.009 0 0 1 2.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75Z"
+              {isMusicMuted ? (
+                <svg
+                  fill="none"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
+                  onClick={clickToggleMute}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M17.25 9.75 19.5 12m0 0 2.25 2.25M19.5 12l2.25-2.25M19.5 12l-2.25 2.25m-10.5-6 4.72-4.72a.75.75 0 0 1 1.28.53v15.88a.75.75 0 0 1-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.009 9.009 0 0 1 2.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75Z"
+                  />
+                </svg>
+              ) : (
+                <svg
+                  fill="none"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
+                  onClick={clickToggleMute}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M19.114 5.636a9 9 0 0 1 0 12.728M16.463 8.288a5.25 5.25 0 0 1 0 7.424M6.75 8.25l4.72-4.72a.75.75 0 0 1 1.28.53v15.88a.75.75 0 0 1-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.009 9.009 0 0 1 2.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75Z"
+                  />
+                </svg>
+              )}
+              <PlayBarContentUtilVolumeRange
+                type="range"
+                value={musicVolume}
+                min={0}
+                max={100}
+                onChange={changeVolume}
+                ref={volumeRef}
               />
-            </svg> */}
-
-              <PlayBarContentUtilVolumeRange type="range" min={0} max={100} />
             </PlayBarContentUtilVolumeButton>
             <PlayBarContentRepeatButton>
               <svg

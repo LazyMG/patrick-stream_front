@@ -11,7 +11,7 @@ const AdminMusicsDetailContainer: React.FC = () => {
     ).then((res) => res.json());
 
     if (result.ok) {
-      console.log(result.music);
+      // console.log(result.music);
       setMusic(result.music);
     }
   };

@@ -67,28 +67,49 @@ const CustomTitle = styled.div`
 `;
 
 const ListItem = styled.div`
-  width: 100%; /* 부모 컨테이너에 맞춰 유연하게 설정 */
+  width: 100%;
   //max-width: 180px; /* 최대 너비 제한 */
-  flex: 1 1 auto; /* 유연한 크기 조정 */
-  flex-shrink: 0;
+
+  /* flex: 1 1 auto;
+  flex-shrink: 0; */
 
   display: flex;
   flex-direction: column;
   gap: 15px;
   padding-bottom: 5px;
+
   /* background-color: coral; */
 `;
 
-const Image = styled.div<{ $imgUrl: string }>`
-  width: 100%; /* 부모에 맞춰 너비 설정 */
-  aspect-ratio: 1 / 1; /* 정사각형 비율 유지 */
+const ImageMask = styled.div`
+  position: absolute;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 10px;
 
-  background-color: brown;
+  display: none;
+
+  background-color: rgba(0, 0, 0, 0.3);
+`;
+
+const Image = styled.div<{ $imgUrl: string }>`
+  width: 100%;
+  aspect-ratio: 1 / 1;
 
   background-image: ${(props) => props.$imgUrl && `url(${props.$imgUrl})`};
   background-size: cover;
 
   border-radius: 10px;
+
+  position: relative;
+
+  cursor: pointer;
+
+  &:hover ${ImageMask} {
+    display: block;
+  }
+
+  background-color: brown;
 `;
 
 const Info = styled.div`
@@ -102,6 +123,7 @@ const Info = styled.div`
 `;
 
 const Title = styled.span`
+  width: fit-content;
   font-weight: bold;
 
   cursor: pointer;
@@ -228,10 +250,14 @@ const FlexList = ({ isCustom, icon, title, info, onClick }: IFlexList) => {
               <SwiperSlide key={index}>
                 <ListItem>
                   <Image
+                    onClick={() => changeYtId("3xcIJAWchdk")}
                     $imgUrl={
                       "https://i.scdn.co/image/ab67616d00001e02ff1533e6c9c6435c37759764"
                     }
-                  />
+                  >
+                    <ImageMask />
+                  </Image>
+
                   <Info>
                     <Title onClick={() => changeYtId("3xcIJAWchdk")}>
                       세탁소

@@ -191,7 +191,7 @@ const MainContainer = ({ children, onScroll }: IMainContainer) => {
         <Footer />
       </Content>
       {isPlayerOn && <PlayBar player={player} setPlayer={setPlayer} />}
-      {/* <YoutubeContainer player={player} setPlayer={setPlayer} /> */}
+      <YoutubeContainer player={player} setPlayer={setPlayer} />
     </Wrapper>
   );
 };

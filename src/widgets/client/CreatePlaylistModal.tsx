@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { userState } from "../../app/entities/user/atom";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { currentUserPlaylistState } from "../../app/playlist/atom";
+import { currentUserPlaylistState } from "../../app/entities/playlist/atom";
 
 const ModalOverlay = styled.div`
   position: fixed;

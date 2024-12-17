@@ -9,8 +9,8 @@ const AdminAlbums: React.FC = () => {
       res.json()
     );
     if (result.ok) {
-      console.log(result.allAlbums);
-      setAlbums(result.allAlbums);
+      console.log(result.albums);
+      setAlbums(result.albums);
     }
   };
   useEffect(() => {

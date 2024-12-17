@@ -3,8 +3,8 @@ import YouTube, { YouTubeProps } from "react-youtube";
 import YoutubeButtonContainer from "./YoutubeButtonContainer";
 import YoutubeController from "./YoutubeController";
 import { ytIdState } from "../app/entities/music/atom";
-import { useRecoilState, useSetRecoilState } from "recoil";
-import { ytPlayerState } from "../app/entities/player/atom";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { currentPlayerState, ytPlayerState } from "../app/entities/player/atom";
 
 interface IYoutubeContainer {
   setPlayer: React.Dispatch<React.SetStateAction<YT.Player | null>>;
@@ -14,6 +14,7 @@ interface IYoutubeContainer {
 function YoutubeContainer({ player, setPlayer }: IYoutubeContainer) {
   const [ytId, setYtId] = useRecoilState(ytIdState);
   const setytPlayer = useSetRecoilState(ytPlayerState);
+  const currentPlayer = useRecoilValue(currentPlayerState);
 
   const [isMute, setIsMute] = useState<boolean>(false);
 
@@ -21,11 +22,14 @@ function YoutubeContainer({ player, setPlayer }: IYoutubeContainer) {
   const onPlayerReady: YouTubeProps["onReady"] = (event) => {
     setPlayer(event.target);
     // console.dir(event.target);
-
     // console.log("play!", player?.getPlayerState());
 
-    if (player && isMute) {
-      console.log("isMute", isMute);
+    if (player) {
+      event.target.setVolume(currentPlayer.volume);
+    }
+    console.log("volume", event.target.getVolume());
+
+    if (player && currentPlayer.isMuted) {
       event.target.mute();
     }
   };
@@ -35,9 +39,9 @@ function YoutubeContainer({ player, setPlayer }: IYoutubeContainer) {
     //   console.log("isMute", isMute);
     //   player.mute();
     // }
-    if (player) {
-      console.log("ytplayer i'm ready!");
-    }
+    // if (player) {
+    //   console.log("ytplayer i'm ready!");
+    // }
   };
 
   const onStateChange: YouTubeProps["onStateChange"] = (event) => {

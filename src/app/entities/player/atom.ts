@@ -9,6 +9,8 @@ interface Player {
   isLoading: boolean;
   isPaused: boolean;
   isEnd: boolean;
+  isMuted: boolean;
+  volume: number;
 }
 
 export const currentPlayerState = atom<Player>({
@@ -18,6 +20,8 @@ export const currentPlayerState = atom<Player>({
     isEnd: false,
     isPaused: false,
     isLoading: true,
+    isMuted: false,
+    volume: 50,
   },
 });
 
