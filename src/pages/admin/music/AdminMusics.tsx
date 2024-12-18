@@ -9,7 +9,7 @@ const AdminMusics: React.FC = () => {
       res.json()
     );
     if (result.ok) {
-      console.log(result.allMusics);
+      // console.log(result.allMusics);
       setMusics(result.allMusics);
     }
   };

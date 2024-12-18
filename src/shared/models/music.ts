@@ -19,3 +19,31 @@ export interface Music {
   coverImg: string;
   created_at: Date;
 }
+
+export interface APIMusic {
+  album: {
+    coverImg: string;
+    title: string;
+    _id: string;
+    category: string;
+  };
+  artists: Array<{
+    artistname: string;
+    coverImg: string;
+    _id: string;
+  }>;
+  comments: string[];
+  counts: {
+    views: number;
+    likes: number;
+  };
+  coverImg: string;
+  created_at: string;
+  duration: number;
+  genre: string[];
+  released_at: string;
+  title: string;
+  ytId: string;
+  __v: number;
+  _id: string;
+}

@@ -11,7 +11,6 @@ const AdminAlbumsDetailContainer: React.FC = () => {
     ).then((res) => res.json());
 
     if (result.ok) {
-      console.log(result.album);
       setAlbum(result.album);
     }
   };

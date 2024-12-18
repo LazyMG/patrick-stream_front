@@ -6,6 +6,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
 import { backgroundState } from "../../app/entities/global/atom";
+import { APIArtist } from "../../shared/models/artist";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -82,8 +83,8 @@ const ContentContainer = styled.div`
 const Artist = () => {
   const { artistId } = useParams();
   const setBackground = useSetRecoilState(backgroundState);
-  const [isLoading, setIsLoading] = useState(false);
-  const [artistData, setArtistData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [artistData, setArtistData] = useState<APIArtist | null>(null);
 
   const getArtist = useCallback(
     async (id: string) => {
@@ -92,8 +93,10 @@ const Artist = () => {
       ).then((res) => res.json());
 
       if (result.ok) {
+        console.log(result.artist);
         setArtistData(result.artist);
         setBackground({ src: result.artist.coverImg, type: "simple" });
+        setIsLoading(false);
       }
     },
     [setBackground]
@@ -101,9 +104,7 @@ const Artist = () => {
 
   useEffect(() => {
     if (artistId) {
-      setIsLoading(true);
       getArtist(artistId);
-      setIsLoading(false);
     }
   }, [artistId, getArtist]);
 
@@ -118,10 +119,17 @@ const Artist = () => {
         <CircleButton>{">"}</CircleButton>
         <FollowButton>팔로우</FollowButton>
       </ControlContainer>
-      <ContentContainer>
-        <RowList title={"인기 음악"} />
-        <FlexList title="앨범" isCustom={false} />
-      </ContentContainer>
+      {!isLoading && (
+        <ContentContainer>
+          <RowList title={"인기 음악"} list={artistData?.musics} />
+          <FlexList
+            title="앨범"
+            isCustom={false}
+            list={artistData?.albums}
+            listFlag="album"
+          />
+        </ContentContainer>
+      )}
     </Wrapper>
   );
 };

@@ -1,5 +1,8 @@
 import styled from "styled-components";
 import { DefaultButton } from "../../shared/ui/DefaultButton";
+import { APIMusic } from "../../shared/models/music";
+import { usePlayMusic } from "../../shared/hooks/usePlayMusic";
+import { Link } from "react-router-dom";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -44,6 +47,10 @@ const ListItem = styled.div`
   &:not(:nth-child(5)) {
     border-bottom: 0.01px solid #575757; /* 원하는 색상과 두께로 설정 */
   }
+
+  a {
+    color: #fff;
+  }
 `;
 
 const Number = styled.span``;
@@ -54,9 +61,13 @@ const Image = styled.div<{ $img: string }>`
   background-position: center;
   height: 100%;
   border-radius: 5px;
+
+  cursor: pointer;
 `;
 
-const Title = styled.span``;
+const Title = styled.span`
+  cursor: pointer;
+`;
 
 const Artist = styled.span``;
 
@@ -86,9 +97,12 @@ const MoreButton = styled(DefaultButton)`
 interface IRowList {
   title: string;
   subTitle?: string;
+  list?: APIMusic[];
 }
 
-const RowList = ({ title, subTitle }: IRowList) => {
+const RowList = ({ title, subTitle, list }: IRowList) => {
+  const playMusic = usePlayMusic();
+
   return (
     <Wrapper>
       <ListHeader>
@@ -96,15 +110,21 @@ const RowList = ({ title, subTitle }: IRowList) => {
         <ListTitle>{title}</ListTitle>
       </ListHeader>
       <ListContainer>
-        {Array.from({ length: 5 }).map((_, idx) => (
-          <ListItem key={idx}>
+        {list?.map((item, idx) => (
+          <ListItem key={item._id}>
             <Number>{idx + 1}</Number>
-            <Image $img="https://i.scdn.co/image/ab67616d00001e0217ac1b81f7ed7da5d1ad98db" />
-            <Title>산책</Title>
-            <Artist>백예린</Artist>
-            <Views>3264</Views>
-            <Album>선물</Album>
-            <Duration>3:26</Duration>
+            <Image $img={item.coverImg} onClick={() => playMusic(item.ytId)} />
+            <Title onClick={() => playMusic(item.ytId)}>{item.title}</Title>
+            <Artist>
+              <Link to={`/artists/${item.artists[0]._id}`}>
+                {item.artists[0].artistname}
+              </Link>
+            </Artist>
+            <Views>{item.counts.views}</Views>
+            <Album>
+              <Link to={`/albums/${item.album._id}`}>{item.album.title}</Link>
+            </Album>
+            <Duration>{item.duration}</Duration>
           </ListItem>
         ))}
         <ListFooter>

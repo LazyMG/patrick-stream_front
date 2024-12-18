@@ -15,7 +15,7 @@ const Wrapper = styled.div`
   width: 100vw;
 
   display: block;
-  z-index: 1;
+  z-index: 999;
 
   /* display: ${(props) => (props.$isPlayerOn ? "flex" : "none")}; */
   flex-direction: column;

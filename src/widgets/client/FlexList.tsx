@@ -7,13 +7,10 @@ import "swiper/swiper-bundle.css";
 import "swiper/css/scrollbar";
 import { ReactNode, useRef, useState } from "react";
 import SliderButtonSection from "./SliderButtonSection";
-import { Link } from "react-router-dom";
-import { useSetRecoilState } from "recoil";
-import { ytIdState } from "../../app/entities/music/atom";
-import {
-  currentPlayerState,
-  isPlayerOnState,
-} from "../../app/entities/player/atom";
+import { APIMusic } from "../../shared/models/music";
+import FlexListMusicItem from "./FlexListMusicItem";
+import { APIAlbum } from "../../shared/models/album";
+import FlexListAlbumItem from "./FlexAlbumListItem";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -66,83 +63,6 @@ const CustomTitle = styled.div`
   font-size: 45px;
 `;
 
-const ListItem = styled.div`
-  width: 100%;
-  //max-width: 180px; /* 최대 너비 제한 */
-
-  /* flex: 1 1 auto;
-  flex-shrink: 0; */
-
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  padding-bottom: 5px;
-
-  /* background-color: coral; */
-`;
-
-const ImageMask = styled.div`
-  position: absolute;
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  border-radius: 10px;
-
-  display: none;
-
-  background-color: rgba(0, 0, 0, 0.3);
-`;
-
-const Image = styled.div<{ $imgUrl: string }>`
-  width: 100%;
-  aspect-ratio: 1 / 1;
-
-  background-image: ${(props) => props.$imgUrl && `url(${props.$imgUrl})`};
-  background-size: cover;
-
-  border-radius: 10px;
-
-  position: relative;
-
-  cursor: pointer;
-
-  &:hover ${ImageMask} {
-    display: block;
-  }
-
-  background-color: brown;
-`;
-
-const Info = styled.div`
-  width: 100%;
-
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-
-  font-size: 16px;
-`;
-
-const Title = styled.span`
-  width: fit-content;
-  font-weight: bold;
-
-  cursor: pointer;
-`;
-
-const Description = styled.div`
-  display: flex;
-  gap: 2px;
-`;
-
-const Category = styled.span``;
-
-const Aritst = styled.span`
-  a {
-    color: #fff;
-    text-decoration: none;
-  }
-`;
-
 // 전체 컨테이너
 const ListContainer = styled.div`
   width: 100%;
@@ -174,15 +94,22 @@ interface IFlexList {
   title: string;
   info?: string;
   onClick?: () => void;
+  list?: APIMusic[] | APIAlbum[];
+  listFlag: "music" | "album" | "playlist" | "artist";
 }
 
-const FlexList = ({ isCustom, icon, title, info, onClick }: IFlexList) => {
+const FlexList = ({
+  isCustom,
+  icon,
+  title,
+  info,
+  onClick,
+  list,
+  listFlag,
+}: IFlexList) => {
   const swiperRef = useRef<Swiper | null>(null);
   const [isBeginning, setIsBeginning] = useState(true);
   const [isEnd, setIsEnd] = useState(false);
-  const setIsPlayerOn = useSetRecoilState(isPlayerOnState);
-  const setYtId = useSetRecoilState(ytIdState);
-  const setCurrentPlayer = useSetRecoilState(currentPlayerState);
 
   const goNext = () => {
     if (swiperRef.current) {
@@ -194,17 +121,6 @@ const FlexList = ({ isCustom, icon, title, info, onClick }: IFlexList) => {
     if (swiperRef.current) {
       swiperRef.current.slidePrev();
     }
-  };
-
-  const changeYtId = (ytId: string) => {
-    setYtId(ytId);
-    setIsPlayerOn(true);
-    setCurrentPlayer((prev) => {
-      return {
-        ...prev,
-        isPlaying: true,
-      };
-    });
   };
 
   return (
@@ -246,32 +162,14 @@ const FlexList = ({ isCustom, icon, title, info, onClick }: IFlexList) => {
             }}
             style={{ paddingBottom: "15px" }}
           >
-            {Array.from({ length: 10 }).map((_, index) => (
-              <SwiperSlide key={index}>
-                <ListItem>
-                  <Image
-                    onClick={() => changeYtId("3xcIJAWchdk")}
-                    $imgUrl={
-                      "https://i.scdn.co/image/ab67616d00001e02ff1533e6c9c6435c37759764"
-                    }
-                  >
-                    <ImageMask />
-                  </Image>
-
-                  <Info>
-                    <Title onClick={() => changeYtId("3xcIJAWchdk")}>
-                      세탁소
-                    </Title>
-                    <Description>
-                      <Category>앨범</Category>
-                      <Aritst onClick={() => console.log("artist")}>
-                        <Link to={"/artists/67515909174720e8da305b8f"}>
-                          유라
-                        </Link>
-                      </Aritst>
-                    </Description>
-                  </Info>
-                </ListItem>
+            {list?.map((item) => (
+              <SwiperSlide key={item._id}>
+                {listFlag === "music" && (
+                  <FlexListMusicItem music={item as APIMusic} />
+                )}
+                {listFlag === "album" && (
+                  <FlexListAlbumItem album={item as APIAlbum} />
+                )}
               </SwiperSlide>
             ))}
           </SwiperComponent>

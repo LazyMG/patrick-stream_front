@@ -24,7 +24,7 @@ const AdminModalProvider = ({
     // setIsLoading(true);
     const result = await fetchFunc();
     setData(result);
-    console.log(result);
+    // console.log(result);
     // setIsLoading(false);
   }, [fetchFunc]);
 

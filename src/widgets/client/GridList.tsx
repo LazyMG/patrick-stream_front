@@ -6,12 +6,9 @@ import "swiper/swiper-bundle.css";
 import "swiper/css/scrollbar";
 import { useRef, useState } from "react";
 import SliderButtonSection from "./SliderButtonSection";
-import { useSetRecoilState } from "recoil";
-import { ytIdState } from "../../app/entities/music/atom";
-import {
-  currentPlayerState,
-  isPlayerOnState,
-} from "../../app/entities/player/atom";
+import { APIMusic } from "../../shared/models/music";
+import { Link } from "react-router-dom";
+import { usePlayMusic } from "../../shared/hooks/usePlayMusic";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -98,6 +95,7 @@ const Title = styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
 
+  width: fit-content;
   cursor: pointer;
 `;
 
@@ -107,18 +105,19 @@ const Description = styled.div`
   text-overflow: ellipsis;
 
   a {
+    color: #fff;
     &:hover {
       text-decoration: underline;
     }
   }
 `;
 
-const GridList = () => {
+const GridList = ({ list }: { list?: APIMusic[] }) => {
   const swiperRef = useRef<Swiper | null>(null);
   const [isBeginning, setIsBeginning] = useState(true);
   const [isEnd, setIsEnd] = useState(false);
-  const setIsPlayerOn = useSetRecoilState(isPlayerOnState);
-  const setCurrentPlayer = useSetRecoilState(currentPlayerState);
+
+  const playMusic = usePlayMusic();
 
   const goNext = () => {
     if (swiperRef.current) {
@@ -130,18 +129,6 @@ const GridList = () => {
     if (swiperRef.current) {
       swiperRef.current.slidePrev();
     }
-  };
-
-  const setYtId = useSetRecoilState(ytIdState);
-  const changeYtId = (ytId: string) => {
-    setYtId(ytId);
-    setIsPlayerOn(true);
-    setCurrentPlayer((prev) => {
-      return {
-        ...prev,
-        isPlaying: true,
-      };
-    });
   };
 
   return (
@@ -176,20 +163,22 @@ const GridList = () => {
             }}
             style={{ paddingBottom: "15px" }}
           >
-            {Array.from({ length: 20 }).map((_, idx) => (
-              <SwiperSlide key={idx}>
+            {list?.map((item) => (
+              <SwiperSlide key={item._id}>
                 <ListItem>
-                  <Image
-                    $imgUrl={
-                      "https://i.scdn.co/image/ab67616d00001e02ff1533e6c9c6435c37759764"
-                    }
-                  />
+                  <Image $imgUrl={item.coverImg} />
                   <Info>
-                    <Title onClick={() => changeYtId("DhQyzPJf0X4")}>
-                      {"세탁소"}
+                    <Title onClick={() => playMusic(item.ytId)}>
+                      {item.title}
                     </Title>
                     <Description>
-                      {"유라"}|{"세탁소"}
+                      <Link to={`/artists/${item.artists[0]._id}`}>
+                        {item.artists[0].artistname}
+                      </Link>
+                      |
+                      <Link to={`/albums/${item.album._id}`}>
+                        {item.album.title}
+                      </Link>
                     </Description>
                   </Info>
                 </ListItem>

@@ -1,4 +1,4 @@
-import { Artist } from "./artist";
+import { APIArtist, Artist } from "./artist";
 import { Music } from "./music";
 import { User } from "./user";
 
@@ -22,7 +22,7 @@ export interface Album {
 
 // 수정 필요
 export interface APIAlbum {
-  artists?: Artist[];
+  artists?: APIArtist[];
   category?: string;
   comments?: string[];
   coverImg?: string;
@@ -35,5 +35,19 @@ export interface APIAlbum {
   title: string;
   total_duration?: number;
   __v?: number;
+  _id: string;
+}
+
+export interface Test {
+  category: string;
+  coverImg: string;
+  musics: Array<{
+    duration: number;
+    title: string;
+    ytId: string;
+    _id: string;
+  }>;
+  released_at: string;
+  title: string;
   _id: string;
 }

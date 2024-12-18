@@ -85,14 +85,24 @@ const AdminDetailAlbum: React.FC = () => {
   };
 
   // 아티스트에 자기 추가하는 코드 필요
-  const addAlbumToArtist = async (artistId: string) => {
-    await fetch(`http://localhost:5000/artist/${artistId}/album`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ musicId: album?._id }),
-    });
+  const addAlbumToArtist = async (artistId: string, artistname?: string) => {
+    if (confirm(`${album?.title}을(를) ${artistname}에 추가하시겠습니까?`)) {
+      const result = await fetch(
+        `http://localhost:5000/artist/${artistId}/album`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ albumId: album?._id }),
+        }
+      ).then((res) => res.json());
+      if (result.ok) {
+        alert("추가되었습니다.");
+        closeArtistModal();
+        navigate("/admin/albums");
+      }
+    }
   };
 
   return (

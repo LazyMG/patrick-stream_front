@@ -7,8 +7,9 @@ import { currentUserPlaylistState } from "../../app/entities/playlist/atom";
 import { Link } from "react-router-dom";
 import PlaylistItem from "../../shared/ui/PlaylistItem";
 import { APIUserPlaylist } from "../../shared/models/playlist";
+import { isPlayerOnState } from "../../app/entities/player/atom";
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ $isPlayerOn: boolean }>`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -17,11 +18,9 @@ const Wrapper = styled.div`
   padding: 0 10px;
   box-sizing: border-box;
 
-  /* background-color: darkviolet; */
+  overflow: hidden;
 
-  overflow: hidden; /* PlaylistView 영역을 넘지 않도록 설정 */
-
-  /* margin-bottom: 80px;  // Playbar 올라왔을 때 */
+  ${(props) => (props.$isPlayerOn ? `margin-bottom: 80px;` : "")}
 `;
 
 const CreateButton = styled.div`
@@ -54,12 +53,10 @@ const PlaylistView = styled.div`
   flex-direction: column;
   gap: 10px;
   width: 100%;
-  min-height: 50%; // max-height로 변경
+  min-height: 50%;
   box-sizing: border-box;
 
-  /* background-color: darkcyan; */
-
-  overflow-y: auto; // scroll에서 auto로 변경
+  overflow-y: auto;
 `;
 
 const PlayListContainer = () => {
@@ -69,6 +66,7 @@ const PlayListContainer = () => {
     currentUserPlaylistState
   );
   const [isLoading, setIsLoading] = useState(true);
+  const isPlayerOn = useRecoilValue(isPlayerOnState);
 
   const openModal = () => {
     if (user.userId !== "") {
@@ -97,7 +95,7 @@ const PlayListContainer = () => {
   return (
     <>
       {isModalOpen && <CreatePlaylistModal closeModal={closeModal} />}
-      <Wrapper>
+      <Wrapper $isPlayerOn={isPlayerOn}>
         <CreateButton onClick={openModal}>
           <svg
             fill="none"

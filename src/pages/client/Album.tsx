@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import { backgroundState } from "../../app/entities/global/atom";
@@ -45,6 +45,10 @@ const AlbumInfo = styled.div`
 
 const AlbumArtist = styled.span`
   cursor: pointer;
+
+  a {
+    color: #fff;
+  }
 `;
 
 const AlbumImage = styled.div<{ $img?: string }>`
@@ -140,18 +144,20 @@ const ItemDuration = styled.span`
 const Album = () => {
   const { albumId } = useParams();
   const setBackground = useSetRecoilState(backgroundState);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [albumData, setAlbumData] = useState<APIAlbum | null>(null);
 
   const getAlbum = useCallback(
     async (id: string) => {
       const result = await fetch(
-        `http://localhost:5000/album/6751585f3ebf076c533208c3`
+        `http://localhost:5000/album/${id}`
       ).then((res) => res.json());
 
       if (result.ok) {
+        console.log("album", result.album);
         setAlbumData(result.album as APIAlbum);
         setBackground({ src: result.album.coverImg, type: "blur" });
+        setIsLoading(false);
       }
     },
     [setBackground]
@@ -159,19 +165,25 @@ const Album = () => {
 
   useEffect(() => {
     if (albumId) {
-      setIsLoading(true);
       getAlbum(albumId);
-      setIsLoading(false);
     }
   }, [albumId, getAlbum]);
 
   return (
     <Wrapper>
       <ContentContainer>
-        {albumData && (
+        {!isLoading && albumData && (
           <>
             <AlbumInfo>
-              <AlbumArtist>백예린</AlbumArtist>
+              <AlbumArtist>
+                <Link
+                  to={`/artists/${
+                    albumData.artists ? albumData.artists[0]._id : ""
+                  }`}
+                >
+                  {albumData.artists ? albumData.artists[0].artistname : ""}
+                </Link>
+              </AlbumArtist>
               <AlbumImage $img={albumData.coverImg} />
               <AlbumTitle>{albumData.title}</AlbumTitle>
               <AlbumDescriptionContainer>
@@ -188,7 +200,7 @@ const Album = () => {
               </AlbumController>
             </AlbumInfo>
             <AlbumListContainer>
-              {Array.from({ length: 3 }).map((_, idx) => (
+              {/* {Array.from({ length: 3 }).map((_, idx) => (
                 <AlbumListItem key={idx}>
                   <ItemNumber>{idx + 1}</ItemNumber>
                   <ItemInfo>
@@ -196,6 +208,16 @@ const Album = () => {
                     <ItemViews>100회</ItemViews>
                   </ItemInfo>
                   <ItemDuration>3:02</ItemDuration>
+                </AlbumListItem>
+              ))} */}
+              {albumData.musics?.map((item, idx) => (
+                <AlbumListItem key={item._id}>
+                  <ItemNumber>{idx + 1}</ItemNumber>
+                  <ItemInfo>
+                    <ItemTitle>{item.title}</ItemTitle>
+                    <ItemViews>{item.counts.view}회</ItemViews>
+                  </ItemInfo>
+                  <ItemDuration>{item.duration}</ItemDuration>
                 </AlbumListItem>
               ))}
             </AlbumListContainer>
