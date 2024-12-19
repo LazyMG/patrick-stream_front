@@ -7,6 +7,7 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import FlexList from "../../widgets/client/FlexList";
 import { backgroundState } from "../../app/entities/global/atom";
+import { APIUser } from "../../shared/models/user";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -79,7 +80,7 @@ const User = () => {
   const [user, setUser] = useRecoilState(userState);
   const { userId } = useParams();
   const [isMyPage, setIsMyPage] = useState(false);
-  const [userData, setUserData] = useState(null);
+  const [userData, setUserData] = useState<APIUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const setBackground = useSetRecoilState(backgroundState);
 
@@ -88,9 +89,9 @@ const User = () => {
   }, [setBackground]);
 
   const getUser = async (id: string) => {
-    const result = await fetch(`http://localhost:5000/user/${id}`).then((res) =>
-      res.json()
-    );
+    const result = await fetch(`http://localhost:5000/user/${id}`, {
+      credentials: "include",
+    }).then((res) => res.json());
     if (result.ok) {
       setUserData(result.user);
       setIsLoading(false);
@@ -113,7 +114,7 @@ const User = () => {
     }).then((res) => res.json());
     console.log(result);
     if (result.ok) {
-      setUser({ userId: "", loading: false, username: "" });
+      setUser({ userId: "", loading: false });
       setIsMyPage(false);
     }
   };
@@ -137,8 +138,12 @@ const User = () => {
             </svg>
           </InfoIcon>
           <InfoText>
-            <InfoName>이마가</InfoName>
-            <InfoContent>팔로워 수: 20</InfoContent>
+            {userData && (
+              <>
+                <InfoName>{userData.username}</InfoName>
+                <InfoContent>팔로워 수: 20</InfoContent>
+              </>
+            )}
           </InfoText>
         </InfoProfile>
         {!isLoading && !user.loading && (

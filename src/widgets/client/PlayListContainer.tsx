@@ -120,9 +120,9 @@ const PlayListContainer = () => {
                 <PlaylistItem title={item.title} username={item.username} />
               </Link>
             ))}
-          {Array.from({ length: 20 }).map((_, idx) => (
+          {/* {Array.from({ length: 20 }).map((_, idx) => (
             <PlaylistItem key={idx} title={"test"} username={"test"} />
-          ))}
+          ))} */}
         </PlaylistView>
       </Wrapper>
     </>

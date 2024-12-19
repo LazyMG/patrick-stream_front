@@ -1,11 +1,14 @@
 import styled from "styled-components";
 import FlexList from "../../widgets/client/FlexList";
 import GridList from "../../widgets/client/GridList";
-import { useSetRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { backgroundState } from "../../app/entities/global/atom";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { APIMusic } from "../../shared/models/music";
+import { userState } from "../../app/entities/user/atom";
+import { APIUser } from "../../shared/models/user";
+import { recentMusicsState } from "../../app/entities/music/atom";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -43,22 +46,44 @@ const Home = () => {
   const setBackground = useSetRecoilState(backgroundState);
   const navigate = useNavigate();
   const [musicsData, setMusicsData] = useState<APIMusic[] | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isMusicLoading, setIsMusicLoading] = useState(true);
+  const user = useRecoilValue(userState);
+  const [recentMusics, setRecentMusics] = useRecoilState(recentMusicsState);
+  const [userData, setUserData] = useState<APIUser | null>(null);
+  const [isUserLoading, setIsUserLoading] = useState(true);
+
+  const getUserProfile = useCallback(
+    async (id: string) => {
+      const result = await fetch(
+        `http://localhost:5000/user/${id}`
+      ).then((res) => res.json());
+
+      if (result.ok) {
+        console.log("로그인한 사용자의 정보", result.user);
+        setUserData(result.user);
+        setRecentMusics(result.user.recentMusics);
+        setIsUserLoading(false);
+      }
+    },
+    [setRecentMusics]
+  );
 
   const getMusics = async () => {
     const result = await fetch(
       `http://localhost:5000/music/recently-updated`
     ).then((res) => res.json());
     if (result.ok) {
-      console.log(result.musics);
       setMusicsData(result.musics);
-      setIsLoading(false);
+      setIsMusicLoading(false);
     }
   };
 
   useEffect(() => {
+    if (user.userId !== "") {
+      getUserProfile(user.userId);
+    }
     getMusics();
-  }, []);
+  }, [user.userId, getUserProfile]);
 
   useEffect(() => {
     setBackground(null);
@@ -76,7 +101,7 @@ const Home = () => {
         ))}
       </ContentGenre> */}
       <ContentContainer>
-        {!isLoading && musicsData && (
+        {!isMusicLoading && musicsData && userData && (
           <FlexList
             listFlag="music"
             list={musicsData}
@@ -97,10 +122,18 @@ const Home = () => {
                 />
               </svg>
             }
-            info="이마가"
+            info={userData.username}
           />
         )}
-        {!isLoading && musicsData && <GridList list={musicsData} />}
+        {recentMusics && recentMusics.length !== 0 && (
+          <FlexList
+            list={recentMusics}
+            listFlag="music"
+            isCustom={false}
+            title="최근 들은 음악"
+          />
+        )}
+        {!isMusicLoading && musicsData && <GridList list={musicsData} />}
       </ContentContainer>
     </Wrapper>
   );

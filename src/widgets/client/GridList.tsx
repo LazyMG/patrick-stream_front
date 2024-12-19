@@ -168,9 +168,7 @@ const GridList = ({ list }: { list?: APIMusic[] }) => {
                 <ListItem>
                   <Image $imgUrl={item.coverImg} />
                   <Info>
-                    <Title onClick={() => playMusic(item.ytId)}>
-                      {item.title}
-                    </Title>
+                    <Title onClick={() => playMusic(item)}>{item.title}</Title>
                     <Description>
                       <Link to={`/artists/${item.artists[0]._id}`}>
                         {item.artists[0].artistname}

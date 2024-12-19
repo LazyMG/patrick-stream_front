@@ -14,10 +14,9 @@ export const useAuth = () => {
       setUser({
         userId: result.userId,
         loading: false,
-        username: result.username,
       });
     } else {
-      setUser({ userId: "", loading: false, username: "" });
+      setUser({ userId: "", loading: false });
     }
   }, [setUser]);
 

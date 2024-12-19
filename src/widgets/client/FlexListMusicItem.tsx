@@ -85,11 +85,11 @@ const FlexListMusicItem = ({ music }: { music: APIMusic }) => {
 
   return (
     <ListItem>
-      <Image $imgUrl={music.coverImg} onClick={() => playMusic(music.ytId)}>
+      <Image $imgUrl={music.coverImg} onClick={() => playMusic(music)}>
         <ImageMask />
       </Image>
       <Info>
-        <Title onClick={() => playMusic(music.ytId)}>{music.title}</Title>
+        <Title onClick={() => playMusic(music)}>{music.title}</Title>
         <Description>
           <Category>노래</Category>
           <Aritst>
