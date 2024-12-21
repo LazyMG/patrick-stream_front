@@ -1,11 +1,14 @@
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import styled from "styled-components";
-import { ytIdState } from "../../app/entities/music/atom";
+import { selectedMusicState, ytIdState } from "../../app/entities/music/atom";
 import {
   currentPlayerState,
   ytPlayerState,
 } from "../../app/entities/player/atom";
+import LoadingSpinner from "./LoadingSpinner";
+import { setDates, setMusicSeconds } from "../../shared/lib/musicDataFormat";
+import { Link } from "react-router-dom";
 
 const Wrapper = styled.div`
   position: fixed;
@@ -17,11 +20,12 @@ const Wrapper = styled.div`
   display: block;
   z-index: 999;
 
-  /* display: ${(props) => (props.$isPlayerOn ? "flex" : "none")}; */
   flex-direction: column;
   align-items: center;
-  
-  background-color: chartreuse;
+
+  background-color: #212121;
+
+  color: #fff;
 `;
 
 interface PlayBarTimelineProps {
@@ -37,15 +41,14 @@ const PlayBarTimeline = styled.input<PlayBarTimelineProps>`
   top: -2px;
   left: -2px;
   width: 100%;
-  height: 2px;
-  //background-color: red;
+  height: 3px;
 
   background: ${(props) => {
     const percentage =
       ((props.value - props.min) / (props.max - props.min)) * 100;
     return `
       linear-gradient(to right, 
-        red ${percentage}%, 
+        #D2DC23 ${percentage}%, 
         gray ${percentage}%)
     `;
   }};
@@ -71,7 +74,7 @@ const PlayBarTimeline = styled.input<PlayBarTimelineProps>`
     width: 12px;
     height: 12px;
     border-radius: 50%;
-    background: red;
+    background: #d2dc23;
     cursor: pointer;
     transition: width 0.2s ease, height 0.2s ease;
   }
@@ -80,7 +83,7 @@ const PlayBarTimeline = styled.input<PlayBarTimelineProps>`
     width: ${(props) => (props.showThumb ? "12px" : "0")};
     height: ${(props) => (props.showThumb ? "12px" : "0")};
     border-radius: 50%;
-    background: red;
+    background: #d2dc23;
     width: 12px;
     height: 12px;
     cursor: pointer;
@@ -101,15 +104,12 @@ const PlayBarContentContainer = styled.div`
   padding: 0 15px;
 
   box-sizing: border-box;
-
-  //background-color: yellow;
 `;
 
 const PlayBarContentControlContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 20px;
-  //background-color: red;
 `;
 
 const PlayBarContentControlButtons = styled.div`
@@ -140,12 +140,11 @@ const PlayBarContentMainContainer = styled.div`
   gap: 15px;
 `;
 
-const PlayBarContentMainImg = styled.div`
+const PlayBarContentMainImg = styled.div<{ $imgUrl: string }>`
   width: 45px;
   height: 45px;
   border-radius: 5px;
-  /* background: ${({ $imgUrl }) => `url(${$imgUrl})`}; */
-  //background: url("https://i.scdn.co/image/ab67616d00001e028bcb1a80720292aaffb35989");
+  background: ${(props) => (props.$imgUrl ? `url(${props.$imgUrl})` : "")};
   background-size: cover;
   flex-shrink: 0;
 `;
@@ -169,6 +168,12 @@ const PlayBarContentMainInfoOverview = styled.div`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  display: flex;
+  gap: 3px;
+  align-items: center;
+  a {
+    color: #fff;
+  }
 `;
 
 const PlayBarContentMainInfoOverviewArtist = styled.span`
@@ -201,7 +206,7 @@ const PlayBarContentMainButton = styled.div`
   cursor: pointer;
 
   &:hover {
-    background-color: #a9a9a9;
+    background-color: #a988bd;
   }
 
   svg {
@@ -312,6 +317,7 @@ const PlayBar = ({ player }: IPlayBar) => {
   const [ytPlayer, setYtPlayer] = useRecoilState(ytPlayerState);
   const ytId = useRecoilValue(ytIdState);
   const [currentPlayer, setCurrentPlayer] = useRecoilState(currentPlayerState);
+  const selectedMusic = useRecoilValue(selectedMusicState);
 
   const [isMusicMuted, setMusicIsMuted] = useState(false);
   const [musicVolume, setMusicVolume] = useState<number>(50);
@@ -471,41 +477,43 @@ const PlayBar = ({ player }: IPlayBar) => {
                   />
                 </svg>
               </PlayBarContentControlMoveButton>
-              {(ytPlayer === -1 || ytPlayer === 3) && <div>Loading...</div>}
-              <PlayBarContentControlPlayButton onClick={togglePlaying}>
-                {currentPlayer.isPlaying ? (
-                  <svg
-                    fill="none"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                    aria-hidden="true"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M15.75 5.25v13.5m-7.5-13.5v13.5"
-                    />
-                  </svg>
-                ) : (
-                  <svg
-                    fill="none"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                    aria-hidden="true"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z"
-                    />
-                  </svg>
-                )}
+              {ytPlayer === -1 || ytPlayer === 3 ? (
+                <LoadingSpinner />
+              ) : (
+                <PlayBarContentControlPlayButton onClick={togglePlaying}>
+                  {currentPlayer.isPlaying ? (
+                    <svg
+                      fill="none"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                      aria-hidden="true"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M15.75 5.25v13.5m-7.5-13.5v13.5"
+                      />
+                    </svg>
+                  ) : (
+                    <svg
+                      fill="none"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                      aria-hidden="true"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z"
+                      />
+                    </svg>
+                  )}
 
-                {/* <svg
+                  {/* <svg
                 fill="none"
                 strokeWidth={1.5}
                 stroke="currentColor"
@@ -519,7 +527,9 @@ const PlayBar = ({ player }: IPlayBar) => {
                   d="M5.25 7.5A2.25 2.25 0 0 1 7.5 5.25h9a2.25 2.25 0 0 1 2.25 2.25v9a2.25 2.25 0 0 1-2.25 2.25h-9a2.25 2.25 0 0 1-2.25-2.25v-9Z"
                 />
               </svg> */}
-              </PlayBarContentControlPlayButton>
+                </PlayBarContentControlPlayButton>
+              )}
+
               <PlayBarContentControlMoveButton>
                 <svg
                   fill="none"
@@ -538,22 +548,30 @@ const PlayBar = ({ player }: IPlayBar) => {
               </PlayBarContentControlMoveButton>
             </PlayBarContentControlButtons>
             <PlayBarContentControlDuration>
-              {time}/{timeline}
+              {time}/{setMusicSeconds(selectedMusic?.duration)}
             </PlayBarContentControlDuration>
           </PlayBarContentControlContainer>
           <PlayBarContentMainContainer>
-            <PlayBarContentMainImg />
+            <PlayBarContentMainImg
+              $imgUrl={selectedMusic ? selectedMusic.coverImg : ""}
+            />
             <PlayBarContentMainInfo>
-              <PlayBarContentMainInfoTitle>{123}</PlayBarContentMainInfoTitle>
+              <PlayBarContentMainInfoTitle>
+                {selectedMusic?.title}
+              </PlayBarContentMainInfoTitle>
               <PlayBarContentMainInfoOverview>
                 <PlayBarContentMainInfoOverviewArtist>
-                  {123}
+                  <Link to={`/artists/${selectedMusic?.artists[0]._id}`}>
+                    {selectedMusic?.artists[0].artistname}
+                  </Link>
                 </PlayBarContentMainInfoOverviewArtist>
                 •{" "}
                 <PlayBarContentMainInfoOverviewAlbum>
-                  {1213}
+                  <Link to={`/albums/${selectedMusic?.album._id}`}>
+                    {selectedMusic?.album.title}
+                  </Link>
                 </PlayBarContentMainInfoOverviewAlbum>{" "}
-                •<span>{123}</span>
+                •<span>{setDates(selectedMusic?.released_at, 1)}</span>
               </PlayBarContentMainInfoOverview>
             </PlayBarContentMainInfo>
             <PlayBarContentMainUtil>

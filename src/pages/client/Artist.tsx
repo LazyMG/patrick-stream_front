@@ -49,7 +49,6 @@ const ControlContainer = styled.div`
 `;
 
 const CircleButton = styled(DefaultButton)`
-  background-color: green;
   width: 70px;
   height: 70px;
   padding: 5px;
@@ -57,19 +56,32 @@ const CircleButton = styled(DefaultButton)`
 
   display: flex;
   justify-content: center;
+  align-items: center;
+
+  background-color: #d2dc23;
+
+  svg {
+    width: 50px;
+    color: #fff;
+  }
 
   &:hover {
-    background-color: #11b611;
+    background-color: #afb71e;
   }
 `;
 
 const FollowButton = styled(DefaultButton)`
-  color: #fff;
+  color: #fefefe;
+
+  border: 1px solid #a988bd;
 
   font-size: 16px;
 
-  background-color: blue;
   padding: 5px 30px;
+
+  &:hover {
+    background-color: #a988bd;
+  }
 `;
 
 const ContentContainer = styled.div`
@@ -111,12 +123,25 @@ const Artist = () => {
   return (
     <Wrapper>
       <InfoHeader>
-        <Title>백예린</Title>
-        <Info>가수</Info>
-        <Followers>100명</Followers>
+        <Title>{artistData?.artistname}</Title>
+        <Info>{artistData?.introduction}</Info>
+        <Followers>{artistData?.followers?.length}명</Followers>
       </InfoHeader>
       <ControlContainer>
-        <CircleButton>{">"}</CircleButton>
+        <CircleButton>
+          <svg
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+          >
+            <path
+              clipRule="evenodd"
+              fillRule="evenodd"
+              d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z"
+            />
+          </svg>
+        </CircleButton>
         <FollowButton>팔로우</FollowButton>
       </ControlContainer>
       {!isLoading && (

@@ -10,6 +10,7 @@ export const useRecentMusics = () => {
   const addUserRecentMusics = async (music: APIMusic) => {
     setRecentMusics((prev) => {
       if (prev) {
+        if (prev.some((item) => item.ytId === music.ytId)) return prev;
         return [music, ...prev];
       } else {
         return prev;
@@ -29,8 +30,6 @@ export const useRecentMusics = () => {
         credentials: "include",
       }
     ).then((res) => res.json());
-
-    console.log("add recentmusic", result);
 
     if (result.ok) {
       console.log(result);

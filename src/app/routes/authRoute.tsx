@@ -2,22 +2,27 @@ import { RouteObject } from "react-router-dom";
 import AuthLayout from "../../pages/AuthLayout";
 import Login from "../../pages/client/Login";
 import SignIn from "../../pages/client/SignIn";
+import RequireNoAuth from "../../pages/RequireNoAuth";
 
 export const authRoute: RouteObject[] = [
   {
     path: "login",
     element: (
-      <AuthLayout>
-        <Login />
-      </AuthLayout>
+      <RequireNoAuth>
+        <AuthLayout>
+          <Login />
+        </AuthLayout>
+      </RequireNoAuth>
     ),
   },
   {
     path: "signIn",
     element: (
-      <AuthLayout>
-        <SignIn />
-      </AuthLayout>
+      <RequireNoAuth>
+        <AuthLayout>
+          <SignIn />
+        </AuthLayout>
+      </RequireNoAuth>
     ),
   },
 ];

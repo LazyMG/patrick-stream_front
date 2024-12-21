@@ -1,4 +1,5 @@
 import { atom } from "recoil";
+
 export const ytPlayerState = atom<number>({
   key: "ytPlayerState",
   default: -1,

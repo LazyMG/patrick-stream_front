@@ -1,9 +1,12 @@
-import GlobalRouterProvider from "./providers/GlobalRouterProvider"
+import { RecoilRoot } from "recoil";
+import GlobalRouterProvider from "./providers/GlobalRouterProvider";
 
 function App() {
   return (
-    <GlobalRouterProvider></GlobalRouterProvider>
-  )
+    <RecoilRoot>
+      <GlobalRouterProvider />
+    </RecoilRoot>
+  );
 }
 
-export default App
+export default App;

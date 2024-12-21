@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { APIAlbum } from "../../shared/models/album";
+import { setDates } from "../../shared/lib/musicDataFormat";
 
 const ListItem = styled.div`
   width: 100%;
@@ -63,6 +64,13 @@ const Title = styled.span`
   font-weight: bold;
 
   cursor: pointer;
+
+  a {
+    color: #fff;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 `;
 
 const Description = styled.div`
@@ -75,25 +83,42 @@ const Category = styled.span``;
 const Aritst = styled.span`
   a {
     color: #fff;
-    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
   }
 `;
 
-const FlexListAlbumItem = ({ album }: { album: APIAlbum }) => {
+interface IFlexListAlbumItem {
+  album: APIAlbum;
+  dataType: "artist" | "etc";
+}
+
+const FlexListAlbumItem = ({ album, dataType }: IFlexListAlbumItem) => {
   return (
     <ListItem>
       <Image $imgUrl={album.coverImg ? album.coverImg : ""}>
         <ImageMask />
       </Image>
       <Info>
-        <Title>{album.title}</Title>
+        <Title>
+          <Link to={`/albums/${album._id}`}>{album.title}</Link>
+        </Title>
         <Description>
-          <Category>앨범</Category>
-          <Aritst>
-            <Link to={`/artists/${album.artists ? album.artists[0]._id : ""}`}>
-              {album.artists ? album.artists[0].artistname : ""}
-            </Link>
-          </Aritst>
+          <Category>{album.category}</Category>
+          {" • "}
+          {dataType === "artist" ? (
+            <div>{setDates(album.released_at, 1)}</div>
+          ) : (
+            <Aritst>
+              <Link
+                to={`/artists/${album.artists ? album.artists[0]._id : ""}`}
+              >
+                {album.artists ? album.artists[0].artistname : ""}
+              </Link>
+            </Aritst>
+          )}
         </Description>
       </Info>
     </ListItem>

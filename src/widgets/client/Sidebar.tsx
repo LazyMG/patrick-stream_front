@@ -51,14 +51,16 @@ const Menu = styled.div<{ $isActive: boolean }>`
 
   color: #dddddd;
 
-  ${(props) => (props.$isActive ? `background-color:#2e2e2e` : "")};
+  ${(props) => (props.$isActive ? `background-color:#F5A3A5` : "")};
+  ${(props) => (props.$isActive ? `color:#000000` : "")};
 
   svg {
     width: 25px;
   }
 
   &:hover {
-    ${(props) => (props.$isActive ? "" : `background-color:#424242`)};
+    ${(props) => (props.$isActive ? "" : `background-color:#fcddde`)};
+    ${(props) => (props.$isActive ? "" : `color:#000000`)};
   }
 `;
 

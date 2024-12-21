@@ -28,6 +28,10 @@ const IconContainer = styled.div<{ $navShow: boolean }>`
   ${(props) => (props.$navShow ? `` : `box-shadow: 1px 0 0 #3d3d3d;`)}
 
   color: #fff;
+
+  img {
+    width: 65px;
+  }
 `;
 
 const SearchContainer = styled.div`
@@ -39,8 +43,6 @@ const SearchContainer = styled.div`
   align-items: center;
   justify-content: space-between;
   box-sizing: border-box;
-
-  /* background-color: dimgray; */
 
   /* 화면 너비에 따라 패딩을 다르게 설정 */
   @media (max-width: 2800px) {
@@ -68,6 +70,10 @@ const SearchForm = styled.form`
     svg {
       color: #fff;
       width: 25px;
+
+      &:focus {
+        color: #f5a3a5;
+      }
     }
   }
 
@@ -84,8 +90,9 @@ const SearchForm = styled.form`
     background-color: rgba(163, 163, 163, 0.402);
 
     &:focus {
-      border: none;
+      border: 0.1px solid #f5a3a5;
       outline: none;
+      background-color: #000000;
     }
 
     &:active {
@@ -103,7 +110,7 @@ const ButtonContainer = styled.div`
 
 const Button = styled.button<{ $alter: boolean }>`
   border: none;
-  background-color: ${(props) => (props.$alter ? "white" : "red")};
+  background-color: ${(props) => (props.$alter ? "white" : "#F5A3A5")};
   color: ${(props) => (props.$alter ? "black" : "white")};
   width: 120px;
   padding: 10px 0;
@@ -135,7 +142,6 @@ interface IHeader {
 
 const Header = ({ $navShow }: IHeader) => {
   const navigate = useNavigate();
-  // const userId = useAuth();
   const user = useRecoilValue(userState);
 
   const alter = true;
@@ -146,7 +152,10 @@ const Header = ({ $navShow }: IHeader) => {
 
   return (
     <Wrapper $navShow={$navShow}>
-      <IconContainer $navShow={$navShow}>Patrick Stream</IconContainer>
+      <IconContainer $navShow={$navShow}>
+        <img src="/icon.png" />
+        Patrick Stream
+      </IconContainer>
       <SearchContainer>
         <SearchForm>
           <input type="text" />

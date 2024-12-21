@@ -7,8 +7,7 @@ import "swiper/css/scrollbar";
 import { useRef, useState } from "react";
 import SliderButtonSection from "./SliderButtonSection";
 import { APIMusic } from "../../shared/models/music";
-import { Link } from "react-router-dom";
-import { usePlayMusic } from "../../shared/hooks/usePlayMusic";
+import GridListMusicItem from "./GridListMusicItem";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -56,68 +55,10 @@ const ListContainer = styled.div`
   }
 `;
 
-const ListItem = styled.div`
-  width: 410px;
-  height: 50px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-`;
-
-const Image = styled.div<{ $imgUrl: string }>`
-  border-radius: 2px;
-  height: 100%;
-  aspect-ratio: 1 / 1;
-  background: ${({ $imgUrl }) => `url(${$imgUrl})`};
-  background-size: cover;
-  flex-shrink: 0;
-
-  cursor: pointer;
-
-  &:hover {
-    opacity: 0.8;
-  }
-`;
-
-const Info = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  line-height: 1.4;
-`;
-
-const Title = styled.div`
-  font-weight: 600;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-
-  width: fit-content;
-  cursor: pointer;
-`;
-
-const Description = styled.div`
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-
-  a {
-    color: #fff;
-    &:hover {
-      text-decoration: underline;
-    }
-  }
-`;
-
 const GridList = ({ list }: { list?: APIMusic[] }) => {
   const swiperRef = useRef<Swiper | null>(null);
   const [isBeginning, setIsBeginning] = useState(true);
   const [isEnd, setIsEnd] = useState(false);
-
-  const playMusic = usePlayMusic();
 
   const goNext = () => {
     if (swiperRef.current) {
@@ -152,7 +93,7 @@ const GridList = ({ list }: { list?: APIMusic[] }) => {
               fill: "row", // 열을 기준으로 그리드 채우기
             }}
             slidesPerView={3} // 한 번에 3개의 슬라이드 보이게 설정
-            spaceBetween={10} // 슬라이드 간의 간격 설정
+            spaceBetween={15} // 슬라이드 간의 간격 설정
             allowTouchMove={false}
             scrollbar={{ draggable: true }}
             onReachBeginning={() => setIsBeginning(true)}
@@ -165,21 +106,7 @@ const GridList = ({ list }: { list?: APIMusic[] }) => {
           >
             {list?.map((item) => (
               <SwiperSlide key={item._id}>
-                <ListItem>
-                  <Image $imgUrl={item.coverImg} />
-                  <Info>
-                    <Title onClick={() => playMusic(item)}>{item.title}</Title>
-                    <Description>
-                      <Link to={`/artists/${item.artists[0]._id}`}>
-                        {item.artists[0].artistname}
-                      </Link>
-                      |
-                      <Link to={`/albums/${item.album._id}`}>
-                        {item.album.title}
-                      </Link>
-                    </Description>
-                  </Info>
-                </ListItem>
+                <GridListMusicItem music={item} />
               </SwiperSlide>
             ))}
           </SwiperComponent>

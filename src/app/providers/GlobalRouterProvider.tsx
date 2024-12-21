@@ -1,15 +1,14 @@
 import { RouterProvider } from "react-router-dom";
 import GlobalStyle from "../GlobalStyle";
 import router from "../routes/route";
-import { RecoilRoot } from "recoil";
+import { useAuth } from "../../shared/hooks/useAuth";
 
 const GlobalRouterProvider = () => {
+  useAuth();
   return (
     <>
       <GlobalStyle />
-      <RecoilRoot>
-        <RouterProvider router={router}></RouterProvider>
-      </RecoilRoot>
+      <RouterProvider router={router}></RouterProvider>
     </>
   );
 };

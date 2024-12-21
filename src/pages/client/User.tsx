@@ -28,8 +28,6 @@ const InfoContainer = styled.div`
   justify-content: flex-start;
   /* align-items: center; */
   gap: 15px;
-
-  /* background-color: green; */
 `;
 
 const InfoProfile = styled.div`

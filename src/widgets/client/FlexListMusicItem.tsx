@@ -77,6 +77,10 @@ const Aritst = styled.span`
   a {
     color: #fff;
     text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
   }
 `;
 
@@ -92,6 +96,7 @@ const FlexListMusicItem = ({ music }: { music: APIMusic }) => {
         <Title onClick={() => playMusic(music)}>{music.title}</Title>
         <Description>
           <Category>노래</Category>
+          {" • "}
           <Aritst>
             <Link to={`/artists/${music.artists[0]._id}`}>
               {music.artists[0].artistname}

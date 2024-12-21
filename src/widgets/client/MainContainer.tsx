@@ -12,7 +12,7 @@ const Wrapper = styled.div<{ $backImg?: string | null }>`
   background: ${(props) =>
     props?.$backImg
       ? `none`
-      : `radial-gradient(circle at top left, #0a262e 3%, #0a0a0a 20%)`};
+      : `radial-gradient(circle at top left, #281a29 3%, #0a0a0a 20%)`};
 
   min-height: 100vh;
 
