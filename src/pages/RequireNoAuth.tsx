@@ -10,7 +10,7 @@ const RequireNoAuth = ({ children }: RequireNoAuthProps) => {
   const { loading, userId } = useRecoilValue(userState);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div>Loading</div>;
   }
 
   if (userId) {

@@ -6,6 +6,7 @@ import SubmitButton from "../../shared/ui/SubmitButton";
 import { SubmitHandler, useForm } from "react-hook-form";
 import InputRow from "../../shared/ui/InputRow";
 import { useNavigate } from "react-router-dom";
+import { googleLoginUrl } from "../../shared/lib/constant";
 
 const Form = styled.form`
   display: flex;
@@ -52,6 +53,11 @@ const SignIn = () => {
       console.log(result.message);
     }
   };
+
+  const gotoSocialLogin = () => {
+    window.location.href = googleLoginUrl;
+  };
+
   return (
     <FormContainer formType="signIn">
       <Form onSubmit={handleSubmit(onValid)}>
@@ -85,7 +91,7 @@ const SignIn = () => {
         />
         <SubmitButton text="회원가입" />
         <Divider />
-        <SocialButton />
+        <SocialButton onClickFunc={gotoSocialLogin} />
       </Form>
     </FormContainer>
   );

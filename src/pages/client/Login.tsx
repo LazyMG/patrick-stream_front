@@ -8,6 +8,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
 import { userState } from "../../app/entities/user/atom";
+import { googleLoginUrl } from "../../shared/lib/constant";
 
 const Form = styled.form`
   display: flex;
@@ -46,7 +47,6 @@ const Login = () => {
       setUser({
         userId: result.userId,
         loading: false,
-        username: result.username,
       });
       navigate("/");
     } else {
@@ -56,6 +56,10 @@ const Login = () => {
       // 3. DB 에러
       console.log(result.message);
     }
+  };
+
+  const gotoSocialLogin = () => {
+    window.location.href = googleLoginUrl;
   };
 
   return (
@@ -77,7 +81,7 @@ const Login = () => {
         />
         <SubmitButton text="로그인" />
         <Divider />
-        <SocialButton />
+        <SocialButton onClickFunc={gotoSocialLogin} />
       </Form>
     </FormContainer>
   );

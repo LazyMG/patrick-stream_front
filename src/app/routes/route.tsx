@@ -7,12 +7,14 @@ import User from "../../pages/client/User";
 import Artist from "../../pages/client/Artist";
 import Playlist from "../../pages/client/Playlist";
 import Album from "../../pages/client/Album";
+import GoogleLogin from "../../pages/client/GoogleLogin";
+import RequireNoAuth from "../../pages/RequireNoAuth";
 
 const router = createBrowserRouter([
   ...adminRoute,
   ...authRoute,
   {
-    path: "",
+    path: "/",
     element: <Layout />,
     children: [
       {
@@ -36,6 +38,14 @@ const router = createBrowserRouter([
         element: <Album />,
       },
     ],
+  },
+  {
+    path: "/google-login",
+    element: (
+      <RequireNoAuth>
+        <GoogleLogin />
+      </RequireNoAuth>
+    ),
   },
 ]);
 

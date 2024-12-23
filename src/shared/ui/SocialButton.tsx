@@ -23,10 +23,7 @@ const Wrapper = styled.button`
   }
 `;
 
-const SocialButton = () => {
-  const onClickFunc = () => {
-    console.log("click");
-  };
+const SocialButton = ({ onClickFunc }: { onClickFunc: () => void }) => {
   return (
     <Wrapper onClick={onClickFunc} type="button">
       <svg
@@ -61,7 +58,7 @@ const SocialButton = () => {
           fill="#EA4335"
         ></path>
       </svg>
-      <span>Google로 가입하기</span>
+      <span>Google로 시작하기</span>
     </Wrapper>
   );
 };
