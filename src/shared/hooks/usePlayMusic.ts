@@ -6,6 +6,7 @@ import {
 import { selectedMusicState, ytIdState } from "../../app/entities/music/atom";
 import { APIMusic } from "../models/music";
 import { useRecentMusics } from "./useRecentMusics";
+import { updateMusicView } from "../lib/updateMusicView";
 
 export const usePlayMusic = () => {
   const setIsPlayerOn = useSetRecoilState(isPlayerOnState);
@@ -14,7 +15,7 @@ export const usePlayMusic = () => {
   const setSelectedMusic = useSetRecoilState(selectedMusicState);
   const { addUserRecentMusics } = useRecentMusics();
 
-  const playMusic = (music: APIMusic) => {
+  const playMusic = async (music: APIMusic) => {
     setYtId(music.ytId);
     setIsPlayerOn(true);
     setCurrentPlayer((prev) => {
@@ -24,6 +25,7 @@ export const usePlayMusic = () => {
       };
     });
     setSelectedMusic(music);
+    await updateMusicView(music);
     addUserRecentMusics(music);
   };
 

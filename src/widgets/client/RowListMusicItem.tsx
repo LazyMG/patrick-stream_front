@@ -3,6 +3,7 @@ import { APIMusic } from "../../shared/models/music";
 import { Link } from "react-router-dom";
 import { usePlayMusic } from "../../shared/hooks/usePlayMusic";
 import { setMusicSeconds } from "../../shared/lib/musicDataFormat";
+import { useState } from "react";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -24,7 +25,7 @@ const Wrapper = styled.div`
 `;
 
 const Number = styled.span`
-  color: #f5a3a5;
+  color: #fff;
 `;
 
 const Image = styled.div<{ $img: string }>`
@@ -72,20 +73,26 @@ const RowListMusicItem = ({
   index: number;
 }) => {
   const playMusic = usePlayMusic();
+  const [views, setViews] = useState<number>(music?.counts.views || 0);
+
+  const clickViews = () => {
+    setViews((prev) => prev + 1);
+    playMusic(music);
+  };
 
   return (
     <Wrapper key={music._id}>
       <Number>{index + 1}</Number>
-      <Image $img={music.coverImg} onClick={() => playMusic(music)} />
+      <Image $img={music.coverImg} onClick={clickViews} />
       <Title>
-        <span onClick={() => playMusic(music)}>{music.title}</span>
+        <span onClick={clickViews}>{music.title}</span>
       </Title>
       <Artist>
         <Link to={`/artists/${music.artists[0]._id}`}>
           {music.artists[0].artistname}
         </Link>
       </Artist>
-      <Views>{music.counts.views}회</Views>
+      <Views>{views}회</Views>
       <Album>
         <Link to={`/albums/${music.album._id}`}>{music.album.title}</Link>
       </Album>

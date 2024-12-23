@@ -4,10 +4,11 @@ import RowList from "../../widgets/client/RowList";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { userState } from "../../app/entities/user/atom";
 import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import FlexList from "../../widgets/client/FlexList";
 import { backgroundState } from "../../app/entities/global/atom";
 import { APIUser } from "../../shared/models/user";
+import { recentMusicsState } from "../../app/entities/music/atom";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -81,29 +82,41 @@ const User = () => {
   const [userData, setUserData] = useState<APIUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const setBackground = useSetRecoilState(backgroundState);
+  const [recentMusics, setRecentMusics] = useRecoilState(recentMusicsState);
+
+  const getUser = useCallback(
+    async (id: string) => {
+      if (!userData) {
+        setIsLoading(true);
+        const result = await fetch(`http://localhost:5000/user/${id}`, {
+          credentials: "include",
+        }).then((res) => res.json());
+        if (result.ok) {
+          setUserData(result.user);
+          setIsLoading(false);
+          setRecentMusics(result.user.recentMusics);
+          console.log("get!", id);
+        }
+      }
+    },
+    [setRecentMusics, userData] // userData, recentMusics가 변경되면 호출
+  );
 
   useEffect(() => {
-    setBackground(null);
-  }, [setBackground]);
-
-  const getUser = async (id: string) => {
-    const result = await fetch(`http://localhost:5000/user/${id}`, {
-      credentials: "include",
-    }).then((res) => res.json());
-    if (result.ok) {
-      setUserData(result.user);
-      setIsLoading(false);
+    if (userId && !userData && isLoading) {
+      getUser(userId); // userData가 없고 로딩 중이 아닐 때만 요청
     }
-  };
+  }, [userId, userData, isLoading, getUser]); // userId나 userData가 변경될 때만 호출
 
   useEffect(() => {
-    if (userId) {
-      getUser(userId); // 사용자 데이터 가져오기
-    }
     if (user?.userId === userId) {
       setIsMyPage(true); // 내 페이지 여부 확인
     }
   }, [user?.userId, userId]);
+
+  useEffect(() => {
+    setBackground(null);
+  }, [setBackground]);
 
   const logOut = async () => {
     const result = await fetch("http://localhost:5000/auth/logout", {

@@ -2,9 +2,11 @@ import styled from "styled-components";
 
 const Wrapper = styled.div`
   width: 45px;
+  color: #fff;
 
   svg {
     width: 45px;
+    color: #fff;
   }
 `;
 const LoadingSpinner = () => {
@@ -20,7 +22,7 @@ const LoadingSpinner = () => {
         <g>
           <g transform="translate(80,50)">
             <g transform="rotate(0)">
-              <circle fill-opacity="1" fill="#000000" r="6" cy="0" cx="0">
+              <circle fillOpacity="1" fill="#fff" r="6" cy="0" cx="0">
                 <animateTransform
                   repeatCount="indefinite"
                   dur="1s"
@@ -43,7 +45,7 @@ const LoadingSpinner = () => {
           </g>
           <g transform="translate(71.21320343559643,71.21320343559643)">
             <g transform="rotate(45)">
-              <circle fill-opacity="0.875" fill="#000000" r="6" cy="0" cx="0">
+              <circle fillOpacity="0.875" fill="#fff" r="6" cy="0" cx="0">
                 <animateTransform
                   repeatCount="indefinite"
                   dur="1s"
@@ -66,7 +68,7 @@ const LoadingSpinner = () => {
           </g>
           <g transform="translate(50,80)">
             <g transform="rotate(90)">
-              <circle fill-opacity="0.75" fill="#000000" r="6" cy="0" cx="0">
+              <circle fillOpacity="0.75" fill="#fff" r="6" cy="0" cx="0">
                 <animateTransform
                   repeatCount="indefinite"
                   dur="1s"
@@ -89,7 +91,7 @@ const LoadingSpinner = () => {
           </g>
           <g transform="translate(28.786796564403577,71.21320343559643)">
             <g transform="rotate(135)">
-              <circle fill-opacity="0.625" fill="#000000" r="6" cy="0" cx="0">
+              <circle fillOpacity="0.625" fill="#fff" r="6" cy="0" cx="0">
                 <animateTransform
                   repeatCount="indefinite"
                   dur="1s"
@@ -112,7 +114,7 @@ const LoadingSpinner = () => {
           </g>
           <g transform="translate(20,50.00000000000001)">
             <g transform="rotate(180)">
-              <circle fill-opacity="0.5" fill="#000000" r="6" cy="0" cx="0">
+              <circle fillOpacity="0.5" fill="#fff" r="6" cy="0" cx="0">
                 <animateTransform
                   repeatCount="indefinite"
                   dur="1s"
@@ -135,7 +137,7 @@ const LoadingSpinner = () => {
           </g>
           <g transform="translate(28.78679656440357,28.786796564403577)">
             <g transform="rotate(225)">
-              <circle fill-opacity="0.375" fill="#000000" r="6" cy="0" cx="0">
+              <circle fillOpacity="0.375" fill="#fff" r="6" cy="0" cx="0">
                 <animateTransform
                   repeatCount="indefinite"
                   dur="1s"
@@ -158,7 +160,7 @@ const LoadingSpinner = () => {
           </g>
           <g transform="translate(49.99999999999999,20)">
             <g transform="rotate(270)">
-              <circle fill-opacity="0.25" fill="#000000" r="6" cy="0" cx="0">
+              <circle fillOpacity="0.25" fill="#fff" r="6" cy="0" cx="0">
                 <animateTransform
                   repeatCount="indefinite"
                   dur="1s"
@@ -181,7 +183,7 @@ const LoadingSpinner = () => {
           </g>
           <g transform="translate(71.21320343559643,28.78679656440357)">
             <g transform="rotate(315)">
-              <circle fill-opacity="0.125" fill="#000000" r="6" cy="0" cx="0">
+              <circle fillOpacity="0.125" fill="#fff" r="6" cy="0" cx="0">
                 <animateTransform
                   repeatCount="indefinite"
                   dur="1s"

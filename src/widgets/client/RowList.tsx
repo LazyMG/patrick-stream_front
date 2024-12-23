@@ -71,7 +71,7 @@ const RowList = ({ title, subTitle, list }: IRowList) => {
       </ListHeader>
       <ListContainer>
         {list?.map((item, idx) => (
-          <RowListMusicItem music={item} index={idx} />
+          <RowListMusicItem music={item} index={idx} key={item._id} />
         ))}
         <ListFooter>
           <MoreButton>모두 표시</MoreButton>
