@@ -1,14 +1,16 @@
 import styled from "styled-components";
 import FlexList from "../../widgets/client/FlexList";
 import GridList from "../../widgets/client/GridList";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { backgroundState } from "../../app/entities/global/atom";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { APIMusic } from "../../shared/models/music";
-import { userState } from "../../app/entities/user/atom";
-import { APIUser } from "../../shared/models/user";
-import { recentMusicsState } from "../../app/entities/music/atom";
+import { userDataState, userState } from "../../app/entities/user/atom";
+import {
+  likedMusicsState,
+  recentMusicsState,
+} from "../../app/entities/music/atom";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -48,25 +50,9 @@ const Home = () => {
   const [musicsData, setMusicsData] = useState<APIMusic[] | null>(null);
   const [isMusicLoading, setIsMusicLoading] = useState(true);
   const user = useRecoilValue(userState);
-  const [recentMusics, setRecentMusics] = useRecoilState(recentMusicsState);
-  const [userData, setUserData] = useState<APIUser | null>(null);
-  const [isUserLoading, setIsUserLoading] = useState(true);
-
-  const getUserProfile = useCallback(
-    async (id: string) => {
-      const result = await fetch(
-        `http://localhost:5000/user/${id}`
-      ).then((res) => res.json());
-
-      if (result.ok) {
-        console.log("로그인한 사용자의 정보", result.user);
-        setUserData(result.user);
-        setRecentMusics(result.user.recentMusics);
-        setIsUserLoading(false);
-      }
-    },
-    [setRecentMusics]
-  );
+  const recentMusics = useRecoilValue(recentMusicsState);
+  const likedMusics = useRecoilValue(likedMusicsState);
+  const userData = useRecoilValue(userDataState);
 
   const getMusics = async () => {
     const result = await fetch(
@@ -79,11 +65,8 @@ const Home = () => {
   };
 
   useEffect(() => {
-    if (user.userId !== "") {
-      getUserProfile(user.userId);
-    }
     getMusics();
-  }, [user.userId, getUserProfile]);
+  }, [user.userId]);
 
   useEffect(() => {
     setBackground(null);

@@ -1,4 +1,5 @@
 import { atom } from "recoil";
+import { APIUser } from "../../../shared/models/user";
 
 interface IUserState {
   loading: boolean;
@@ -11,4 +12,9 @@ export const userState = atom<IUserState>({
     userId: "",
     loading: true,
   },
+});
+
+export const userDataState = atom<APIUser | null>({
+  key: "userDataState",
+  default: null,
 });

@@ -1,10 +1,15 @@
-import { ReactNode, useEffect, useRef, useState } from "react";
+import { ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import PlayBar from "./PlayBar";
 import YoutubeContainer from "../../pages/YoutubeContainer";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { isPlayerOnState } from "../../app/entities/player/atom";
 import { backgroundState } from "../../app/entities/global/atom";
+import {
+  likedMusicsState,
+  recentMusicsState,
+} from "../../app/entities/music/atom";
+import { userDataState, userState } from "../../app/entities/user/atom";
 
 const Wrapper = styled.div<{ $backImg?: string | null }>`
   margin-left: 250.5px;
@@ -157,6 +162,33 @@ interface IMainContainer {
 }
 
 const MainContainer = ({ children, onScroll }: IMainContainer) => {
+  const user = useRecoilValue(userState);
+  const setRecentMusics = useSetRecoilState(recentMusicsState);
+  const setLikedMusics = useSetRecoilState(likedMusicsState);
+  const setUserData = useSetRecoilState(userDataState);
+
+  const getUserProfile = useCallback(
+    async (id: string) => {
+      const result = await fetch(
+        `http://localhost:5000/user/${id}`
+      ).then((res) => res.json());
+
+      if (result.ok) {
+        console.log("로그인한 사용자의 정보", result.user);
+        setUserData(result.user);
+        setRecentMusics(result.user.recentMusics);
+        setLikedMusics(result.user.likedMusics);
+      }
+    },
+    [setRecentMusics, setLikedMusics, setUserData]
+  );
+
+  useEffect(() => {
+    if (user.userId !== "") {
+      getUserProfile(user.userId);
+    }
+  }, [user.userId, getUserProfile]);
+
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   const [player, setPlayer] = useState<YT.Player | null>(null);

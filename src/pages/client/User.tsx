@@ -95,18 +95,17 @@ const User = () => {
           setUserData(result.user);
           setIsLoading(false);
           setRecentMusics(result.user.recentMusics);
-          console.log("get!", id);
         }
       }
     },
-    [setRecentMusics, userData] // userData, recentMusics가 변경되면 호출
+    [setRecentMusics, userData]
   );
 
   useEffect(() => {
     if (userId && !userData && isLoading) {
-      getUser(userId); // userData가 없고 로딩 중이 아닐 때만 요청
+      getUser(userId);
     }
-  }, [userId, userData, isLoading, getUser]); // userId나 userData가 변경될 때만 호출
+  }, [userId, userData, isLoading, getUser]);
 
   useEffect(() => {
     if (user?.userId === userId) {
