@@ -14,7 +14,7 @@ export const userState = atom<IUserState>({
   },
 });
 
-export const userDataState = atom<APIUser | null>({
-  key: "userDataState",
+export const loginUserDataState = atom<APIUser | null>({
+  key: "loginUserDataState",
   default: null,
 });

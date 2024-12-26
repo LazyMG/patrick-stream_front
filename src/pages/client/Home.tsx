@@ -6,7 +6,7 @@ import { backgroundState } from "../../app/entities/global/atom";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { APIMusic } from "../../shared/models/music";
-import { userDataState, userState } from "../../app/entities/user/atom";
+import { loginUserDataState, userState } from "../../app/entities/user/atom";
 import {
   likedMusicsState,
   recentMusicsState,
@@ -52,7 +52,7 @@ const Home = () => {
   const user = useRecoilValue(userState);
   const recentMusics = useRecoilValue(recentMusicsState);
   const likedMusics = useRecoilValue(likedMusicsState);
-  const userData = useRecoilValue(userDataState);
+  const loginUserData = useRecoilValue(loginUserDataState);
 
   const getMusics = async () => {
     const result = await fetch(
@@ -73,7 +73,7 @@ const Home = () => {
   }, [setBackground]);
 
   const gotoProfile = () => {
-    navigate("/users/675d0657eea62acd6ff079cd");
+    navigate(`/users/${loginUserData?._id}`);
   };
 
   return (
@@ -84,7 +84,7 @@ const Home = () => {
         ))}
       </ContentGenre> */}
       <ContentContainer>
-        {!isMusicLoading && musicsData && userData && (
+        {!isMusicLoading && musicsData && loginUserData && (
           <FlexList
             listFlag="music"
             list={musicsData}
@@ -105,7 +105,7 @@ const Home = () => {
                 />
               </svg>
             }
-            info={userData.username}
+            info={loginUserData.username}
           />
         )}
         {recentMusics && recentMusics.length !== 0 && (

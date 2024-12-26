@@ -1,14 +1,15 @@
 import styled from "styled-components";
 import { DefaultButton } from "../../shared/ui/DefaultButton";
 import RowList from "../../widgets/client/RowList";
-import { useRecoilState, useSetRecoilState } from "recoil";
-import { userState } from "../../app/entities/user/atom";
-import { useParams } from "react-router-dom";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { loginUserDataState, userState } from "../../app/entities/user/atom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useCallback, useEffect, useState } from "react";
 import FlexList from "../../widgets/client/FlexList";
 import { backgroundState } from "../../app/entities/global/atom";
 import { APIUser } from "../../shared/models/user";
 import { recentMusicsState } from "../../app/entities/music/atom";
+import { currentUserPlaylistState } from "../../app/entities/playlist/atom";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -66,52 +67,99 @@ const InfoButtons = styled.div`
   gap: 15px;
 `;
 
-const FollowButton = styled(DefaultButton)`
-  color: #fff;
+const Button = styled(DefaultButton)`
+  color: #a988bd;
+  background-color: #fff;
 
   font-size: 16px;
 
-  background-color: blue;
   padding: 5px 30px;
+
+  &:hover {
+    background-color: #c7c7c7;
+  }
+`;
+
+const FollowButton = styled(DefaultButton)<{ $follow: boolean }>`
+  color: ${(props) => (props.$follow ? "#a988bd" : "#fff")};
+  background-color: ${(props) => (props.$follow ? "transparent" : "#a988bd")};
+
+  font-size: 16px;
+
+  padding: 5px 30px;
+
+  border: 1px solid #a988bd;
+
+  transition: transform 0.1s ease-in-out, color 0.2s ease-in-out,
+    background-color 0.2s ease-in-out;
+
+  &:hover {
+    transform: scale(1.1);
+    background-color: ${(props) => (props.$follow ? "#a988bd" : "transparent")};
+    color: ${(props) => (props.$follow ? "#fff" : "#a988bd")};
+  }
 `;
 
 const User = () => {
   const [user, setUser] = useRecoilState(userState);
   const { userId } = useParams();
-  const [isMyPage, setIsMyPage] = useState(false);
   const [userData, setUserData] = useState<APIUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const setBackground = useSetRecoilState(backgroundState);
   const [recentMusics, setRecentMusics] = useRecoilState(recentMusicsState);
+  const [loginUserData, setLoginUserData] = useRecoilState(loginUserDataState);
+  const setCurrentUserPlaylist = useSetRecoilState(currentUserPlaylistState);
+  const navigate = useNavigate();
+  const [follow, setFollow] = useState(false);
+  const [followers, setFollowers] = useState<number | null>(null);
+
+  const isMyPage = userId !== undefined && user?.userId === userId;
+
+  const currentFollowers = isMyPage
+    ? loginUserData?.followers?.length ?? 0
+    : userData?.followers?.length ?? 0;
+
+  useEffect(() => {
+    if (loginUserData) {
+      const isFollow = loginUserData.followings?.followingUsers.some(
+        (user) => user === userId
+      );
+      setFollow(!!isFollow);
+    }
+  }, [loginUserData, userId]);
+
+  useEffect(() => {
+    setFollowers((prev) => {
+      if (prev === currentFollowers) return prev;
+      return currentFollowers;
+    });
+  }, [currentFollowers]);
 
   const getUser = useCallback(
     async (id: string) => {
-      if (!userData) {
-        setIsLoading(true);
-        const result = await fetch(`http://localhost:5000/user/${id}`, {
-          credentials: "include",
-        }).then((res) => res.json());
-        if (result.ok) {
-          setUserData(result.user);
-          setIsLoading(false);
-          setRecentMusics(result.user.recentMusics);
-        }
+      if (user && user.userId === userId) {
+        setIsLoading(false);
+        return;
+      }
+      setIsLoading(true);
+      console.log("User get userdata");
+      const result = await fetch(`http://localhost:5000/user/${id}`, {
+        credentials: "include",
+      }).then((res) => res.json());
+      if (result.ok) {
+        setUserData(result.user);
+        setIsLoading(false);
+        setRecentMusics(result.user.recentMusics);
       }
     },
-    [setRecentMusics, userData]
+    [setRecentMusics, userId, user]
   );
 
   useEffect(() => {
-    if (userId && !userData && isLoading) {
+    if (userId && isLoading && !user.loading) {
       getUser(userId);
     }
-  }, [userId, userData, isLoading, getUser]);
-
-  useEffect(() => {
-    if (user?.userId === userId) {
-      setIsMyPage(true); // 내 페이지 여부 확인
-    }
-  }, [user?.userId, userId]);
+  }, [userId, isLoading, getUser, loginUserData, user]);
 
   useEffect(() => {
     setBackground(null);
@@ -120,12 +168,60 @@ const User = () => {
   const logOut = async () => {
     const result = await fetch("http://localhost:5000/auth/logout", {
       method: "POST",
-      credentials: "include", // 쿠키를 서버에 포함시킴
+      credentials: "include",
     }).then((res) => res.json());
-    console.log(result);
     if (result.ok) {
       setUser({ userId: "", loading: false });
-      setIsMyPage(false);
+      setLoginUserData(null);
+      setRecentMusics(null);
+      setCurrentUserPlaylist([]);
+      navigate("/");
+      console.log("로그아웃");
+    }
+  };
+
+  const followUser = async () => {
+    if (isMyPage || user.userId === "") return;
+    if (follow) {
+      setFollow(false);
+      setFollowers((prev) => {
+        if (prev) {
+          return Math.max(prev - 1, 0);
+        }
+        return prev;
+      });
+      // 1. 로그인 한 사용자의 팔로잉 목록에서 제거
+      // 2. 현재 페이지 사용자의 팔로워 목록에서 제거
+      await fetch(`http://localhost:5000/user/${userId}/followers`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          activeUserId: user.userId,
+          addList: false,
+        }),
+      });
+    } else {
+      setFollow(true);
+      setFollowers((prev) => {
+        if (prev !== null) {
+          return prev + 1;
+        }
+        return prev;
+      });
+      // 1. 로그인 한 사용자의 팔로잉 목록에 추가
+      // 2. 현재 페이지 사용자의 팔로워 목록에 추가
+      await fetch(`http://localhost:5000/user/${userId}/followers`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          activeUserId: user.userId,
+          addList: true,
+        }),
+      });
     }
   };
 
@@ -148,10 +244,12 @@ const User = () => {
             </svg>
           </InfoIcon>
           <InfoText>
-            {userData && (
+            {(isMyPage || userData) && (
               <>
-                <InfoName>{userData.username}</InfoName>
-                <InfoContent>팔로워 수: 20</InfoContent>
+                <InfoName>
+                  {isMyPage ? loginUserData?.username : userData?.username}
+                </InfoName>
+                <InfoContent>팔로워 수: {followers}</InfoContent>
               </>
             )}
           </InfoText>
@@ -160,11 +258,15 @@ const User = () => {
           <InfoButtons>
             {isMyPage ? (
               <>
-                <FollowButton>수정</FollowButton>
-                <FollowButton onClick={logOut}>로그아웃</FollowButton>
+                <Button>수정</Button>
+                <Button onClick={logOut}>로그아웃</Button>
               </>
+            ) : follow ? (
+              <FollowButton $follow={follow} onClick={followUser}>
+                {follow ? "언팔로우" : "팔로우"}
+              </FollowButton>
             ) : (
-              <FollowButton>팔로우</FollowButton>
+              <div>Loading...</div>
             )}
           </InfoButtons>
         )}

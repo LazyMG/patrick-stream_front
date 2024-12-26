@@ -152,10 +152,7 @@ const Header = ({ $navShow }: IHeader) => {
 
   return (
     <Wrapper $navShow={$navShow}>
-      <IconContainer $navShow={$navShow}>
-        <img src="/icon.png" />
-        Patrick Stream
-      </IconContainer>
+      <IconContainer $navShow={$navShow}>Patrick Stream</IconContainer>
       <SearchContainer>
         <SearchForm>
           <input type="text" />

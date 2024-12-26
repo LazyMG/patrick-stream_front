@@ -1,4 +1,7 @@
+import { APIAlbum } from "./album";
+import { APIArtist } from "./artist";
 import { APIMusic } from "./music";
+import { APIPlaylist } from "./playlist";
 
 export interface User {}
 
@@ -7,7 +10,12 @@ export interface APIUser {
   created_at?: string;
   email?: string;
   followers?: string[];
-  followings?: string[];
+  followings?: {
+    followingUsers: string[];
+    followingAlbums: APIAlbum[];
+    followingArtists: APIArtist[];
+    followingPlaylists: APIPlaylist[];
+  };
   introduction?: string;
   isAdmin?: boolean;
   likedComments?: string[];

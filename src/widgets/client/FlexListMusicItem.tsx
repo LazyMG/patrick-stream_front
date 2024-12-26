@@ -98,7 +98,10 @@ const FlexListMusicItem = ({ music }: { music: APIMusic }) => {
           <Category>노래</Category>
           {" • "}
           <Aritst>
-            <Link to={`/artists/${music.artists[0]._id}`}>
+            <Link
+              to={`/artists/${music.artists[0]._id}`}
+              state={{ artistLinkData: music.artists[0] }}
+            >
               {music.artists[0].artistname}
             </Link>
           </Aritst>

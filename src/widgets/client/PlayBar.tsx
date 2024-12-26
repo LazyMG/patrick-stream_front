@@ -349,10 +349,12 @@ const PlayBar = ({ player }: IPlayBar) => {
       const like = likedMusics?.some(
         (music) => music.ytId === selectedMusic.ytId
       );
-      setIsLike(!!like);
-      console.log(like);
+
+      if (like !== isLike) {
+        setIsLike(!!like);
+      }
     }
-  }, [likedMusics, selectedMusic, user.userId]);
+  }, [selectedMusic, user.userId, likedMusics, isLike]);
 
   useEffect(() => {
     let updateTimer: number;
@@ -464,21 +466,16 @@ const PlayBar = ({ player }: IPlayBar) => {
 
   const onClickLikeButton = async () => {
     if (!selectedMusic || user.userId === "") return;
-    console.log("click");
     const index = likedMusics?.findIndex(
       (music) => music.ytId === selectedMusic.ytId
     );
-    if (index === -1 || !index) {
+    if (index === -1 || typeof index === "undefined") {
       // index가 undefined면 좋아요 목록에 없음 -> 추가 필요
-      await fetch(`http://localhost:5000/user/${user.userId}/likedMusics`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ addMusic: false, musicId: selectedMusic._id }),
+      setLikedMusics((prev) => {
+        if (!prev) return prev;
+        return [selectedMusic, ...prev];
       });
-    } else {
-      // index가 있으면 좋아요 목록에 있음 -> 삭제 필요
+
       await fetch(`http://localhost:5000/user/${user.userId}/likedMusics`, {
         method: "PATCH",
         headers: {
@@ -486,9 +483,23 @@ const PlayBar = ({ player }: IPlayBar) => {
         },
         body: JSON.stringify({ addMusic: true, musicId: selectedMusic._id }),
       });
-    }
+      setIsLike(true);
+    } else {
+      // index가 있으면 좋아요 목록에 있음 -> 삭제 필요
+      setLikedMusics((prev) => {
+        if (!prev) return prev;
+        return [...prev.filter((music) => music.ytId !== selectedMusic.ytId)];
+      });
 
-    setIsLike((prev) => !prev);
+      await fetch(`http://localhost:5000/user/${user.userId}/likedMusics`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ addMusic: false, musicId: selectedMusic._id }),
+      });
+      setIsLike(false);
+    }
   };
 
   return (
@@ -506,18 +517,13 @@ const PlayBar = ({ player }: IPlayBar) => {
             <PlayBarContentControlButtons>
               <PlayBarContentControlMoveButton>
                 <svg
-                  fill="none"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
                   xmlns="http://www.w3.org/2000/svg"
-                  aria-hidden="true"
+                  height="36px"
+                  viewBox="0 -960 960 960"
+                  width="36px"
+                  fill="#fff"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M21 16.811c0 .864-.933 1.406-1.683.977l-7.108-4.061a1.125 1.125 0 0 1 0-1.954l7.108-4.061A1.125 1.125 0 0 1 21 8.689v8.122ZM11.25 16.811c0 .864-.933 1.406-1.683.977l-7.108-4.061a1.125 1.125 0 0 1 0-1.954l7.108-4.061a1.125 1.125 0 0 1 1.683.977v8.122Z"
-                  />
+                  <path d="M220-273.33v-413.34q0-14.16 9.62-23.75 9.61-9.58 23.83-9.58 14.22 0 23.72 9.58 9.5 9.59 9.5 23.75v413.34q0 14.16-9.62 23.75-9.62 9.58-23.83 9.58-14.22 0-23.72-9.58-9.5-9.59-9.5-23.75Zm468-2.34L430-452.33q-7.67-5.34-11.17-12.37-3.5-7.03-3.5-15.3t3.5-15.3q3.5-7.03 11.17-12.37l258-176.66q4.33-3.34 9-4.67t9.67-1.33q13.33 0 23.33 9.16Q740-672 740-657v354q0 15-10 24.17-10 9.16-23.33 9.16-5 0-9.67-1.33t-9-4.67ZM673.33-480Zm0 113.33v-226.66L507.33-480l166 113.33Z" />
                 </svg>
               </PlayBarContentControlMoveButton>
               {ytPlayer === -1 || ytPlayer === 3 ? (
@@ -554,6 +560,15 @@ const PlayBar = ({ player }: IPlayBar) => {
                         d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z"
                       />
                     </svg>
+                    // <svg
+                    //   xmlns="http://www.w3.org/2000/svg"
+                    //   height="52px"
+                    //   viewBox="0 -960 960 960"
+                    //   width="52px"
+                    //   fill="#fff"
+                    // >
+                    //   <path d="M320-202v-560l440 280-440 280Zm66.67-280Zm0 158.67L636-482 386.67-640.67v317.34Z" />
+                    // </svg>
                   )}
 
                   {/* <svg
@@ -575,18 +590,13 @@ const PlayBar = ({ player }: IPlayBar) => {
 
               <PlayBarContentControlMoveButton>
                 <svg
-                  fill="none"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
                   xmlns="http://www.w3.org/2000/svg"
-                  aria-hidden="true"
+                  height="36px"
+                  viewBox="0 -960 960 960"
+                  width="36px"
+                  fill="#fff"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M3 8.689c0-.864.933-1.406 1.683-.977l7.108 4.061a1.125 1.125 0 0 1 0 1.954l-7.108 4.061A1.125 1.125 0 0 1 3 16.811V8.69ZM12.75 8.689c0-.864.933-1.406 1.683-.977l7.108 4.061a1.125 1.125 0 0 1 0 1.954l-7.108 4.061a1.125 1.125 0 0 1-1.683-.977V8.69Z"
-                  />
+                  <path d="M673.33-273.33v-413.34q0-14.16 9.62-23.75 9.62-9.58 23.83-9.58 14.22 0 23.72 9.58 9.5 9.59 9.5 23.75v413.34q0 14.16-9.62 23.75-9.61 9.58-23.83 9.58-14.22 0-23.72-9.58-9.5-9.59-9.5-23.75ZM220-303v-354q0-15 10-24.17 10-9.16 23.33-9.16 5 0 9.67 1.33t9 4.67l258 176.66q7.67 5.34 11.17 12.37 3.5 7.03 3.5 15.3t-3.5 15.3q-3.5 7.03-11.17 12.37L272-275.67q-4.33 3.34-9 4.67t-9.67 1.33q-13.33 0-23.33-9.16Q220-288 220-303Zm66.67-177Zm0 113.33 166-113.33-166-113.33v226.66Z" />
                 </svg>
               </PlayBarContentControlMoveButton>
             </PlayBarContentControlButtons>

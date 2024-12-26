@@ -3,10 +3,11 @@ import RowList from "../../widgets/client/RowList";
 import { DefaultButton } from "../../shared/ui/DefaultButton";
 import FlexList from "../../widgets/client/FlexList";
 import { useCallback, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { useSetRecoilState } from "recoil";
+import { Location, useLocation, useParams } from "react-router-dom";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { backgroundState } from "../../app/entities/global/atom";
 import { APIArtist } from "../../shared/models/artist";
+import { userState } from "../../app/entities/user/atom";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -70,17 +71,23 @@ const CircleButton = styled(DefaultButton)`
   }
 `;
 
-const FollowButton = styled(DefaultButton)`
-  color: #fefefe;
-
-  border: 1px solid #a988bd;
+const FollowButton = styled(DefaultButton)<{ $follow: boolean }>`
+  color: ${(props) => (props.$follow ? "#a988bd" : "#fff")};
+  background-color: ${(props) => (props.$follow ? "transparent" : "#a988bd")};
 
   font-size: 16px;
 
   padding: 5px 30px;
 
+  border: 1px solid #a988bd;
+
+  transition: transform 0.1s ease-in-out, color 0.2s ease-in-out,
+    background-color 0.2s ease-in-out;
+
   &:hover {
-    background-color: #a988bd;
+    transform: scale(1.1);
+    background-color: ${(props) => (props.$follow ? "#a988bd" : "transparent")};
+    color: ${(props) => (props.$follow ? "#fff" : "#a988bd")};
   }
 `;
 
@@ -92,11 +99,24 @@ const ContentContainer = styled.div`
   gap: 60px;
 `;
 
+interface ArtistLinkState {
+  from?: string;
+  artistLinkData?: {
+    artistname: string;
+    coverImg: string;
+    _id: string;
+  };
+}
+
 const Artist = () => {
+  const user = useRecoilValue(userState);
   const { artistId } = useParams();
   const setBackground = useSetRecoilState(backgroundState);
   const [isLoading, setIsLoading] = useState(true);
   const [artistData, setArtistData] = useState<APIArtist | null>(null);
+  const location = useLocation() as Location & { state: ArtistLinkState };
+  const [follow, setFollow] = useState(false);
+  const [followers, setFollowers] = useState<number | null>(null);
 
   const getArtist = useCallback(
     async (id: string) => {
@@ -105,9 +125,14 @@ const Artist = () => {
       ).then((res) => res.json());
 
       if (result.ok) {
-        console.log(result.artist);
+        // console.log(result.artist);
         setArtistData(result.artist);
-        setBackground({ src: result.artist.coverImg, type: "simple" });
+        setBackground((prev) => {
+          if (prev?.src === result.artist.coverImg) {
+            return prev;
+          }
+          return { src: result.artist.coverImg, type: "simple" };
+        });
         setIsLoading(false);
       }
     },
@@ -120,10 +145,48 @@ const Artist = () => {
     }
   }, [artistId, getArtist]);
 
+  useEffect(() => {
+    if (location?.state) {
+      setBackground({
+        src: location.state?.artistLinkData.coverImg,
+        type: "simple",
+      });
+    }
+  }, [location?.state, setBackground]);
+
+  const followArtist = async () => {
+    if (user.userId === "") return;
+    if (follow) {
+      setFollow(false);
+      setFollowers((prev) => {
+        if (prev) {
+          return Math.max(prev - 1, 0);
+        }
+        return prev;
+      });
+      // 1. 로그인 한 사용자의 팔로잉 목록에서 제거
+      // 2. 현재 페이지 아티스트의 팔로워 목록에서 제거
+    } else {
+      setFollow(true);
+      setFollowers((prev) => {
+        if (prev !== null) {
+          return prev + 1;
+        }
+        return prev;
+      });
+      // 1. 로그인 한 사용자의 팔로잉 목록에 추가
+      // 2. 현재 페이지 아티스트의 팔로워 목록에 추가
+    }
+  };
+
   return (
     <Wrapper>
       <InfoHeader>
-        <Title>{artistData?.artistname}</Title>
+        <Title>
+          {location?.state
+            ? location.state?.artistLinkData.artistname
+            : artistData?.artistname}
+        </Title>
         <Info>{artistData?.introduction}</Info>
         <Followers>{artistData?.followers?.length}명</Followers>
       </InfoHeader>
@@ -142,7 +205,9 @@ const Artist = () => {
             />
           </svg>
         </CircleButton>
-        <FollowButton>팔로우</FollowButton>
+        <FollowButton $follow={follow} onClick={followArtist}>
+          {follow ? "언팔로우" : "팔로우"}
+        </FollowButton>
       </ControlContainer>
       {!isLoading && (
         <ContentContainer>

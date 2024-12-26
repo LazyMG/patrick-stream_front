@@ -8,9 +8,13 @@ export const useRecentMusics = () => {
   const user = useRecoilValue(userState);
 
   const addUserRecentMusics = async (music: APIMusic) => {
+    // 이미 존재한다면 바로 끝내지 말고 맨 앞으로 올리기기
     setRecentMusics((prev) => {
       if (prev) {
-        if (prev.some((item) => item.ytId === music.ytId)) return prev;
+        if (prev.some((item) => item.ytId === music.ytId)) {
+          const newList = prev.filter((item) => item.ytId !== music.ytId);
+          return [music, ...newList];
+        }
         return [music, ...prev];
       } else {
         return prev;
@@ -22,7 +26,7 @@ export const useRecentMusics = () => {
     const result = await fetch(
       `http://localhost:5000/user/${user.userId}/recentMusics`,
       {
-        method: "POST",
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
