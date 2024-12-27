@@ -7,9 +7,13 @@ import { isPlayerOnState } from "../../app/entities/player/atom";
 import { backgroundState } from "../../app/entities/global/atom";
 import {
   likedMusicsState,
+  playlistState,
   recentMusicsState,
 } from "../../app/entities/music/atom";
 import { loginUserDataState, userState } from "../../app/entities/user/atom";
+import { followingArtistsState } from "../../app/entities/artist/atom";
+import { followingAlbumsState } from "../../app/entities/album/atom";
+import { APIMusic } from "../../shared/models/music";
 
 const Wrapper = styled.div<{ $backImg?: string | null }>`
   margin-left: 250.5px;
@@ -163,9 +167,11 @@ interface IMainContainer {
 
 const MainContainer = ({ children, onScroll }: IMainContainer) => {
   const user = useRecoilValue(userState);
-  const setRecentMusics = useSetRecoilState(recentMusicsState);
   const setLikedMusics = useSetRecoilState(likedMusicsState);
+  const setRecentMusics = useSetRecoilState(recentMusicsState);
   const [loginUserData, setLoginUserData] = useRecoilState(loginUserDataState);
+  const setFollowingArtists = useSetRecoilState(followingArtistsState);
+  const setFollowingAlbums = useSetRecoilState(followingAlbumsState);
 
   const getUserProfile = useCallback(
     async (id: string) => {
@@ -177,9 +183,17 @@ const MainContainer = ({ children, onScroll }: IMainContainer) => {
         setLoginUserData(result.user);
         setRecentMusics(result.user.recentMusics);
         setLikedMusics(result.user.likedMusics);
+        setFollowingArtists(result.user.followings.followingArtists);
+        setFollowingAlbums(result.user.followings.followingAlbums);
       }
     },
-    [setRecentMusics, setLikedMusics, setLoginUserData]
+    [
+      setLikedMusics,
+      setLoginUserData,
+      setRecentMusics,
+      setFollowingArtists,
+      setFollowingAlbums,
+    ]
   );
 
   useEffect(() => {
@@ -187,6 +201,21 @@ const MainContainer = ({ children, onScroll }: IMainContainer) => {
       getUserProfile(user.userId);
     }
   }, [user.userId, getUserProfile]);
+
+  const setMusicPlaylistState = useSetRecoilState(playlistState);
+
+  const getMusics = useCallback(async () => {
+    const result = await fetch(
+      `http://localhost:5000/music/recently-updated`
+    ).then((res) => res.json());
+    if (result.ok) {
+      setMusicPlaylistState(result.musics);
+    }
+  }, [setMusicPlaylistState]);
+
+  useEffect(() => {
+    getMusics();
+  }, [getMusics]);
 
   const wrapperRef = useRef<HTMLDivElement>(null);
 
@@ -209,6 +238,10 @@ const MainContainer = ({ children, onScroll }: IMainContainer) => {
     };
   }, [onScroll]);
 
+  useEffect(() => {
+    console.log("render");
+  }, []);
+
   return (
     <Wrapper ref={wrapperRef} $backImg={background?.src}>
       {background &&
@@ -222,7 +255,7 @@ const MainContainer = ({ children, onScroll }: IMainContainer) => {
         <Footer />
       </Content>
       {isPlayerOn && <PlayBar player={player} setPlayer={setPlayer} />}
-      {/* <YoutubeContainer player={player} setPlayer={setPlayer} /> */}
+      <YoutubeContainer player={player} setPlayer={setPlayer} />
     </Wrapper>
   );
 };

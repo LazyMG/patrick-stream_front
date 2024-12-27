@@ -18,6 +18,8 @@ import {
   recentMusicsState,
 } from "../../app/entities/music/atom";
 import { currentUserPlaylistState } from "../../app/entities/playlist/atom";
+import { followingArtistsState } from "../../app/entities/artist/atom";
+import { followingAlbumsState } from "../../app/entities/album/atom";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -122,7 +124,6 @@ const User = () => {
   const [userData, setUserData] = useState<APIUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const setBackground = useSetRecoilState(backgroundState);
-  const [recentMusics, setRecentMusics] = useRecoilState(recentMusicsState);
   const [likedMusics, setLikedMusics] = useRecoilState(likedMusicsState);
   const [loginUserData, setLoginUserData] = useRecoilState(loginUserDataState);
   const setCurrentUserPlaylist = useSetRecoilState(currentUserPlaylistState);
@@ -130,12 +131,15 @@ const User = () => {
   const [follow, setFollow] = useState<boolean | null>(null);
   const [followers, setFollowers] = useState<number | null>(null);
 
+  const recentMusics = useRecoilValue(recentMusicsState);
+  const followingArtists = useRecoilValue(followingArtistsState);
+  const followingAlbums = useRecoilValue(followingAlbumsState);
+
   const location = useLocation() as Location & {
     state?: UserPartial;
   };
 
   const [partial] = useState<UserPartial | null>(location.state ?? null);
-  console.log(partial);
 
   const isMyPage = userId !== undefined && user.userId === userId;
 
@@ -147,7 +151,7 @@ const User = () => {
 
       if (!isMyPage && loginUserData) {
         const isFollow = loginUserData.followings?.followingUsers.some(
-          (uid) => uid === currentUserInfo._id
+          (user) => user === currentUserInfo._id
         );
         setFollow(!!isFollow);
       } else {
@@ -167,7 +171,6 @@ const User = () => {
 
         if (result.ok) {
           setUserData(result.user);
-          setRecentMusics(result.user.recentMusics);
           setLikedMusics(result.user.likedMusics);
         } else {
           console.error("Fetch user data error:", result.message);
@@ -178,7 +181,7 @@ const User = () => {
         setIsLoading(false);
       }
     },
-    [setRecentMusics, setLikedMusics]
+    [setLikedMusics]
   );
 
   useEffect(() => {
@@ -228,7 +231,6 @@ const User = () => {
     if (result.ok) {
       setUser({ userId: "", loading: false });
       setLoginUserData(null);
-      setRecentMusics(null);
       setCurrentUserPlaylist([]);
       navigate("/");
     }
@@ -334,11 +336,37 @@ const User = () => {
           )}
         </InfoButtons>
       </InfoContainer>
-      {recentMusics && recentMusics.length !== 0 && (
+      {isMyPage && recentMusics && recentMusics?.length !== 0 && (
         <RowList title="최근 들은 음악" subTitle="공개" list={recentMusics} />
       )}
+      {!isMyPage &&
+        userData &&
+        userData.recentMusics &&
+        userData.recentMusics.length !== 0 && (
+          <RowList
+            title="최근 들은 음악"
+            subTitle="공개"
+            list={userData.recentMusics}
+          />
+        )}
       {likedMusics && likedMusics.length !== 0 && (
         <RowList title="좋아요 한 음악" subTitle="공개" list={likedMusics} />
+      )}
+      {isMyPage && followingArtists && followingArtists.length !== 0 && (
+        <FlexList
+          title="팔로우 한 아티스트"
+          isCustom={false}
+          listFlag="artist"
+          list={followingArtists}
+        />
+      )}
+      {isMyPage && followingAlbums && followingAlbums.length !== 0 && (
+        <FlexList
+          title="팔로우 한 앨범"
+          isCustom={false}
+          listFlag="album"
+          list={followingAlbums}
+        />
       )}
     </Wrapper>
   );

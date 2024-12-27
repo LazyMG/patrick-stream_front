@@ -8,6 +8,7 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 import { backgroundState } from "../../app/entities/global/atom";
 import { APIArtist } from "../../shared/models/artist";
 import { loginUserDataState, userState } from "../../app/entities/user/atom";
+import { followingArtistsState } from "../../app/entities/artist/atom";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -117,6 +118,7 @@ const Artist = () => {
   const currentFollowers = artistData?.followers?.length ?? 0;
 
   const loginUserData = useRecoilValue(loginUserDataState);
+  const setFollowingArtists = useSetRecoilState(followingArtistsState);
 
   useEffect(() => {
     setFollowers((prev) => {
@@ -128,7 +130,7 @@ const Artist = () => {
   useEffect(() => {
     if (loginUserData) {
       const isFollow = loginUserData.followings?.followingArtists.some(
-        (artist) => artist === artistId
+        (artist) => artist._id === artistId
       );
       setFollow(!!isFollow);
     }
@@ -171,48 +173,37 @@ const Artist = () => {
   }, [location?.state, setBackground]);
 
   const followArtist = async () => {
-    if (user.userId === "") return;
-    if (follow) {
-      setFollow(false);
-      setFollowers((prev) => {
-        if (prev) {
-          return Math.max(prev - 1, 0);
+    if (!artistId || user.userId === "") return;
+
+    const addList = !follow;
+    setFollow(addList);
+    setFollowers((prev) => {
+      if (prev === null) return prev;
+      return addList ? prev + 1 : Math.max(prev - 1, 0);
+    });
+    if (artistData) {
+      setFollowingArtists((prev) => {
+        if (!prev) return prev;
+        if (addList) {
+          return [artistData, ...prev];
+        } else {
+          const newList = prev.filter(
+            (artist) => artist._id !== artistData._id
+          );
+          return [...newList];
         }
-        return prev;
-      });
-      // 1. 로그인 한 사용자의 팔로잉 목록에서 제거
-      // 2. 현재 페이지 아티스트의 팔로워 목록에서 제거
-      await fetch(`http://localhost:5000/artist/${artistId}/followers`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          activeUserId: user.userId,
-          addList: false,
-        }),
-      });
-    } else {
-      setFollow(true);
-      setFollowers((prev) => {
-        if (prev !== null) {
-          return prev + 1;
-        }
-        return prev;
-      });
-      // 1. 로그인 한 사용자의 팔로잉 목록에 추가
-      // 2. 현재 페이지 아티스트의 팔로워 목록에 추가
-      await fetch(`http://localhost:5000/artist/${artistId}/followers`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          activeUserId: user.userId,
-          addList: true,
-        }),
       });
     }
+    await fetch(`http://localhost:5000/artist/${artistId}/followers`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        activeUserId: user.userId,
+        addList,
+      }),
+    });
   };
 
   return (

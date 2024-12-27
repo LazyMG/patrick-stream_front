@@ -162,7 +162,7 @@ const Album = () => {
   useEffect(() => {
     if (loginUserData) {
       const isFollow = loginUserData.followings?.followingAlbums.some(
-        (album) => album === albumId
+        (album) => album._id === albumId
       );
       setFollow(!!isFollow);
     }

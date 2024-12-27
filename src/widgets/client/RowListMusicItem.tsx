@@ -15,8 +15,8 @@ const Wrapper = styled.div`
 
   padding: 10px 2px;
 
-  &:not(:nth-child(5)) {
-    border-bottom: 0.01px solid #575757; /* 원하는 색상과 두께로 설정 */
+  &:not(:last-child) {
+    border-bottom: 0.01px solid #575757;
   }
 
   a {

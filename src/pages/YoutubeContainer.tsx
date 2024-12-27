@@ -46,14 +46,16 @@ function YoutubeContainer({ player, setPlayer }: IYoutubeContainer) {
 
   const onStateChange: YouTubeProps["onStateChange"] = (event) => {
     // console.log("change!", event.target);
-    // console.log("player's state", event.target.getPlayerState());
+    console.log("player's state", event.target.getPlayerState());
 
     setytPlayer(event.target.getPlayerState());
   };
 
   const opts: YouTubeProps["opts"] = {
-    height: "390",
-    width: "640",
+    // height: "390",
+    // width: "640",
+    height: "0",
+    width: "0",
     playerVars: {
       // https://developers.google.com/youtube/player_parameters
       autoplay: 1,
@@ -62,7 +64,7 @@ function YoutubeContainer({ player, setPlayer }: IYoutubeContainer) {
 
   return (
     <>
-      <YoutubeButtonContainer player={player} setYtId={setYtId} />
+      {/* <YoutubeButtonContainer player={player} setYtId={setYtId} /> */}
       <YouTube
         videoId={ytId}
         opts={opts}
@@ -70,7 +72,7 @@ function YoutubeContainer({ player, setPlayer }: IYoutubeContainer) {
         onPlay={onPlayerPlay}
         onStateChange={onStateChange}
       />
-      <YoutubeController player={player} setIsMute={setIsMute} />
+      {/* <YoutubeController player={player} setIsMute={setIsMute} /> */}
     </>
   );
 }

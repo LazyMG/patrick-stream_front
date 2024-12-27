@@ -1,14 +1,13 @@
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { recentMusicsState } from "../../app/entities/music/atom";
 import { userState } from "../../app/entities/user/atom";
 import { APIMusic } from "../models/music";
+import { recentMusicsState } from "../../app/entities/music/atom";
 
 export const useRecentMusics = () => {
-  const setRecentMusics = useSetRecoilState(recentMusicsState);
   const user = useRecoilValue(userState);
+  const setRecentMusics = useSetRecoilState(recentMusicsState);
 
   const addUserRecentMusics = async (music: APIMusic) => {
-    // 이미 존재한다면 바로 끝내지 말고 맨 앞으로 올리기기
     setRecentMusics((prev) => {
       if (prev) {
         if (prev.some((item) => item.ytId === music.ytId)) {

@@ -50,9 +50,9 @@ const Home = () => {
   const [musicsData, setMusicsData] = useState<APIMusic[] | null>(null);
   const [isMusicLoading, setIsMusicLoading] = useState(true);
   const user = useRecoilValue(userState);
-  const recentMusics = useRecoilValue(recentMusicsState);
   const likedMusics = useRecoilValue(likedMusicsState);
   const loginUserData = useRecoilValue(loginUserDataState);
+  const recentMusics = useRecoilValue(recentMusicsState);
 
   const getMusics = async () => {
     const result = await fetch(

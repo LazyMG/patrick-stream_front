@@ -16,6 +16,13 @@ export const usePlayMusic = () => {
   const { addUserRecentMusics } = useRecentMusics();
 
   const playMusic = async (music: APIMusic) => {
+    // setSelectedMusic(music);
+    setSelectedMusic((prev) => {
+      if (prev && prev._id === music._id) {
+        return prev;
+      }
+      return music;
+    });
     setYtId(music.ytId);
     setIsPlayerOn(true);
     setCurrentPlayer((prev) => {
@@ -24,9 +31,9 @@ export const usePlayMusic = () => {
         isPlaying: true,
       };
     });
-    setSelectedMusic(music);
-    await updateMusicView(music);
+
     addUserRecentMusics(music);
+    await updateMusicView(music);
   };
 
   return playMusic;

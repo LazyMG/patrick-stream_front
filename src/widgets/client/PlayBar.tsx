@@ -3,6 +3,7 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import styled from "styled-components";
 import {
   likedMusicsState,
+  playlistState,
   selectedMusicState,
   ytIdState,
 } from "../../app/entities/music/atom";
@@ -14,6 +15,7 @@ import LoadingSpinner from "./LoadingSpinner";
 import { setDates, setMusicSeconds } from "../../shared/lib/musicDataFormat";
 import { Link } from "react-router-dom";
 import { userState } from "../../app/entities/user/atom";
+import { usePlayMusic } from "../../shared/hooks/usePlayMusic";
 
 const Wrapper = styled.div`
   position: fixed;
@@ -332,6 +334,10 @@ const PlayBar = ({ player }: IPlayBar) => {
   const [likedMusics, setLikedMusics] = useRecoilState(likedMusicsState);
   const [isLike, setIsLike] = useState<boolean | null>(null);
 
+  const musicPlaylist = useRecoilValue(playlistState);
+
+  const playMusic = usePlayMusic();
+
   //노래 재생될 때
 
   useEffect(() => {
@@ -371,10 +377,49 @@ const PlayBar = ({ player }: IPlayBar) => {
           setTime(formatedTime);
         }, 1000);
       }
+      if (player.getPlayerState() === 0) {
+        //
+      }
     }
     // 매 초마다 업데이트
     return () => clearInterval(updateTimer);
   }, [time, player, ytPlayer]);
+
+  useEffect(() => {
+    if (ytPlayer === 0 && musicPlaylist && selectedMusic) {
+      const index = musicPlaylist.findIndex(
+        (music) => music._id === selectedMusic._id
+      );
+
+      if (index !== -1) {
+        const length = musicPlaylist.length;
+        // 마지막 곡이 아니라면 다음 곡을 재생
+        if (index + 1 < length) {
+          setTime("00:00");
+          setTimeline(0);
+          playMusic(musicPlaylist[index + 1]);
+        } else {
+          // 마지막 곡이라면 종료 상태로 설정
+          setCurrentPlayer((prev) => ({
+            ...prev,
+            isPlaying: false,
+            isEnd: true,
+            isPaused: false,
+            isLoading: false,
+          }));
+        }
+      }
+    }
+  }, [ytPlayer]);
+
+  const reStartMusic = () => {
+    if (player && player.getPlayerState() === 1) {
+      player.stopVideo();
+      player.playVideo();
+      setTime("00:00");
+      setTimeline(0);
+    }
+  };
 
   //노래 끝났을 때 처리 필요
   const timelineChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -502,6 +547,39 @@ const PlayBar = ({ player }: IPlayBar) => {
     }
   };
 
+  const playPrevMusic = () => {
+    if (
+      !musicPlaylist ||
+      !musicPlaylist.some((music) => music._id === selectedMusic?._id)
+    )
+      return;
+
+    if (timeline < 4 && selectedMusic) {
+      reStartMusic();
+    }
+    const index = musicPlaylist.findIndex(
+      (music) => music._id === selectedMusic?._id
+    );
+    // first music
+    if (index === 0) return;
+    playMusic(musicPlaylist[index - 1]);
+  };
+
+  const playNextMusic = () => {
+    if (
+      !musicPlaylist ||
+      !musicPlaylist.some((music) => music._id === selectedMusic?._id)
+    )
+      return;
+    const length = musicPlaylist.length;
+    const index = musicPlaylist.findIndex(
+      (music) => music._id === selectedMusic?._id
+    );
+    // last music
+    if (index + 1 === length) return;
+    playMusic(musicPlaylist[index + 1]);
+  };
+
   return (
     <Wrapper>
       <>
@@ -515,7 +593,7 @@ const PlayBar = ({ player }: IPlayBar) => {
         <PlayBarContentContainer>
           <PlayBarContentControlContainer>
             <PlayBarContentControlButtons>
-              <PlayBarContentControlMoveButton>
+              <PlayBarContentControlMoveButton onClick={playPrevMusic}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   height="36px"
@@ -588,7 +666,7 @@ const PlayBar = ({ player }: IPlayBar) => {
                 </PlayBarContentControlPlayButton>
               )}
 
-              <PlayBarContentControlMoveButton>
+              <PlayBarContentControlMoveButton onClick={playNextMusic}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   height="36px"

@@ -11,12 +11,17 @@ export const selectedMusicState = atom<APIMusic | null>({
   default: null,
 });
 
+export const likedMusicsState = atom<APIMusic[] | null>({
+  key: "likedMusicsState",
+  default: null,
+});
+
 export const recentMusicsState = atom<APIMusic[] | null>({
   key: "recentMusicsState",
   default: null,
 });
 
-export const likedMusicsState = atom<APIMusic[] | null>({
-  key: "likedMusicsState",
+export const playlistState = atom<APIMusic[] | null>({
+  key: "playlistState",
   default: null,
 });

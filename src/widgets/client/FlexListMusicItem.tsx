@@ -2,6 +2,8 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { APIMusic } from "../../shared/models/music";
 import { usePlayMusic } from "../../shared/hooks/usePlayMusic";
+import { useSetRecoilState } from "recoil";
+import { playlistState } from "../../app/entities/music/atom";
 
 const ListItem = styled.div`
   width: 100%;
@@ -86,14 +88,31 @@ const Aritst = styled.span`
 
 const FlexListMusicItem = ({ music }: { music: APIMusic }) => {
   const playMusic = usePlayMusic();
+  const setMusicPlaylist = useSetRecoilState(playlistState);
+
+  const clickMusic = () => {
+    playMusic(music);
+    setMusicPlaylist((prev) => {
+      if (!prev) return prev;
+      if (prev.some((item) => item._id === music._id)) {
+        // exists
+        const newList = prev.filter((item) => item._id !== music._id);
+        return [music, ...newList];
+      } else {
+        // none
+        const newList = prev.slice(0, 19);
+        return [music, ...newList];
+      }
+    });
+  };
 
   return (
     <ListItem>
-      <Image $imgUrl={music.coverImg} onClick={() => playMusic(music)}>
+      <Image $imgUrl={music.coverImg} onClick={clickMusic}>
         <ImageMask />
       </Image>
       <Info>
-        <Title onClick={() => playMusic(music)}>{music.title}</Title>
+        <Title onClick={clickMusic}>{music.title}</Title>
         <Description>
           <Category>노래</Category>
           {" • "}

@@ -11,6 +11,8 @@ import { APIMusic } from "../../shared/models/music";
 import FlexListMusicItem from "./FlexListMusicItem";
 import { APIAlbum } from "../../shared/models/album";
 import FlexListAlbumItem from "./FlexAlbumListItem";
+import { APIArtist } from "../../shared/models/artist";
+import FlexListAritstItem from "./FlexListArtistItem";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -100,7 +102,7 @@ interface IFlexList {
   title: string;
   info?: string;
   onClick?: () => void;
-  list?: APIMusic[] | APIAlbum[];
+  list?: APIMusic[] | APIAlbum[] | APIArtist[];
   listFlag: "music" | "album" | "playlist" | "artist";
 }
 
@@ -178,6 +180,9 @@ const FlexList = ({
                     dataType="artist"
                     album={item as APIAlbum}
                   />
+                )}
+                {listFlag === "artist" && (
+                  <FlexListAritstItem artist={item as APIArtist} />
                 )}
               </SwiperSlide>
             ))}

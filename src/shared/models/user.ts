@@ -12,8 +12,8 @@ export interface APIUser {
   followers?: string[];
   followings?: {
     followingUsers: string[];
-    followingAlbums: string[];
-    followingArtists: string[];
+    followingAlbums: APIAlbum[];
+    followingArtists: APIArtist[];
     followingPlaylists: string[];
   };
   introduction?: string;
