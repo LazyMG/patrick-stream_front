@@ -6,7 +6,7 @@ import { userState } from "../../app/entities/user/atom";
 import { currentUserPlaylistState } from "../../app/entities/playlist/atom";
 import { Link } from "react-router-dom";
 import PlaylistItem from "../../shared/ui/PlaylistItem";
-import { APIUserPlaylist } from "../../shared/models/playlist";
+import { APIPlaylist } from "../../shared/models/playlist";
 import { isPlayerOnState } from "../../app/entities/player/atom";
 
 const Wrapper = styled.div<{ $isPlayerOn: boolean }>`
@@ -81,7 +81,7 @@ const PlayListContainer = () => {
       `http://localhost:5000/user/${user.userId}/allPlaylists`
     ).then((res) => res.json());
     if (result.ok) {
-      setCurrentUserPlaylist(result.playlists as APIUserPlaylist[]);
+      setCurrentUserPlaylist(result.playlists as APIPlaylist[]);
       setIsLoading(false);
     }
   }, [user.userId, setCurrentUserPlaylist]);
@@ -116,8 +116,11 @@ const PlayListContainer = () => {
         <PlaylistView>
           {!isLoading &&
             currentUserPlaylist.map((item) => (
-              <Link state={item} to={`/playlists/${item.id}`} key={item.id}>
-                <PlaylistItem title={item.title} username={item.username} />
+              <Link state={item} to={`/playlists/${item._id}`} key={item._id}>
+                <PlaylistItem
+                  title={item.title}
+                  username={item.user.username}
+                />
               </Link>
             ))}
           {/* {Array.from({ length: 20 }).map((_, idx) => (

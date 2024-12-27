@@ -1,11 +1,11 @@
 import styled from "styled-components";
 import { DefaultButton } from "../../shared/ui/DefaultButton";
 import RowList from "../../widgets/client/RowList";
-import { useLocation, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import { useCallback, useEffect, useState } from "react";
 import { APIPlaylist } from "../../shared/models/playlist";
 import { useRecoilValue } from "recoil";
-import { userState } from "../../app/entities/user/atom";
+import { loginUserDataState, userState } from "../../app/entities/user/atom";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -56,6 +56,14 @@ const InfoTitle = styled.span`
 const InfoContent = styled.p`
   font-size: 14px;
   color: #777777;
+
+  a {
+    color: #777777;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 `;
 
 const InfoDescription = styled.p`
@@ -72,13 +80,41 @@ const InfoButtons = styled.div`
   gap: 15px;
 `;
 
-const FollowButton = styled(DefaultButton)`
-  color: #fff;
+const PlaylistPlayButton = styled.button`
+  border: none;
+  background: none;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: #f5a3a5;
+  color: #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  cursor: pointer;
+
+  svg {
+    width: 20px;
+  }
+`;
+
+const FollowButton = styled(DefaultButton)<{ $follow: boolean }>`
+  color: ${(props) => (props.$follow ? "#fff" : "#000")};
+  background-color: ${(props) => (props.$follow ? "#000" : "#fff")};
 
   font-size: 16px;
 
-  background-color: blue;
   padding: 5px 30px;
+
+  border: 1px solid #fff;
+
+  transition: transform 0.1s ease-in-out, color 0.2s ease-in-out,
+    background-color 0.2s ease-in-out;
+
+  &:hover {
+    transform: scale(1.1);
+  }
 `;
 
 const Playlist = () => {
@@ -89,10 +125,34 @@ const Playlist = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isMine, setIsMine] = useState(false);
 
+  const [follow, setFollow] = useState(false);
+  const [followers, setFollowers] = useState<number | null>(null);
+
+  const currentFollowers = playlistData?.followers?.length ?? 0;
+
+  const loginUserData = useRecoilValue(loginUserDataState);
+
+  useEffect(() => {
+    setFollowers((prev) => {
+      if (prev === currentFollowers) return prev;
+      return currentFollowers;
+    });
+  }, [currentFollowers]);
+
+  useEffect(() => {
+    if (loginUserData) {
+      const isFollow = loginUserData.followings?.followingPlaylists.some(
+        (playlist) => playlist === playlistId
+      );
+      setFollow(!!isFollow);
+    }
+  }, [loginUserData, playlistId]);
+
   const getPlaylistData = useCallback(async (id: string) => {
     const result = await fetch(
       `http://localhost:5000/playlist/${id}`
     ).then((res) => res.json());
+    console.log("result", result);
     if (result.ok) {
       setPlaylistData(result.playlist as APIPlaylist);
       setIsLoading(false);
@@ -110,6 +170,51 @@ const Playlist = () => {
   }, [getPlaylistData, playlistData?.user._id, playlistId, user.userId]);
 
   const displayContent = state || playlistData;
+
+  const followPlaylist = async () => {
+    if (user.userId === "") return;
+    if (follow) {
+      setFollow(false);
+      setFollowers((prev) => {
+        if (prev) {
+          return Math.max(prev - 1, 0);
+        }
+        return prev;
+      });
+      // 1. 로그인 한 사용자의 팔로잉 목록에서 제거
+      // 2. 현재 페이지 아티스트의 팔로워 목록에서 제거
+      await fetch(`http://localhost:5000/playlist/${playlistId}/followers`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          activeUserId: user.userId,
+          addList: false,
+        }),
+      });
+    } else {
+      setFollow(true);
+      setFollowers((prev) => {
+        if (prev !== null) {
+          return prev + 1;
+        }
+        return prev;
+      });
+      // 1. 로그인 한 사용자의 팔로잉 목록에 추가
+      // 2. 현재 페이지 아티스트의 팔로워 목록에 추가
+      await fetch(`http://localhost:5000/playlist/${playlistId}/followers`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          activeUserId: user.userId,
+          addList: true,
+        }),
+      });
+    }
+  };
 
   return (
     <Wrapper>
@@ -138,26 +243,51 @@ const Playlist = () => {
                   {displayContent?.info || "정보"}
                 </InfoDescription>
                 <InfoContent>
-                  생성자: {displayContent?.username || "알 수 없음"}
+                  생성자:{" "}
+                  <Link
+                    to={`/users/${displayContent?.user._id}`}
+                    state={displayContent.user}
+                  >
+                    {displayContent?.user.username || "알 수 없음"}
+                  </Link>
                 </InfoContent>
-                <InfoContent>
-                  팔로워 수: {displayContent?.followersCount || 0}
-                </InfoContent>
+                <InfoContent>팔로워 수: {followers}명</InfoContent>
               </>
             )}
           </InfoText>
         </InfoProfile>
         {!isLoading && (
           <InfoButtons>
+            <PlaylistPlayButton>
+              <svg
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+              >
+                <path
+                  clipRule="evenodd"
+                  fillRule="evenodd"
+                  d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z"
+                />
+              </svg>
+            </PlaylistPlayButton>
             {isMine ? (
-              <FollowButton>팔로우X</FollowButton>
+              <>
+                <FollowButton $follow={false}>수정하기</FollowButton>
+                <FollowButton $follow={true}>삭제하기</FollowButton>
+              </>
             ) : (
-              <FollowButton>팔로우</FollowButton>
+              <FollowButton $follow={follow} onClick={followPlaylist}>
+                {follow ? "언팔로우" : "팔로우"}
+              </FollowButton>
             )}
           </InfoButtons>
         )}
       </InfoContainer>
-      <RowList title="재생목록 음악" subTitle="공개" />
+      {playlistData?.musics.length !== 0 && (
+        <RowList title="재생목록 음악" subTitle="공개" />
+      )}
     </Wrapper>
   );
 };

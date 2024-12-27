@@ -12,9 +12,9 @@ export interface APIUser {
   followers?: string[];
   followings?: {
     followingUsers: string[];
-    followingAlbums: APIAlbum[];
-    followingArtists: APIArtist[];
-    followingPlaylists: APIPlaylist[];
+    followingAlbums: string[];
+    followingArtists: string[];
+    followingPlaylists: string[];
   };
   introduction?: string;
   isAdmin?: boolean;

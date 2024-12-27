@@ -32,7 +32,7 @@ export interface APIMusic {
     coverImg: string;
     _id: string;
   }>;
-  comments: string[];
+  comments?: string[];
   counts: {
     views: number;
     likes: number;
@@ -44,6 +44,6 @@ export interface APIMusic {
   released_at: string;
   title: string;
   ytId: string;
-  __v: number;
+  __v?: number;
   _id: string;
 }

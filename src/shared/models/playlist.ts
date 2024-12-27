@@ -7,7 +7,7 @@ export interface APIUserPlaylist {
   username: string;
   userId: string;
 }
-// 수정 필요요
+// 수정 필요
 export interface APIPlaylist {
   duration: number;
   comments?: string[];

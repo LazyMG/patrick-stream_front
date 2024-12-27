@@ -3,12 +3,20 @@ import { DefaultButton } from "../../shared/ui/DefaultButton";
 import RowList from "../../widgets/client/RowList";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { loginUserDataState, userState } from "../../app/entities/user/atom";
-import { useNavigate, useParams } from "react-router-dom";
+import {
+  Location,
+  useLocation,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
 import { useCallback, useEffect, useState } from "react";
 import FlexList from "../../widgets/client/FlexList";
 import { backgroundState } from "../../app/entities/global/atom";
 import { APIUser } from "../../shared/models/user";
-import { recentMusicsState } from "../../app/entities/music/atom";
+import {
+  likedMusicsState,
+  recentMusicsState,
+} from "../../app/entities/music/atom";
 import { currentUserPlaylistState } from "../../app/entities/playlist/atom";
 
 const Wrapper = styled.div`
@@ -67,16 +75,18 @@ const InfoButtons = styled.div`
   gap: 15px;
 `;
 
-const Button = styled(DefaultButton)`
-  color: #a988bd;
-  background-color: #fff;
+const Button = styled(DefaultButton)<{ $alter: boolean }>`
+  color: ${(props) => (props.$alter ? "#fff" : "#000")};
+  background-color: ${(props) => (props.$alter ? "#000" : " #fff")};
 
   font-size: 16px;
 
   padding: 5px 30px;
 
+  border: 1px solid #fff;
+
   &:hover {
-    background-color: #c7c7c7;
+    background-color: ${(props) => (props.$alter ? "#282828" : " #c7c7c7")};
   }
 `;
 
@@ -100,6 +110,12 @@ const FollowButton = styled(DefaultButton)<{ $follow: boolean }>`
   }
 `;
 
+interface UserPartial {
+  _id: string;
+  username: string;
+  introduction?: string;
+}
+
 const User = () => {
   const [user, setUser] = useRecoilState(userState);
   const { userId } = useParams();
@@ -107,63 +123,102 @@ const User = () => {
   const [isLoading, setIsLoading] = useState(true);
   const setBackground = useSetRecoilState(backgroundState);
   const [recentMusics, setRecentMusics] = useRecoilState(recentMusicsState);
+  const [likedMusics, setLikedMusics] = useRecoilState(likedMusicsState);
   const [loginUserData, setLoginUserData] = useRecoilState(loginUserDataState);
   const setCurrentUserPlaylist = useSetRecoilState(currentUserPlaylistState);
   const navigate = useNavigate();
-  const [follow, setFollow] = useState(false);
+  const [follow, setFollow] = useState<boolean | null>(null);
   const [followers, setFollowers] = useState<number | null>(null);
 
-  const isMyPage = userId !== undefined && user?.userId === userId;
+  const location = useLocation() as Location & {
+    state?: UserPartial;
+  };
 
-  const currentFollowers = isMyPage
-    ? loginUserData?.followers?.length ?? 0
-    : userData?.followers?.length ?? 0;
+  const [partial] = useState<UserPartial | null>(location.state ?? null);
+  console.log(partial);
+
+  const isMyPage = userId !== undefined && user.userId === userId;
 
   useEffect(() => {
-    if (loginUserData) {
-      const isFollow = loginUserData.followings?.followingUsers.some(
-        (user) => user === userId
-      );
-      setFollow(!!isFollow);
+    const currentUserInfo = isMyPage ? loginUserData : userData;
+    if (currentUserInfo) {
+      const followerCount = currentUserInfo.followers?.length ?? 0;
+      setFollowers(followerCount);
+
+      if (!isMyPage && loginUserData) {
+        const isFollow = loginUserData.followings?.followingUsers.some(
+          (uid) => uid === currentUserInfo._id
+        );
+        setFollow(!!isFollow);
+      } else {
+        setFollow(null);
+      }
     }
-  }, [loginUserData, userId]);
-
-  useEffect(() => {
-    setFollowers((prev) => {
-      if (prev === currentFollowers) return prev;
-      return currentFollowers;
-    });
-  }, [currentFollowers]);
+  }, [isMyPage, userData, loginUserData]);
 
   const getUser = useCallback(
-    async (id: string) => {
-      if (user && user.userId === userId) {
-        setIsLoading(false);
-        return;
-      }
+    async (targetId: string) => {
       setIsLoading(true);
-      console.log("User get userdata");
-      const result = await fetch(`http://localhost:5000/user/${id}`, {
-        credentials: "include",
-      }).then((res) => res.json());
-      if (result.ok) {
-        setUserData(result.user);
+      try {
+        console.log("User get userdata for ID:", targetId);
+        const result = await fetch(`http://localhost:5000/user/${targetId}`, {
+          credentials: "include",
+        }).then((res) => res.json());
+
+        if (result.ok) {
+          setUserData(result.user);
+          setRecentMusics(result.user.recentMusics);
+          setLikedMusics(result.user.likedMusics);
+        } else {
+          console.error("Fetch user data error:", result.message);
+        }
+      } catch (err) {
+        console.error("Fetch error:", err);
+      } finally {
         setIsLoading(false);
-        setRecentMusics(result.user.recentMusics);
       }
     },
-    [setRecentMusics, userId, user]
+    [setRecentMusics, setLikedMusics]
   );
 
   useEffect(() => {
-    if (userId && isLoading && !user.loading) {
+    setBackground(null);
+
+    // 1) 자기 페이지면 -> fetch 안 함
+    if (isMyPage) {
+      if (loginUserData) {
+        setUserData(loginUserData);
+      }
+      setIsLoading(false);
+      return;
+    }
+
+    // 2) partial이 있고, 아직 userData가 없으면
+    //    => partial만 먼저 보여주고 fetch는 상황에 따라
+    if (!userData && partial) {
+      // 우선 로딩 해제해서 빠른 화면
+      setIsLoading(false);
+      // 필요하다면 추가 fetchUser(userId)로 최신화 가능
+      if (userId) {
+        getUser(userId);
+      }
+      return;
+    }
+
+    // 3) userData가 없고 userId가 있으면 fetch
+    if (!userData && userId && !user.loading) {
       getUser(userId);
     }
-  }, [userId, isLoading, getUser, loginUserData, user]);
-
-  useEffect(() => {
-    setBackground(null);
-  }, [setBackground]);
+  }, [
+    isMyPage,
+    loginUserData,
+    userData,
+    partial,
+    userId,
+    user.loading,
+    getUser,
+    setBackground,
+  ]);
 
   const logOut = async () => {
     const result = await fetch("http://localhost:5000/auth/logout", {
@@ -176,54 +231,30 @@ const User = () => {
       setRecentMusics(null);
       setCurrentUserPlaylist([]);
       navigate("/");
-      console.log("로그아웃");
     }
   };
 
   const followUser = async () => {
-    if (isMyPage || user.userId === "") return;
-    if (follow) {
-      setFollow(false);
-      setFollowers((prev) => {
-        if (prev) {
-          return Math.max(prev - 1, 0);
-        }
-        return prev;
-      });
-      // 1. 로그인 한 사용자의 팔로잉 목록에서 제거
-      // 2. 현재 페이지 사용자의 팔로워 목록에서 제거
-      await fetch(`http://localhost:5000/user/${userId}/followers`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          activeUserId: user.userId,
-          addList: false,
-        }),
-      });
-    } else {
-      setFollow(true);
-      setFollowers((prev) => {
-        if (prev !== null) {
-          return prev + 1;
-        }
-        return prev;
-      });
-      // 1. 로그인 한 사용자의 팔로잉 목록에 추가
-      // 2. 현재 페이지 사용자의 팔로워 목록에 추가
-      await fetch(`http://localhost:5000/user/${userId}/followers`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          activeUserId: user.userId,
-          addList: true,
-        }),
-      });
-    }
+    if (!userId || isMyPage || user.userId === "" || follow === null) return;
+
+    const addList = !follow;
+    setFollow(addList);
+    setFollowers((prev) => {
+      if (prev === null) return prev;
+      return addList ? prev + 1 : Math.max(prev - 1, 0);
+    });
+
+    await fetch(`http://localhost:5000/user/${userId}/followers`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        activeUserId: user.userId,
+        addList,
+      }),
+    });
   };
+
+  const displayUser = userData ?? partial;
 
   return (
     <Wrapper>
@@ -244,35 +275,71 @@ const User = () => {
             </svg>
           </InfoIcon>
           <InfoText>
-            {(isMyPage || userData) && (
-              <>
-                <InfoName>
-                  {isMyPage ? loginUserData?.username : userData?.username}
-                </InfoName>
-                <InfoContent>팔로워 수: {followers}</InfoContent>
-              </>
+            {isLoading || !displayUser?.username ? (
+              <div
+                style={{
+                  width: "150px",
+                  height: "24px",
+                  backgroundColor: "yellow",
+                }}
+              />
+            ) : (
+              <InfoName>{displayUser.username}</InfoName>
+            )}
+            {isLoading && !userData ? (
+              // 로딩중 + 아직 userData가 없는 경우
+              <div
+                style={{
+                  width: "150px",
+                  height: "24px",
+                  backgroundColor: "yellow",
+                }}
+              />
+            ) : (
+              // userData가 있거나 partial로 있으면 표시
+              <InfoContent>{`팔로워 수: ${followers ?? 0}`}</InfoContent>
             )}
           </InfoText>
         </InfoProfile>
-        {!isLoading && !user.loading && (
-          <InfoButtons>
-            {isMyPage ? (
+        <InfoButtons>
+          {!isLoading && !user.loading ? (
+            isMyPage ? (
               <>
-                <Button>수정</Button>
-                <Button onClick={logOut}>로그아웃</Button>
+                <Button $alter={false}>수정</Button>
+                <Button onClick={logOut} $alter={true}>
+                  로그아웃
+                </Button>
               </>
-            ) : follow ? (
+            ) : follow !== null ? (
               <FollowButton $follow={follow} onClick={followUser}>
                 {follow ? "언팔로우" : "팔로우"}
               </FollowButton>
             ) : (
-              <div>Loading...</div>
-            )}
-          </InfoButtons>
-        )}
+              <div
+                style={{
+                  width: "150px",
+                  height: "35px",
+                  backgroundColor: "yellow",
+                }}
+              />
+            )
+          ) : (
+            <div
+              style={{
+                width: "150px",
+                height: "35px",
+                backgroundColor: "lightgray",
+              }}
+            />
+          )}
+        </InfoButtons>
       </InfoContainer>
-      <RowList title="최근 들은 음악" subTitle="공개" />
-      <FlexList title="반복 감상한 아티스트" isCustom={false} />
+      {recentMusics && recentMusics.length !== 0 && (
+        <RowList title="최근 들은 음악" subTitle="공개" list={recentMusics} />
+      )}
+      {likedMusics && likedMusics.length !== 0 && (
+        <RowList title="좋아요 한 음악" subTitle="공개" list={likedMusics} />
+      )}
     </Wrapper>
   );
 };

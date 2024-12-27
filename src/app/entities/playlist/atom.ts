@@ -1,7 +1,7 @@
 import { atom } from "recoil";
-import { APIUserPlaylist } from "../../../shared/models/playlist";
+import { APIPlaylist } from "../../../shared/models/playlist";
 
-export const currentUserPlaylistState = atom<APIUserPlaylist[]>({
+export const currentUserPlaylistState = atom<APIPlaylist[]>({
   key: "currentUserPlaylistState",
   default: [],
 });

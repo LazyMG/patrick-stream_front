@@ -1,5 +1,5 @@
 import { APIArtist, Artist } from "./artist";
-import { Music } from "./music";
+import { APIMusic, Music } from "./music";
 import { User } from "./user";
 
 // comment, followers 추가 필
@@ -30,7 +30,7 @@ export interface APIAlbum {
   followers?: User[];
   introduction?: string;
   length?: number;
-  musics?: Music[];
+  musics?: APIMusic[];
   released_at?: string;
   title: string;
   total_duration?: number;

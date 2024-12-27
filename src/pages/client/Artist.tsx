@@ -7,7 +7,7 @@ import { Location, useLocation, useParams } from "react-router-dom";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { backgroundState } from "../../app/entities/global/atom";
 import { APIArtist } from "../../shared/models/artist";
-import { userState } from "../../app/entities/user/atom";
+import { loginUserDataState, userState } from "../../app/entities/user/atom";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -18,8 +18,6 @@ const Wrapper = styled.div`
   position: relative;
 
   z-index: 2;
-
-  /* background-color: blue; */
 `;
 
 const InfoHeader = styled.div`
@@ -59,35 +57,33 @@ const CircleButton = styled(DefaultButton)`
   justify-content: center;
   align-items: center;
 
-  background-color: #d2dc23;
+  background-color: #f5a3a5;
 
   svg {
-    width: 50px;
-    color: #fff;
+    width: 30px;
+    color: #000;
   }
 
   &:hover {
-    background-color: #afb71e;
+    background-color: #b97b7c;
   }
 `;
 
 const FollowButton = styled(DefaultButton)<{ $follow: boolean }>`
-  color: ${(props) => (props.$follow ? "#a988bd" : "#fff")};
-  background-color: ${(props) => (props.$follow ? "transparent" : "#a988bd")};
+  color: ${(props) => (props.$follow ? "#fff" : "#000")};
+  background-color: ${(props) => (props.$follow ? "#000" : "#fff")};
 
   font-size: 16px;
 
   padding: 5px 30px;
 
-  border: 1px solid #a988bd;
+  border: 1px solid #fff;
 
   transition: transform 0.1s ease-in-out, color 0.2s ease-in-out,
     background-color 0.2s ease-in-out;
 
   &:hover {
     transform: scale(1.1);
-    background-color: ${(props) => (props.$follow ? "#a988bd" : "transparent")};
-    color: ${(props) => (props.$follow ? "#fff" : "#a988bd")};
   }
 `;
 
@@ -117,6 +113,26 @@ const Artist = () => {
   const location = useLocation() as Location & { state: ArtistLinkState };
   const [follow, setFollow] = useState(false);
   const [followers, setFollowers] = useState<number | null>(null);
+
+  const currentFollowers = artistData?.followers?.length ?? 0;
+
+  const loginUserData = useRecoilValue(loginUserDataState);
+
+  useEffect(() => {
+    setFollowers((prev) => {
+      if (prev === currentFollowers) return prev;
+      return currentFollowers;
+    });
+  }, [currentFollowers]);
+
+  useEffect(() => {
+    if (loginUserData) {
+      const isFollow = loginUserData.followings?.followingArtists.some(
+        (artist) => artist === artistId
+      );
+      setFollow(!!isFollow);
+    }
+  }, [loginUserData, artistId]);
 
   const getArtist = useCallback(
     async (id: string) => {
@@ -166,6 +182,16 @@ const Artist = () => {
       });
       // 1. 로그인 한 사용자의 팔로잉 목록에서 제거
       // 2. 현재 페이지 아티스트의 팔로워 목록에서 제거
+      await fetch(`http://localhost:5000/artist/${artistId}/followers`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          activeUserId: user.userId,
+          addList: false,
+        }),
+      });
     } else {
       setFollow(true);
       setFollowers((prev) => {
@@ -176,6 +202,16 @@ const Artist = () => {
       });
       // 1. 로그인 한 사용자의 팔로잉 목록에 추가
       // 2. 현재 페이지 아티스트의 팔로워 목록에 추가
+      await fetch(`http://localhost:5000/artist/${artistId}/followers`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          activeUserId: user.userId,
+          addList: true,
+        }),
+      });
     }
   };
 
@@ -188,7 +224,7 @@ const Artist = () => {
             : artistData?.artistname}
         </Title>
         <Info>{artistData?.introduction}</Info>
-        <Followers>{artistData?.followers?.length}명</Followers>
+        <Followers>{followers}명</Followers>
       </InfoHeader>
       <ControlContainer>
         <CircleButton>

@@ -97,8 +97,8 @@ const BlurBackImage = styled.div<{ $backImg: string }>`
     height: 100%;
     background: linear-gradient(
       to bottom,
-      rgba(0, 0, 0, 0) 60%,
-      rgba(0, 0, 0, 0.9) 90%,
+      rgba(0, 0, 0, 0.5) 60%,
+      rgba(0, 0, 0, 0.9) 100%,
       #000 100%
     );
     z-index: -1;
@@ -222,7 +222,7 @@ const MainContainer = ({ children, onScroll }: IMainContainer) => {
         <Footer />
       </Content>
       {isPlayerOn && <PlayBar player={player} setPlayer={setPlayer} />}
-      <YoutubeContainer player={player} setPlayer={setPlayer} />
+      {/* <YoutubeContainer player={player} setPlayer={setPlayer} /> */}
     </Wrapper>
   );
 };
