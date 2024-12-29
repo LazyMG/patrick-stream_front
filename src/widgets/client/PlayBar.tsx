@@ -816,7 +816,7 @@ const PlayBar = ({ player }: IPlayBar) => {
               </svg>
             </PlayBarContentRepeatButton>
             <PlayBarContentUtilButton>
-              <svg
+              {/* <svg
                 fill="none"
                 strokeWidth={1.5}
                 stroke="currentColor"
@@ -828,6 +828,18 @@ const PlayBar = ({ player }: IPlayBar) => {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   d="M7.5 21 3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5"
+                />
+              </svg> */}
+              <svg
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+              >
+                <path
+                  clipRule="evenodd"
+                  fillRule="evenodd"
+                  d="M12 3.75a.75.75 0 0 1 .75.75v6.75h6.75a.75.75 0 0 1 0 1.5h-6.75v6.75a.75.75 0 0 1-1.5 0v-6.75H4.5a.75.75 0 0 1 0-1.5h6.75V4.5a.75.75 0 0 1 .75-.75Z"
                 />
               </svg>
             </PlayBarContentUtilButton>

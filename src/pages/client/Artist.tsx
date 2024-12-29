@@ -4,11 +4,15 @@ import { DefaultButton } from "../../shared/ui/DefaultButton";
 import FlexList from "../../widgets/client/FlexList";
 import { useCallback, useEffect, useState } from "react";
 import { Location, useLocation, useParams } from "react-router-dom";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { backgroundState } from "../../app/entities/global/atom";
 import { APIArtist } from "../../shared/models/artist";
 import { loginUserDataState, userState } from "../../app/entities/user/atom";
 import { followingArtistsState } from "../../app/entities/artist/atom";
+import { currentUserPlaylistState } from "../../app/entities/playlist/atom";
+import { playlistState } from "../../app/entities/music/atom";
+import { usePlayMusic } from "../../shared/hooks/usePlayMusic";
+import { APIMusic } from "../../shared/models/music";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -111,6 +115,7 @@ const Artist = () => {
   const setBackground = useSetRecoilState(backgroundState);
   const [isLoading, setIsLoading] = useState(true);
   const [artistData, setArtistData] = useState<APIArtist | null>(null);
+  const [artistMusics, setArtistMusics] = useState<APIMusic[] | null>(null);
   const location = useLocation() as Location & { state: ArtistLinkState };
   const [follow, setFollow] = useState(false);
   const [followers, setFollowers] = useState<number | null>(null);
@@ -119,6 +124,8 @@ const Artist = () => {
 
   const loginUserData = useRecoilValue(loginUserDataState);
   const setFollowingArtists = useSetRecoilState(followingArtistsState);
+  const [musicPlaylist, setMusicPlaylist] = useRecoilState(playlistState);
+  const playMusic = usePlayMusic();
 
   useEffect(() => {
     setFollowers((prev) => {
@@ -145,6 +152,7 @@ const Artist = () => {
       if (result.ok) {
         // console.log(result.artist);
         setArtistData(result.artist);
+        setArtistMusics(result.artist.musics);
         setBackground((prev) => {
           if (prev?.src === result.artist.coverImg) {
             return prev;
@@ -206,6 +214,12 @@ const Artist = () => {
     });
   };
 
+  const playArtistMusics = () => {
+    if (!artistData?.musics) return;
+    setMusicPlaylist(artistData.musics);
+    playMusic(artistData.musics[0]);
+  };
+
   return (
     <Wrapper>
       <InfoHeader>
@@ -218,7 +232,7 @@ const Artist = () => {
         <Followers>{followers}명</Followers>
       </InfoHeader>
       <ControlContainer>
-        <CircleButton>
+        <CircleButton onClick={playArtistMusics}>
           <svg
             fill="currentColor"
             viewBox="0 0 24 24"
@@ -238,7 +252,13 @@ const Artist = () => {
       </ControlContainer>
       {!isLoading && (
         <ContentContainer>
-          <RowList title={"인기 음악"} list={artistData?.musics} />
+          {artistMusics && artistMusics.length !== 0 && (
+            <RowList
+              title={"인기 음악"}
+              list={artistMusics}
+              setFunc={setArtistMusics}
+            />
+          )}
           <FlexList
             title="앨범"
             isCustom={false}

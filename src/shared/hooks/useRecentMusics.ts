@@ -10,11 +10,18 @@ export const useRecentMusics = () => {
   const addUserRecentMusics = async (music: APIMusic) => {
     setRecentMusics((prev) => {
       if (prev) {
+        const currentMusic = {
+          ...music,
+          counts: {
+            likes: music.counts.likes,
+            views: music.counts.views + 1,
+          },
+        };
         if (prev.some((item) => item.ytId === music.ytId)) {
           const newList = prev.filter((item) => item.ytId !== music.ytId);
-          return [music, ...newList];
+          return [currentMusic, ...newList];
         }
-        return [music, ...prev];
+        return [currentMusic, ...prev];
       } else {
         return prev;
       }

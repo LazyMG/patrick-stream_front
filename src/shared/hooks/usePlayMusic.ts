@@ -16,13 +16,23 @@ export const usePlayMusic = () => {
   const { addUserRecentMusics } = useRecentMusics();
 
   const playMusic = async (music: APIMusic) => {
-    // setSelectedMusic(music);
+    let isSameMusic = false;
     setSelectedMusic((prev) => {
       if (prev && prev._id === music._id) {
+        isSameMusic = true;
         return prev;
       }
-      return music;
+      const newMusic = {
+        ...music,
+        counts: {
+          likes: music.counts.likes,
+          views: music.counts.views + 1,
+        },
+      };
+      return newMusic;
     });
+    if (isSameMusic) return;
+
     setYtId(music.ytId);
     setIsPlayerOn(true);
     setCurrentPlayer((prev) => {

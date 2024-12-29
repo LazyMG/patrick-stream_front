@@ -60,9 +60,10 @@ interface IRowList {
   title: string;
   subTitle?: string;
   list?: APIMusic[];
+  setFunc?: React.Dispatch<React.SetStateAction<APIMusic[] | null>>;
 }
 
-const RowList = ({ title, subTitle, list }: IRowList) => {
+const RowList = ({ title, subTitle, list, setFunc }: IRowList) => {
   return (
     <Wrapper>
       <ListHeader>
@@ -71,7 +72,13 @@ const RowList = ({ title, subTitle, list }: IRowList) => {
       </ListHeader>
       <ListContainer>
         {list?.map((item, idx) => (
-          <RowListMusicItem music={item} index={idx} key={item._id} />
+          <RowListMusicItem
+            music={item}
+            index={idx}
+            key={item._id}
+            length={list?.length}
+            setFunc={setFunc}
+          />
         ))}
         <ListFooter>
           <MoreButton>모두 표시</MoreButton>
