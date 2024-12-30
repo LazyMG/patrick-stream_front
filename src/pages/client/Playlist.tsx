@@ -4,8 +4,12 @@ import RowList from "../../widgets/client/RowList";
 import { Link, useLocation, useParams } from "react-router-dom";
 import { useCallback, useEffect, useState } from "react";
 import { APIPlaylist } from "../../shared/models/playlist";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { loginUserDataState, userState } from "../../app/entities/user/atom";
+import { currentUserPlaylistState } from "../../app/entities/playlist/atom";
+import { backgroundState } from "../../app/entities/global/atom";
+import { playlistState } from "../../app/entities/music/atom";
+import { usePlayMusic } from "../../shared/hooks/usePlayMusic";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -131,12 +135,17 @@ const Playlist = () => {
   const currentFollowers = playlistData?.followers?.length ?? 0;
 
   const loginUserData = useRecoilValue(loginUserDataState);
+  const currentUserPlaylist = useRecoilValue(currentUserPlaylistState);
+
+  const setBackground = useSetRecoilState(backgroundState);
+
+  const setMusicPlaylist = useSetRecoilState(playlistState);
+  const playMusic = usePlayMusic();
 
   useEffect(() => {
-    setFollowers((prev) => {
-      if (prev === currentFollowers) return prev;
-      return currentFollowers;
-    });
+    setFollowers((prev) =>
+      prev === currentFollowers ? prev : currentFollowers
+    );
   }, [currentFollowers]);
 
   useEffect(() => {
@@ -152,7 +161,6 @@ const Playlist = () => {
     const result = await fetch(
       `http://localhost:5000/playlist/${id}`
     ).then((res) => res.json());
-    console.log("result", result);
     if (result.ok) {
       setPlaylistData(result.playlist as APIPlaylist);
       setIsLoading(false);
@@ -160,60 +168,55 @@ const Playlist = () => {
   }, []);
 
   useEffect(() => {
-    if (playlistId) getPlaylistData(playlistId);
+    setBackground(null);
 
-    if (user.userId !== "" && playlistData?.user._id) {
-      if (user.userId === playlistData.user._id) {
+    if (user.userId !== "" && currentUserPlaylist && playlistId) {
+      const thisPlaylist = currentUserPlaylist.find(
+        (item) => item._id === playlistId
+      );
+      if (thisPlaylist) {
         setIsMine(true);
+        setPlaylistData(thisPlaylist);
+        setIsLoading(false);
+        return;
       }
     }
-  }, [getPlaylistData, playlistData?.user._id, playlistId, user.userId]);
+    if (playlistId) getPlaylistData(playlistId);
+  }, [
+    currentUserPlaylist,
+    getPlaylistData,
+    playlistId,
+    user.userId,
+    setBackground,
+  ]);
 
   const displayContent = state || playlistData;
 
   const followPlaylist = async () => {
-    if (user.userId === "") return;
-    if (follow) {
-      setFollow(false);
-      setFollowers((prev) => {
-        if (prev) {
-          return Math.max(prev - 1, 0);
-        }
-        return prev;
-      });
-      // 1. 로그인 한 사용자의 팔로잉 목록에서 제거
-      // 2. 현재 페이지 아티스트의 팔로워 목록에서 제거
-      await fetch(`http://localhost:5000/playlist/${playlistId}/followers`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          activeUserId: user.userId,
-          addList: false,
-        }),
-      });
-    } else {
-      setFollow(true);
-      setFollowers((prev) => {
-        if (prev !== null) {
-          return prev + 1;
-        }
-        return prev;
-      });
-      // 1. 로그인 한 사용자의 팔로잉 목록에 추가
-      // 2. 현재 페이지 아티스트의 팔로워 목록에 추가
-      await fetch(`http://localhost:5000/playlist/${playlistId}/followers`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          activeUserId: user.userId,
-          addList: true,
-        }),
-      });
-    }
+    if (!playlistId || isMine || user.userId === "" || follow === null) return;
+
+    const addList = !follow;
+
+    setFollow(addList);
+    setFollowers((prev) => {
+      if (prev === null) return prev;
+      return addList ? prev + 1 : Math.max(prev - 1, 0);
+    });
+
+    await fetch(`http://localhost:5000/playlist/${playlistId}/followers`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        activeUserId: user.userId,
+        addList,
+      }),
+    });
+  };
+
+  const playPlaylistMusics = () => {
+    if (!playlistData?.musics) return;
+    setMusicPlaylist(playlistData.musics);
+    playMusic(playlistData.musics[0]);
   };
 
   return (
@@ -258,7 +261,7 @@ const Playlist = () => {
         </InfoProfile>
         {!isLoading && (
           <InfoButtons>
-            <PlaylistPlayButton>
+            <PlaylistPlayButton onClick={playPlaylistMusics}>
               <svg
                 fill="currentColor"
                 viewBox="0 0 24 24"
@@ -285,8 +288,12 @@ const Playlist = () => {
           </InfoButtons>
         )}
       </InfoContainer>
-      {playlistData?.musics.length !== 0 && (
-        <RowList title="재생목록 음악" subTitle="공개" />
+      {playlistData?.musics && playlistData?.musics.length !== 0 && (
+        <RowList
+          title="재생목록 음악"
+          subTitle="공개"
+          list={playlistData?.musics}
+        />
       )}
     </Wrapper>
   );

@@ -76,23 +76,12 @@ const RowListMusicItem = ({
 }) => {
   const playMusic = usePlayMusic();
   const [views, setViews] = useState<number>(music?.counts.views || 0);
-  // const selectedMusic = useRecoilValue(selectedMusicState);
-
-  // const clickViews = () => {
-  //   if (selectedMusic?._id === music._id) return;
-  //   setViews((prev) => {
-  //     if (!prev && !selectedMusic) return prev;
-  //     else if (!selectedMusic) return prev + 1;
-  //     return selectedMusic.counts.views + 1;
-  //   });
-  //   playMusic(music);
-  // };
 
   const selectedMusic = useRecoilValue(selectedMusicState);
 
   useEffect(() => {
     if (selectedMusic && selectedMusic._id === music._id) {
-      console.log("Row", selectedMusic);
+      // console.log("Row", selectedMusic);
       setViews((prev) => prev + 1);
     }
   }, [selectedMusic, music._id]);
@@ -100,26 +89,6 @@ const RowListMusicItem = ({
   const clickViews = () => {
     if (selectedMusic?._id === music._id) return;
     playMusic(music);
-
-    // if (!setFunc) return;
-    // setFunc((prev) => {
-    //   if (!prev) return prev;
-    //   if (prev.some((item) => item._id === music._id)) {
-    //     return prev.map((item) => {
-    //       if (item._id === music._id)
-    //         return {
-    //           ...music,
-    //           counts: {
-    //             likes: music.counts.likes,
-    //             views: music.counts.views + 1,
-    //           },
-    //         };
-    //       return item;
-    //     });
-    //   } else {
-    //     return prev;
-    //   }
-    // });
   };
 
   return (

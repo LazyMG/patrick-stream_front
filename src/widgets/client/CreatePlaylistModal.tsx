@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { createPortal } from "react-dom";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { userState } from "../../app/entities/user/atom";
+import { loginUserDataState, userState } from "../../app/entities/user/atom";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { currentUserPlaylistState } from "../../app/entities/playlist/atom";
 
@@ -106,11 +106,12 @@ const CreatePlaylistModal = ({ closeModal }: ICreatePlaylistModal) => {
   const user = useRecoilValue(userState);
   const { register, handleSubmit } = useForm<PlaylistFormValues>();
   const setCurrentUserPlaylist = useSetRecoilState(currentUserPlaylistState);
+  const loginUserData = useRecoilValue(loginUserDataState);
 
   const createPlaylist: SubmitHandler<PlaylistFormValues> = async (data) => {
     //validate
 
-    if (user.userId !== "") {
+    if (user.userId !== "" && loginUserData) {
       const result = await fetch(
         `http://localhost:5000/user/${user.userId}/playlist`,
         {
@@ -124,13 +125,14 @@ const CreatePlaylistModal = ({ closeModal }: ICreatePlaylistModal) => {
       if (result.ok) {
         setCurrentUserPlaylist((prev) => [
           {
-            id: result.id,
+            _id: result.id,
             title: data.title,
             duration: 0,
             introduction: data.info,
-            followersCount: 0,
-            username: user.username,
-            userId: user.userId,
+            user: {
+              username: loginUserData.username,
+              _id: user.userId,
+            },
           },
           ...prev,
         ]);

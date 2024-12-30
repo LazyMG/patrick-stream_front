@@ -1,4 +1,9 @@
 import styled from "styled-components";
+import { APIPlaylist } from "../models/playlist";
+import { useSetRecoilState } from "recoil";
+import { playlistState } from "../../app/entities/music/atom";
+import { usePlayMusic } from "../hooks/usePlayMusic";
+import { Link } from "react-router-dom";
 
 const ListIcon = styled.div`
   width: 25px;
@@ -11,7 +16,6 @@ const ListIcon = styled.div`
 const Wrapper = styled.div`
   width: 100%;
   display: flex;
-  justify-content: space-between;
   align-items: center;
   min-height: 60px; // height에서 min-height로 변경
   flex-shrink: 0; // 추가: 아이템의 크기 유지
@@ -31,8 +35,14 @@ const Wrapper = styled.div`
   &:hover ${ListIcon} svg {
     display: block; /* hover 시 svg 보이기 */
   }
+`;
 
-  /* background-color: yellowgreen; */
+const StyledLink = styled(Link)`
+  color: #fff;
+  text-decoration: none;
+  width: 100%;
+  display: flex;
+  align-items: center;
 `;
 
 const ListInfo = styled.div`
@@ -47,20 +57,26 @@ const ListTitle = styled.span`
 
 const ListOwner = styled.span``;
 
-const PlaylistItem = ({
-  title,
-  username,
-}: {
-  title: string;
-  username: string;
-}) => {
+const PlaylistItem = ({ playlist }: { playlist: APIPlaylist }) => {
+  const setMusicPlaylist = useSetRecoilState(playlistState);
+  const playMusic = usePlayMusic();
+
+  const playPlaylist = (event: React.MouseEvent<HTMLDivElement>) => {
+    event.stopPropagation();
+    if (!playlist.musics || playlist.musics.length === 0) return;
+    setMusicPlaylist(playlist.musics);
+    playMusic(playlist.musics[0]);
+  };
+
   return (
     <Wrapper>
-      <ListInfo>
-        <ListTitle>{title}</ListTitle>
-        <ListOwner>{username}</ListOwner>
-      </ListInfo>
-      <ListIcon>
+      <StyledLink to={`/playlists/${playlist._id}`}>
+        <ListInfo>
+          <ListTitle>{playlist.title}</ListTitle>
+          <ListOwner>{playlist.user.username}</ListOwner>
+        </ListInfo>
+      </StyledLink>
+      <ListIcon onClick={playPlaylist}>
         <svg
           fill="currentColor"
           viewBox="0 0 24 24"

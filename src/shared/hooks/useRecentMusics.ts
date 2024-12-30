@@ -42,7 +42,7 @@ export const useRecentMusics = () => {
     ).then((res) => res.json());
 
     if (result.ok) {
-      console.log(result);
+      // console.log(result);
     }
   };
   return { addUserRecentMusics };

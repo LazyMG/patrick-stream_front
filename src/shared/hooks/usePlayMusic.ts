@@ -15,7 +15,7 @@ export const usePlayMusic = () => {
   const setSelectedMusic = useSetRecoilState(selectedMusicState);
   const { addUserRecentMusics } = useRecentMusics();
 
-  const playMusic = async (music: APIMusic) => {
+  const playMusic = async (music: APIMusic, noSame?: boolean) => {
     let isSameMusic = false;
     setSelectedMusic((prev) => {
       if (prev && prev._id === music._id) {
@@ -31,7 +31,7 @@ export const usePlayMusic = () => {
       };
       return newMusic;
     });
-    if (isSameMusic) return;
+    if (!noSame && isSameMusic) return;
 
     setYtId(music.ytId);
     setIsPlayerOn(true);

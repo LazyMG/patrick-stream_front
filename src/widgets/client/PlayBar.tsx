@@ -16,6 +16,8 @@ import { setDates, setMusicSeconds } from "../../shared/lib/musicDataFormat";
 import { Link } from "react-router-dom";
 import { userState } from "../../app/entities/user/atom";
 import { usePlayMusic } from "../../shared/hooks/usePlayMusic";
+import AddMusicPlaylistModal from "./AddMusicPlaylistModal";
+import CurrentPlaylistModal from "./CurrentPlaylistModal";
 
 const Wrapper = styled.div`
   position: fixed;
@@ -291,7 +293,7 @@ const PlayBarContentUtilVolumeRange = styled.input`
   }
 `;
 
-const PlayBarContentRepeatButton = styled.div`
+const PlayBarContentRepeatButton = styled.div<{ $isRepeat: boolean }>`
   width: 25px;
 
   cursor: pointer;
@@ -336,6 +338,26 @@ const PlayBar = ({ player }: IPlayBar) => {
 
   const musicPlaylist = useRecoilValue(playlistState);
 
+  const [isAddPlaylistModalOpen, setIsAddPlaylistModalOpen] = useState(false);
+  const [isCurrentPlaylistModalOpen, setIsCurrentPlaylistModalOpen] = useState(
+    false
+  );
+  const [isRepeat, setIsRepeat] = useState(false);
+
+  const openAddPlaylistModal = () => {
+    if (user.userId !== "") {
+      setIsAddPlaylistModalOpen(true);
+    }
+  };
+
+  const closeAddPlaylistModal = () => setIsAddPlaylistModalOpen(false);
+
+  const openCurrentPlaylistModal = () => {
+    setIsCurrentPlaylistModalOpen(true);
+  };
+
+  const closeCurrentPlaylistModal = () => setIsCurrentPlaylistModalOpen(false);
+
   const playMusic = usePlayMusic();
 
   //노래 재생될 때
@@ -377,9 +399,6 @@ const PlayBar = ({ player }: IPlayBar) => {
           setTime(formatedTime);
         }, 1000);
       }
-      if (player.getPlayerState() === 0) {
-        //
-      }
     }
     // 매 초마다 업데이트
     return () => clearInterval(updateTimer);
@@ -387,6 +406,10 @@ const PlayBar = ({ player }: IPlayBar) => {
 
   useEffect(() => {
     if (ytPlayer === 0 && musicPlaylist && selectedMusic) {
+      if (isRepeat) {
+        reStartMusic();
+        return;
+      }
       const index = musicPlaylist.findIndex(
         (music) => music._id === selectedMusic._id
       );
@@ -413,7 +436,10 @@ const PlayBar = ({ player }: IPlayBar) => {
   }, [ytPlayer]);
 
   const reStartMusic = () => {
-    if (player && player.getPlayerState() === 1) {
+    if (
+      player &&
+      (player.getPlayerState() === 1 || player.getPlayerState() === 0)
+    ) {
       player.stopVideo();
       player.playVideo();
       setTime("00:00");
@@ -437,7 +463,6 @@ const PlayBar = ({ player }: IPlayBar) => {
   };
 
   const togglePlaying = () => {
-    // console.log("currentPlayer", currentPlayer);
     if (player && currentPlayer.isPlaying) {
       player.pauseVideo();
       setYtPlayer(2);
@@ -454,6 +479,12 @@ const PlayBar = ({ player }: IPlayBar) => {
         isPlaying: true,
         isPaused: false,
       }));
+    } else {
+      if (musicPlaylist && musicPlaylist.length !== 0) {
+        playMusic(musicPlaylist[0]);
+        setTime("00:00");
+        setTimeline(0);
+      }
     }
   };
 
@@ -511,40 +542,37 @@ const PlayBar = ({ player }: IPlayBar) => {
 
   const onClickLikeButton = async () => {
     if (!selectedMusic || user.userId === "") return;
-    const index = likedMusics?.findIndex(
+
+    const isLiked = likedMusics?.some(
       (music) => music.ytId === selectedMusic.ytId
     );
-    if (index === -1 || typeof index === "undefined") {
-      // index가 undefined면 좋아요 목록에 없음 -> 추가 필요
-      setLikedMusics((prev) => {
-        if (!prev) return prev;
+
+    // 좋아요 상태가 다르면 상태 업데이트 및 서버 요청
+    setLikedMusics((prev) => {
+      if (!prev) return prev;
+
+      if (isLiked) {
+        // 이미 좋아요를 누른 상태에서 좋아요 취소
+        return prev.filter((music) => music.ytId !== selectedMusic.ytId);
+      } else {
+        // 좋아요를 누르지 않은 상태에서 좋아요 추가
         return [selectedMusic, ...prev];
-      });
+      }
+    });
 
-      await fetch(`http://localhost:5000/user/${user.userId}/likedMusics`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ addMusic: true, musicId: selectedMusic._id }),
-      });
-      setIsLike(true);
-    } else {
-      // index가 있으면 좋아요 목록에 있음 -> 삭제 필요
-      setLikedMusics((prev) => {
-        if (!prev) return prev;
-        return [...prev.filter((music) => music.ytId !== selectedMusic.ytId)];
-      });
+    // 서버에 좋아요 추가 또는 삭제 요청
+    await fetch(`http://localhost:5000/user/${user.userId}/likedMusics`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        addMusic: !isLiked, // 현재 상태와 반대로 처리
+        musicId: selectedMusic._id,
+      }),
+    });
 
-      await fetch(`http://localhost:5000/user/${user.userId}/likedMusics`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ addMusic: false, musicId: selectedMusic._id }),
-      });
-      setIsLike(false);
-    }
+    setIsLike(!isLiked); // 좋아요 상태를 반대로 설정
   };
 
   const playPrevMusic = () => {
@@ -562,6 +590,8 @@ const PlayBar = ({ player }: IPlayBar) => {
     );
     // first music
     if (index === 0) return;
+    setTime("00:00");
+    setTimeline(0);
     playMusic(musicPlaylist[index - 1]);
   };
 
@@ -577,6 +607,8 @@ const PlayBar = ({ player }: IPlayBar) => {
     );
     // last music
     if (index + 1 === length) return;
+    setTime("00:00");
+    setTimeline(0);
     playMusic(musicPlaylist[index + 1]);
   };
 
@@ -623,7 +655,7 @@ const PlayBar = ({ player }: IPlayBar) => {
                         d="M15.75 5.25v13.5m-7.5-13.5v13.5"
                       />
                     </svg>
-                  ) : (
+                  ) : currentPlayer.isPaused ? (
                     <svg
                       fill="none"
                       strokeWidth={1.5}
@@ -638,34 +670,24 @@ const PlayBar = ({ player }: IPlayBar) => {
                         d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z"
                       />
                     </svg>
-                    // <svg
-                    //   xmlns="http://www.w3.org/2000/svg"
-                    //   height="52px"
-                    //   viewBox="0 -960 960 960"
-                    //   width="52px"
-                    //   fill="#fff"
-                    // >
-                    //   <path d="M320-202v-560l440 280-440 280Zm66.67-280Zm0 158.67L636-482 386.67-640.67v317.34Z" />
-                    // </svg>
+                  ) : (
+                    <svg
+                      fill="none"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                      aria-hidden="true"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M5.25 7.5A2.25 2.25 0 0 1 7.5 5.25h9a2.25 2.25 0 0 1 2.25 2.25v9a2.25 2.25 0 0 1-2.25 2.25h-9a2.25 2.25 0 0 1-2.25-2.25v-9Z"
+                      />
+                    </svg>
                   )}
-
-                  {/* <svg
-                fill="none"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-                aria-hidden="true"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M5.25 7.5A2.25 2.25 0 0 1 7.5 5.25h9a2.25 2.25 0 0 1 2.25 2.25v9a2.25 2.25 0 0 1-2.25 2.25h-9a2.25 2.25 0 0 1-2.25-2.25v-9Z"
-                />
-              </svg> */}
                 </PlayBarContentControlPlayButton>
               )}
-
               <PlayBarContentControlMoveButton onClick={playNextMusic}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -799,7 +821,10 @@ const PlayBar = ({ player }: IPlayBar) => {
                 ref={volumeRef}
               />
             </PlayBarContentUtilVolumeButton>
-            <PlayBarContentRepeatButton>
+            <PlayBarContentRepeatButton
+              $isRepeat={isRepeat}
+              onClick={() => setIsRepeat((prev) => !prev)}
+            >
               <svg
                 fill="none"
                 strokeWidth={1.5}
@@ -815,7 +840,7 @@ const PlayBar = ({ player }: IPlayBar) => {
                 />
               </svg>
             </PlayBarContentRepeatButton>
-            <PlayBarContentUtilButton>
+            <PlayBarContentUtilButton onClick={openAddPlaylistModal}>
               {/* <svg
                 fill="none"
                 strokeWidth={1.5}
@@ -843,8 +868,8 @@ const PlayBar = ({ player }: IPlayBar) => {
                 />
               </svg>
             </PlayBarContentUtilButton>
-            <PlayBarContentUtilButton>
-              <svg
+            <PlayBarContentUtilButton onClick={openCurrentPlaylistModal}>
+              {/* <svg
                 fill="none"
                 strokeWidth={1.5}
                 stroke="currentColor"
@@ -857,25 +882,31 @@ const PlayBar = ({ player }: IPlayBar) => {
                   strokeLinejoin="round"
                   d="m19.5 8.25-7.5 7.5-7.5-7.5"
                 />
+              </svg> */}
+              <svg
+                fill="none"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="m4.5 15.75 7.5-7.5 7.5 7.5"
+                />
               </svg>
-              {/* <svg
-              fill="none"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-              aria-hidden="true"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="m4.5 15.75 7.5-7.5 7.5 7.5"
-              />
-            </svg> */}
             </PlayBarContentUtilButton>
           </PlayBarContentUtilContainer>
         </PlayBarContentContainer>
       </>
+      {isAddPlaylistModalOpen && (
+        <AddMusicPlaylistModal closeModal={closeAddPlaylistModal} />
+      )}
+      {isCurrentPlaylistModalOpen && (
+        <CurrentPlaylistModal closeModal={closeCurrentPlaylistModal} />
+      )}
     </Wrapper>
   );
 };

@@ -4,7 +4,6 @@ import CreatePlaylistModal from "./CreatePlaylistModal";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { userState } from "../../app/entities/user/atom";
 import { currentUserPlaylistState } from "../../app/entities/playlist/atom";
-import { Link } from "react-router-dom";
 import PlaylistItem from "../../shared/ui/PlaylistItem";
 import { APIPlaylist } from "../../shared/models/playlist";
 import { isPlayerOnState } from "../../app/entities/player/atom";
@@ -81,6 +80,7 @@ const PlayListContainer = () => {
       `http://localhost:5000/user/${user.userId}/allPlaylists`
     ).then((res) => res.json());
     if (result.ok) {
+      console.log("Container!");
       setCurrentUserPlaylist(result.playlists as APIPlaylist[]);
       setIsLoading(false);
     }
@@ -116,16 +116,8 @@ const PlayListContainer = () => {
         <PlaylistView>
           {!isLoading &&
             currentUserPlaylist.map((item) => (
-              <Link state={item} to={`/playlists/${item._id}`} key={item._id}>
-                <PlaylistItem
-                  title={item.title}
-                  username={item.user.username}
-                />
-              </Link>
+              <PlaylistItem playlist={item} key={item._id} />
             ))}
-          {/* {Array.from({ length: 20 }).map((_, idx) => (
-            <PlaylistItem key={idx} title={"test"} username={"test"} />
-          ))} */}
         </PlaylistView>
       </Wrapper>
     </>

@@ -9,6 +9,6 @@ export const updateMusicView = async (music: APIMusic) => {
     body: JSON.stringify({ isIncrease: true }),
   }).then((res) => res.json());
   if (result.ok) {
-    console.log("view increase!");
+    // console.log("view increase!");
   }
 };
