@@ -6,16 +6,22 @@ const ButtonSection = styled.div`
   gap: 26px;
 `;
 
-const MoreButton = styled(DefaultButton)`
+const MoreButton = styled(DefaultButton)<{ $isActive: boolean }>`
   display: flex;
   align-items: center;
   background-color: black;
-  color: #fff;
-  border: 0.5px solid #2c2c2c;
 
-  &:hover {
+  border: 1px solid #2c2c2c;
+
+  color: ${(props) => (props.$isActive ? `#fefefe` : "#515151")};
+
+  ${(props) =>
+    props.$isActive &&
+    `&:hover {
     background-color: #2c2c2c;
-  }
+  }`}
+
+  cursor:${(props) => (props.$isActive ? `pointer` : `auto`)};
 `;
 
 const ControlSection = styled.div`
@@ -31,8 +37,6 @@ const MoveButton = styled.button<{ $isAbled: boolean }>`
 
   background-color: black;
 
-  border: 0.5px solid #2c2c2c;
-
   &:focus {
     outline: none;
   }
@@ -43,21 +47,21 @@ const MoveButton = styled.button<{ $isAbled: boolean }>`
   align-items: center;
   justify-content: center;
 
-  color: #fff;
+  border: 1px solid ${(props) => (props.$isAbled ? `#2c2c2c` : "#515151")};
 
-  cursor: pointer;
+  color: ${(props) => (props.$isAbled ? ` #fefefe` : "#515151")};
 
   ${(props) =>
-    props.$isAbled
-      ? `cursor: default; opacity:0.2;`
-      : `&:hover {
-      background-color: #2c2c2c;
-    }`}
+    !props.$isAbled &&
+    `&:hover {
+    background-color: #2c2c2c;
+  }`}
+
+  cursor:${(props) => (props.$isAbled ? `default` : "pointer")};
 
   svg {
     color: #fff;
-    /* fill: currentColor; */
-    fill: #fff;
+    fill: ${(props) => (!props.$isAbled ? ` #fefefe` : "#515151")};
     width: 18px;
     height: 18px;
     display: block;
@@ -69,6 +73,7 @@ interface ISliderButtonSection {
   isEnd: boolean;
   goPrev: () => void;
   goNext: () => void;
+  isActive: boolean;
 }
 
 const SliderButtonSection = ({
@@ -76,10 +81,11 @@ const SliderButtonSection = ({
   isEnd,
   goPrev,
   goNext,
+  isActive,
 }: ISliderButtonSection) => {
   return (
     <ButtonSection>
-      <MoreButton>더보기</MoreButton>
+      <MoreButton $isActive={isActive}>더보기</MoreButton>
       <ControlSection>
         <MoveButton
           disabled={isBeginning}

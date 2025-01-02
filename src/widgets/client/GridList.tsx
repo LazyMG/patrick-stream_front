@@ -55,6 +55,8 @@ const ListContainer = styled.div`
   }
 `;
 
+const PERVIEW = 3;
+
 const GridList = ({ list }: { list?: APIMusic[] }) => {
   const swiperRef = useRef<Swiper | null>(null);
   const [isBeginning, setIsBeginning] = useState(true);
@@ -72,6 +74,8 @@ const GridList = ({ list }: { list?: APIMusic[] }) => {
     }
   };
 
+  const isActive = !!list && list.length > PERVIEW;
+
   return (
     <Wrapper>
       <ListHeader>
@@ -81,6 +85,7 @@ const GridList = ({ list }: { list?: APIMusic[] }) => {
           isEnd={isEnd}
           goPrev={goPrev}
           goNext={goNext}
+          isActive={isActive}
         />
       </ListHeader>
       <ListContainer>
@@ -92,7 +97,7 @@ const GridList = ({ list }: { list?: APIMusic[] }) => {
               rows: 4, // 4행 구성
               fill: "row", // 열을 기준으로 그리드 채우기
             }}
-            slidesPerView={3} // 한 번에 3개의 슬라이드 보이게 설정
+            slidesPerView={PERVIEW} // 한 번에 3개의 슬라이드 보이게 설정
             spaceBetween={15} // 슬라이드 간의 간격 설정
             allowTouchMove={false}
             scrollbar={{ draggable: true }}

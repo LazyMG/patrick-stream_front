@@ -2,7 +2,9 @@ import styled from "styled-components";
 import { APIMusic } from "../../shared/models/music";
 import { setMusicSeconds } from "../../shared/lib/musicDataFormat";
 import { usePlayMusic } from "../../shared/hooks/usePlayMusic";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { selectedMusicState } from "../../app/entities/music/atom";
+import { useRecoilValue } from "recoil";
 
 const AlbumListItem = styled.div`
   width: 100%;
@@ -40,7 +42,14 @@ const ItemDuration = styled.span`
 
 const AlbumList = ({ music, index }: { music: APIMusic; index: number }) => {
   const playMusic = usePlayMusic();
-  const [views, setViews] = useState<number>(music.counts.views);
+  const [views, setViews] = useState<number>(music?.counts.views || 0);
+  const selectedMusic = useRecoilValue(selectedMusicState);
+
+  useEffect(() => {
+    if (selectedMusic && selectedMusic._id === music._id) {
+      setViews((prev) => prev + 1);
+    }
+  }, [selectedMusic, music._id]);
 
   const clickMusic = () => {
     playMusic(music);

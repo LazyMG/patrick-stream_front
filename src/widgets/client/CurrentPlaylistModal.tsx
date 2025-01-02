@@ -2,7 +2,7 @@ import { createPortal } from "react-dom";
 import { useRecoilValue } from "recoil";
 import styled from "styled-components";
 import {
-  playlistState,
+  playingPlaylistState,
   selectedMusicState,
 } from "../../app/entities/music/atom";
 import CurrentPlaylistItem from "./CurrentPlaylistItem";
@@ -70,7 +70,7 @@ interface ICurrentPlaylistModal {
 }
 
 const CurrentPlaylistModal = ({ closeModal }: ICurrentPlaylistModal) => {
-  const musicPlaylist = useRecoilValue(playlistState);
+  const playingPlaylist = useRecoilValue(playingPlaylistState);
   const selectedMusic = useRecoilValue(selectedMusicState);
 
   return createPortal(
@@ -83,7 +83,7 @@ const CurrentPlaylistModal = ({ closeModal }: ICurrentPlaylistModal) => {
         <Content>
           <Title>다음 트랙</Title>
           <ListContainer>
-            {musicPlaylist?.map((music) => (
+            {playingPlaylist?.map((music) => (
               <CurrentPlaylistItem
                 key={music._id}
                 music={music}

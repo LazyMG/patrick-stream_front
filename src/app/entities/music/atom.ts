@@ -21,7 +21,7 @@ export const recentMusicsState = atom<APIMusic[] | null>({
   default: null,
 });
 
-export const playlistState = atom<APIMusic[] | null>({
+export const playingPlaylistState = atom<APIMusic[] | null>({
   key: "playlistState",
   default: null,
 });

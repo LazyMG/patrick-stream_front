@@ -9,7 +9,7 @@ import { backgroundState } from "../../app/entities/global/atom";
 import { APIArtist } from "../../shared/models/artist";
 import { loginUserDataState, userState } from "../../app/entities/user/atom";
 import { followingArtistsState } from "../../app/entities/artist/atom";
-import { playlistState } from "../../app/entities/music/atom";
+import { playingPlaylistState } from "../../app/entities/music/atom";
 import { usePlayMusic } from "../../shared/hooks/usePlayMusic";
 import { APIMusic } from "../../shared/models/music";
 
@@ -123,7 +123,7 @@ const Artist = () => {
 
   const loginUserData = useRecoilValue(loginUserDataState);
   const setFollowingArtists = useSetRecoilState(followingArtistsState);
-  const setMusicPlaylist = useSetRecoilState(playlistState);
+  const setPlayingPlaylist = useSetRecoilState(playingPlaylistState);
   const playMusic = usePlayMusic();
 
   useEffect(() => {
@@ -215,7 +215,7 @@ const Artist = () => {
 
   const playArtistMusics = () => {
     if (!artistData?.musics) return;
-    setMusicPlaylist(artistData.musics);
+    setPlayingPlaylist(artistData.musics);
     playMusic(artistData.musics[0]);
   };
 

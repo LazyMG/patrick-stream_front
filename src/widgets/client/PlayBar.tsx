@@ -3,7 +3,7 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import styled from "styled-components";
 import {
   likedMusicsState,
-  playlistState,
+  playingPlaylistState,
   selectedMusicState,
   ytIdState,
 } from "../../app/entities/music/atom";
@@ -336,7 +336,7 @@ const PlayBar = ({ player }: IPlayBar) => {
   const [likedMusics, setLikedMusics] = useRecoilState(likedMusicsState);
   const [isLike, setIsLike] = useState<boolean | null>(null);
 
-  const musicPlaylist = useRecoilValue(playlistState);
+  const playingPlaylist = useRecoilValue(playingPlaylistState);
 
   const [isAddPlaylistModalOpen, setIsAddPlaylistModalOpen] = useState(false);
   const [isCurrentPlaylistModalOpen, setIsCurrentPlaylistModalOpen] = useState(
@@ -405,22 +405,22 @@ const PlayBar = ({ player }: IPlayBar) => {
   }, [time, player, ytPlayer]);
 
   useEffect(() => {
-    if (ytPlayer === 0 && musicPlaylist && selectedMusic) {
+    if (ytPlayer === 0 && playingPlaylist && selectedMusic) {
       if (isRepeat) {
         reStartMusic();
         return;
       }
-      const index = musicPlaylist.findIndex(
+      const index = playingPlaylist.findIndex(
         (music) => music._id === selectedMusic._id
       );
 
       if (index !== -1) {
-        const length = musicPlaylist.length;
+        const length = playingPlaylist.length;
         // 마지막 곡이 아니라면 다음 곡을 재생
         if (index + 1 < length) {
           setTime("00:00");
           setTimeline(0);
-          playMusic(musicPlaylist[index + 1]);
+          playMusic(playingPlaylist[index + 1]);
         } else {
           // 마지막 곡이라면 종료 상태로 설정
           setCurrentPlayer((prev) => ({
@@ -480,8 +480,8 @@ const PlayBar = ({ player }: IPlayBar) => {
         isPaused: false,
       }));
     } else {
-      if (musicPlaylist && musicPlaylist.length !== 0) {
-        playMusic(musicPlaylist[0]);
+      if (playingPlaylist && playingPlaylist.length !== 0) {
+        playMusic(playingPlaylist[0]);
         setTime("00:00");
         setTimeline(0);
       }
@@ -577,39 +577,39 @@ const PlayBar = ({ player }: IPlayBar) => {
 
   const playPrevMusic = () => {
     if (
-      !musicPlaylist ||
-      !musicPlaylist.some((music) => music._id === selectedMusic?._id)
+      !playingPlaylist ||
+      !playingPlaylist.some((music) => music._id === selectedMusic?._id)
     )
       return;
 
     if (timeline < 4 && selectedMusic) {
       reStartMusic();
     }
-    const index = musicPlaylist.findIndex(
+    const index = playingPlaylist.findIndex(
       (music) => music._id === selectedMusic?._id
     );
     // first music
     if (index === 0) return;
     setTime("00:00");
     setTimeline(0);
-    playMusic(musicPlaylist[index - 1]);
+    playMusic(playingPlaylist[index - 1]);
   };
 
   const playNextMusic = () => {
     if (
-      !musicPlaylist ||
-      !musicPlaylist.some((music) => music._id === selectedMusic?._id)
+      !playingPlaylist ||
+      !playingPlaylist.some((music) => music._id === selectedMusic?._id)
     )
       return;
-    const length = musicPlaylist.length;
-    const index = musicPlaylist.findIndex(
+    const length = playingPlaylist.length;
+    const index = playingPlaylist.findIndex(
       (music) => music._id === selectedMusic?._id
     );
     // last music
     if (index + 1 === length) return;
     setTime("00:00");
     setTimeline(0);
-    playMusic(musicPlaylist[index + 1]);
+    playMusic(playingPlaylist[index + 1]);
   };
 
   return (

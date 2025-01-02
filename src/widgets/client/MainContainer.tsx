@@ -4,16 +4,20 @@ import PlayBar from "./PlayBar";
 import YoutubeContainer from "../../pages/YoutubeContainer";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { isPlayerOnState } from "../../app/entities/player/atom";
-import { backgroundState } from "../../app/entities/global/atom";
+import {
+  backgroundState,
+  isToastOpenState,
+} from "../../app/entities/global/atom";
 import {
   likedMusicsState,
-  playlistState,
+  playingPlaylistState,
   recentMusicsState,
 } from "../../app/entities/music/atom";
 import { loginUserDataState, userState } from "../../app/entities/user/atom";
 import { followingArtistsState } from "../../app/entities/artist/atom";
 import { followingAlbumsState } from "../../app/entities/album/atom";
 import { APIMusic } from "../../shared/models/music";
+import ToastContainer from "./ToastContainer";
 
 const Wrapper = styled.div<{ $backImg?: string | null }>`
   margin-left: 250.5px;
@@ -160,6 +164,26 @@ const SimpleBackImage = styled.div<{ $backImg: string }>`
   }
 `;
 
+// const ToastContainer = styled.div<{ $isActive: boolean; $isPlayerOn: boolean }>`
+//   position: fixed;
+//   left: 0;
+//   bottom: ${(props) => (props.$isPlayerOn ? `85px` : "5px")};
+//   display: ${(props) => (props.$isActive ? `block` : "none")};
+//   transition: display 10s ease-in-out;
+
+//   width: 100vw;
+//   z-index: 10;
+// `;
+
+// const Toast = styled.div`
+//   justify-self: center;
+//   width: 20%;
+//   height: 70px;
+//   border-radius: 25px;
+
+//   background-color: #212121;
+// `;
+
 interface IMainContainer {
   children: ReactNode;
   onScroll: (scrollTop: number) => void;
@@ -172,6 +196,7 @@ const MainContainer = ({ children, onScroll }: IMainContainer) => {
   const [loginUserData, setLoginUserData] = useRecoilState(loginUserDataState);
   const setFollowingArtists = useSetRecoilState(followingArtistsState);
   const setFollowingAlbums = useSetRecoilState(followingAlbumsState);
+  const isToastOpen = useRecoilValue(isToastOpenState);
 
   const getUserProfile = useCallback(
     async (id: string) => {
@@ -202,16 +227,16 @@ const MainContainer = ({ children, onScroll }: IMainContainer) => {
     }
   }, [user.userId, getUserProfile]);
 
-  const setMusicPlaylistState = useSetRecoilState(playlistState);
+  const setPlayingPlaylist = useSetRecoilState(playingPlaylistState);
 
   const getMusics = useCallback(async () => {
     const result = await fetch(
       `http://localhost:5000/music/recently-updated`
     ).then((res) => res.json());
     if (result.ok) {
-      setMusicPlaylistState(result.musics);
+      setPlayingPlaylist(result.musics);
     }
-  }, [setMusicPlaylistState]);
+  }, [setPlayingPlaylist]);
 
   useEffect(() => {
     getMusics();
@@ -256,6 +281,7 @@ const MainContainer = ({ children, onScroll }: IMainContainer) => {
       </Content>
       {isPlayerOn && <PlayBar player={player} setPlayer={setPlayer} />}
       <YoutubeContainer player={player} setPlayer={setPlayer} />
+      {isToastOpen && <ToastContainer isPlayerOn={isPlayerOn} />}
     </Wrapper>
   );
 };

@@ -106,6 +106,8 @@ interface IFlexList {
   listFlag: "music" | "album" | "playlist" | "artist";
 }
 
+const PERVIEW = 6;
+
 const FlexList = ({
   isCustom,
   icon,
@@ -131,6 +133,8 @@ const FlexList = ({
     }
   };
 
+  const isActive = !!list && list.length > PERVIEW;
+
   return (
     <Wrapper>
       <ListHeader>
@@ -150,6 +154,7 @@ const FlexList = ({
           isEnd={isEnd}
           goPrev={goPrev}
           goNext={goNext}
+          isActive={isActive}
         />
       </ListHeader>
       <ListContainer>
@@ -157,9 +162,9 @@ const FlexList = ({
           <SwiperComponent
             onSwiper={(swiper) => (swiperRef.current = swiper)}
             modules={[Scrollbar]}
-            slidesPerView={6} // 한 번에 6개의 슬라이드 보이게 설정
+            slidesPerView={PERVIEW} // 한 번에 6개의 슬라이드 보이게 설정
             spaceBetween={15} // 슬라이드 간의 간격 설정
-            slidesPerGroup={1} // 한 번에 2개의 슬라이드를 이동
+            slidesPerGroup={1} // 한 번에 1개의 슬라이드를 이동
             allowTouchMove={false}
             scrollbar={{ draggable: true }}
             onReachBeginning={() => setIsBeginning(true)}

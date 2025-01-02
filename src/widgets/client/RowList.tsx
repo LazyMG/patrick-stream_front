@@ -38,31 +38,36 @@ const ListFooter = styled.div`
   width: 100%;
 `;
 
-const MoreButton = styled(DefaultButton)`
+const MoreButton = styled(DefaultButton)<{ $isActive: boolean }>`
   display: flex;
   align-items: center;
   background-color: black;
-  color: #fff;
-  border: 0.5px solid #2c2c2c;
+  ${(props) =>
+    props.$isActive
+      ? `border: 1px solid #a988bd;`
+      : "border: 1px solid #515151;"}
 
-  color: #fefefe;
+  ${(props) => (props.$isActive ? `color: #fefefe;` : "color:  #515151;")}
 
-  border: 1px solid #a988bd;
-
-  &:hover {
+  ${(props) =>
+    props.$isActive &&
+    `&:hover {
     background-color: #2c2c2c;
 
     background-color: #a988bd;
-  }
+  }`}
+
+  ${(props) => (props.$isActive ? `cursor:pointer;` : "cursor:auto;")}
 `;
 
 interface IRowList {
   title: string;
   subTitle?: string;
   list?: APIMusic[];
+  isMine?: boolean;
 }
 
-const RowList = ({ title, subTitle, list }: IRowList) => {
+const RowList = ({ title, subTitle, list, isMine }: IRowList) => {
   return (
     <Wrapper>
       <ListHeader>
@@ -76,10 +81,13 @@ const RowList = ({ title, subTitle, list }: IRowList) => {
             index={idx}
             key={item._id}
             length={list?.length}
+            isMine={isMine}
           />
         ))}
         <ListFooter>
-          <MoreButton>모두 표시</MoreButton>
+          <MoreButton $isActive={list && list.length >= 5 ? true : false}>
+            모두 표시
+          </MoreButton>
         </ListFooter>
       </ListContainer>
     </Wrapper>

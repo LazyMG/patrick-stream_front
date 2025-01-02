@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { APIPlaylist } from "../models/playlist";
 import { useSetRecoilState } from "recoil";
-import { playlistState } from "../../app/entities/music/atom";
+import { playingPlaylistState } from "../../app/entities/music/atom";
 import { usePlayMusic } from "../hooks/usePlayMusic";
 import { Link } from "react-router-dom";
 
@@ -58,13 +58,13 @@ const ListTitle = styled.span`
 const ListOwner = styled.span``;
 
 const PlaylistItem = ({ playlist }: { playlist: APIPlaylist }) => {
-  const setMusicPlaylist = useSetRecoilState(playlistState);
+  const setPlayingPlaylist = useSetRecoilState(playingPlaylistState);
   const playMusic = usePlayMusic();
 
   const playPlaylist = (event: React.MouseEvent<HTMLDivElement>) => {
     event.stopPropagation();
     if (!playlist.musics || playlist.musics.length === 0) return;
-    setMusicPlaylist(playlist.musics);
+    setPlayingPlaylist(playlist.musics);
     playMusic(playlist.musics[0]);
   };
 

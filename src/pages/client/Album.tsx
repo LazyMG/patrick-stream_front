@@ -8,6 +8,8 @@ import { DefaultButton } from "../../shared/ui/DefaultButton";
 import { setAlbumSeconds } from "../../shared/lib/albumDataFormat";
 import AlbumList from "../../widgets/client/AlbumList";
 import { loginUserDataState, userState } from "../../app/entities/user/atom";
+import { playingPlaylistState } from "../../app/entities/music/atom";
+import { usePlayMusic } from "../../shared/hooks/usePlayMusic";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -148,6 +150,10 @@ const Album = () => {
 
   const [follow, setFollow] = useState(false);
   const [followers, setFollowers] = useState<number | null>(null);
+
+  const setPlayingPlaylist = useSetRecoilState(playingPlaylistState);
+  const playMusic = usePlayMusic();
+
   const loginUserData = useRecoilValue(loginUserDataState);
 
   const currentFollowers = albumData?.followers?.length ?? 0;
@@ -175,7 +181,6 @@ const Album = () => {
       ).then((res) => res.json());
 
       if (result.ok) {
-        // console.log("album music", result.album.musics);
         setAlbumData(result.album as APIAlbum);
         setBackground({ src: result.album.coverImg, type: "blur" });
         setIsLoading(false);
@@ -191,48 +196,32 @@ const Album = () => {
   }, [albumId, getAlbum]);
 
   const followAlbum = async () => {
-    if (user.userId === "") return;
-    if (follow) {
-      setFollow(false);
-      setFollowers((prev) => {
-        if (prev) {
-          return Math.max(prev - 1, 0);
-        }
-        return prev;
-      });
-      // 1. 로그인 한 사용자의 팔로잉 목록에서 제거
-      // 2. 현재 페이지 아티스트의 팔로워 목록에서 제거
-      await fetch(`http://localhost:5000/album/${albumId}/followers`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          activeUserId: user.userId,
-          addList: false,
-        }),
-      });
-    } else {
-      setFollow(true);
-      setFollowers((prev) => {
-        if (prev !== null) {
-          return prev + 1;
-        }
-        return prev;
-      });
-      // 1. 로그인 한 사용자의 팔로잉 목록에 추가
-      // 2. 현재 페이지 아티스트의 팔로워 목록에 추가
-      await fetch(`http://localhost:5000/album/${albumId}/followers`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          activeUserId: user.userId,
-          addList: true,
-        }),
-      });
-    }
+    if (!albumId || user.userId === "" || follow === null) return;
+
+    const addList = !follow;
+
+    setFollow(addList);
+    setFollowers((prev) => {
+      if (prev === null) return prev;
+      return addList ? prev + 1 : Math.max(prev - 1, 0);
+    });
+
+    await fetch(`http://localhost:5000/album/${albumId}/followers`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        activeUserId: user.userId,
+        addList,
+      }),
+    });
+  };
+
+  const playAlbumMusics = () => {
+    if (!albumData?.musics) return;
+    setPlayingPlaylist(albumData.musics);
+    playMusic(albumData.musics[0]);
   };
 
   return (
@@ -264,7 +253,7 @@ const Album = () => {
                 </AlbumDescription>
               </AlbumDescriptionContainer>
               <AlbumController>
-                <AlbumPlayButton>
+                <AlbumPlayButton onClick={playAlbumMusics}>
                   <svg
                     fill="currentColor"
                     viewBox="0 0 24 24"
@@ -291,16 +280,6 @@ const Album = () => {
               /> */}
             </AlbumInfo>
             <AlbumListContainer>
-              {/* {Array.from({ length: 3 }).map((_, idx) => (
-                <AlbumListItem key={idx}>
-                  <ItemNumber>{idx + 1}</ItemNumber>
-                  <ItemInfo>
-                    <ItemTitle>우주를 건너</ItemTitle>
-                    <ItemViews>100회</ItemViews>
-                  </ItemInfo>
-                  <ItemDuration>3:02</ItemDuration>
-                </AlbumListItem>
-              ))} */}
               {albumData.musics?.map((item, idx) => (
                 <AlbumList music={item} index={idx} key={idx} />
               ))}

@@ -4,11 +4,14 @@ import RowList from "../../widgets/client/RowList";
 import { Link, useLocation, useParams } from "react-router-dom";
 import { useCallback, useEffect, useState } from "react";
 import { APIPlaylist } from "../../shared/models/playlist";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { loginUserDataState, userState } from "../../app/entities/user/atom";
-import { currentUserPlaylistState } from "../../app/entities/playlist/atom";
+import {
+  currentUserPlaylistState,
+  playlistMusicsState,
+} from "../../app/entities/playlist/atom";
 import { backgroundState } from "../../app/entities/global/atom";
-import { playlistState } from "../../app/entities/music/atom";
+import { playingPlaylistState } from "../../app/entities/music/atom";
 import { usePlayMusic } from "../../shared/hooks/usePlayMusic";
 
 const Wrapper = styled.div`
@@ -98,8 +101,18 @@ const PlaylistPlayButton = styled.button`
 
   cursor: pointer;
 
+  transition: transform 0.1s ease-in;
+
   svg {
     width: 20px;
+    transition: transform 0.1s ease-in;
+  }
+
+  &:hover {
+    transform: scale(1.1);
+    svg {
+      transform: scale(1.1);
+    }
   }
 `;
 
@@ -139,7 +152,10 @@ const Playlist = () => {
 
   const setBackground = useSetRecoilState(backgroundState);
 
-  const setMusicPlaylist = useSetRecoilState(playlistState);
+  const [playlistMusics, setPlaylistMusics] = useRecoilState(
+    playlistMusicsState
+  );
+  const setPlayingPlaylist = useSetRecoilState(playingPlaylistState);
   const playMusic = usePlayMusic();
 
   useEffect(() => {
@@ -177,6 +193,14 @@ const Playlist = () => {
       if (thisPlaylist) {
         setIsMine(true);
         setPlaylistData(thisPlaylist);
+        if (thisPlaylist.musics)
+          setPlaylistMusics({
+            musics: thisPlaylist.musics,
+            states: Array.from(
+              { length: thisPlaylist.musics.length },
+              () => false
+            ),
+          });
         setIsLoading(false);
         return;
       }
@@ -188,6 +212,7 @@ const Playlist = () => {
     playlistId,
     user.userId,
     setBackground,
+    setPlaylistMusics,
   ]);
 
   const displayContent = state || playlistData;
@@ -215,7 +240,7 @@ const Playlist = () => {
 
   const playPlaylistMusics = () => {
     if (!playlistData?.musics) return;
-    setMusicPlaylist(playlistData.musics);
+    setPlayingPlaylist(playlistData.musics);
     playMusic(playlistData.musics[0]);
   };
 
@@ -292,7 +317,8 @@ const Playlist = () => {
         <RowList
           title="재생목록 음악"
           subTitle="공개"
-          list={playlistData?.musics}
+          list={playlistMusics?.musics || playlistData?.musics}
+          isMine={isMine}
         />
       )}
     </Wrapper>

@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { APIMusic } from "../../shared/models/music";
 import { usePlayMusic } from "../../shared/hooks/usePlayMusic";
 import { useSetRecoilState } from "recoil";
-import { playlistState } from "../../app/entities/music/atom";
+import { playingPlaylistState } from "../../app/entities/music/atom";
 
 const ListItem = styled.div`
   width: 100%;
@@ -88,11 +88,11 @@ const Aritst = styled.span`
 
 const FlexListMusicItem = ({ music }: { music: APIMusic }) => {
   const playMusic = usePlayMusic();
-  const setMusicPlaylist = useSetRecoilState(playlistState);
+  const setPlayingPlaylist = useSetRecoilState(playingPlaylistState);
 
   const clickMusic = () => {
     playMusic(music);
-    setMusicPlaylist((prev) => {
+    setPlayingPlaylist((prev) => {
       if (!prev) return prev;
       if (prev.some((item) => item._id === music._id)) {
         // exists

@@ -116,14 +116,14 @@ const Home = () => {
             title="최근 들은 음악"
           />
         )} */}
-        {likedMusics && likedMusics.length !== 0 && (
+        {/* {likedMusics && likedMusics.length !== 0 && (
           <FlexList
             list={likedMusics}
             listFlag="music"
             isCustom={false}
             title="좋아요 한 음악"
           />
-        )}
+        )} */}
         {!isMusicLoading && musicsData && <GridList list={musicsData} />}
       </ContentContainer>
     </Wrapper>
