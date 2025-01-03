@@ -82,7 +82,7 @@ const AddMusicPlaylistItem = ({
 
         return {
           ...p,
-          musics: [selectedMusic, ...p.musics],
+          musics: [...p.musics, selectedMusic],
         };
       });
     });
@@ -96,7 +96,7 @@ const AddMusicPlaylistItem = ({
     const addMusic = true;
 
     const result = await fetch(
-      `http://localhost:5000/playlist/${playlist._id}/musics`,
+      `http://localhost:5000/playlist/${playlist._id}`,
       {
         method: "PATCH",
         headers: {

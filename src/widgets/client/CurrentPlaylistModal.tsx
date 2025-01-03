@@ -1,5 +1,5 @@
 import { createPortal } from "react-dom";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import {
   playingPlaylistState,
@@ -27,6 +27,8 @@ const ContentModal = styled.div`
   border: 0.1px solid #414141;
   border-radius: 10px;
   padding: 27px 0;
+
+  position: relative;
 `;
 
 const Content = styled.div`
@@ -41,7 +43,6 @@ const Title = styled.h1`
   color: #fff;
   font-size: 22px;
   font-weight: bold;
-  width: 100%;
   padding-bottom: 10px;
   padding-left: 25px;
 
@@ -72,6 +73,7 @@ interface ICurrentPlaylistModal {
 const CurrentPlaylistModal = ({ closeModal }: ICurrentPlaylistModal) => {
   const playingPlaylist = useRecoilValue(playingPlaylistState);
   const selectedMusic = useRecoilValue(selectedMusicState);
+  const setPlayingPlaylist = useSetRecoilState(playingPlaylistState);
 
   return createPortal(
     <ModalOverlay onClick={closeModal}>
@@ -91,6 +93,7 @@ const CurrentPlaylistModal = ({ closeModal }: ICurrentPlaylistModal) => {
                   selectedMusic ? selectedMusic._id === music._id : false
                 }
                 closeModal={closeModal}
+                setPlayingPlaylist={setPlayingPlaylist}
               />
             ))}
           </ListContainer>

@@ -4,10 +4,7 @@ import PlayBar from "./PlayBar";
 import YoutubeContainer from "../../pages/YoutubeContainer";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { isPlayerOnState } from "../../app/entities/player/atom";
-import {
-  backgroundState,
-  isToastOpenState,
-} from "../../app/entities/global/atom";
+import { backgroundState } from "../../app/entities/global/atom";
 import {
   likedMusicsState,
   playingPlaylistState,
@@ -17,7 +14,6 @@ import { loginUserDataState, userState } from "../../app/entities/user/atom";
 import { followingArtistsState } from "../../app/entities/artist/atom";
 import { followingAlbumsState } from "../../app/entities/album/atom";
 import { APIMusic } from "../../shared/models/music";
-import ToastContainer from "./ToastContainer";
 
 const Wrapper = styled.div<{ $backImg?: string | null }>`
   margin-left: 250.5px;
@@ -196,7 +192,6 @@ const MainContainer = ({ children, onScroll }: IMainContainer) => {
   const [loginUserData, setLoginUserData] = useRecoilState(loginUserDataState);
   const setFollowingArtists = useSetRecoilState(followingArtistsState);
   const setFollowingAlbums = useSetRecoilState(followingAlbumsState);
-  const isToastOpen = useRecoilValue(isToastOpenState);
 
   const getUserProfile = useCallback(
     async (id: string) => {
@@ -281,7 +276,6 @@ const MainContainer = ({ children, onScroll }: IMainContainer) => {
       </Content>
       {isPlayerOn && <PlayBar player={player} setPlayer={setPlayer} />}
       <YoutubeContainer player={player} setPlayer={setPlayer} />
-      {isToastOpen && <ToastContainer isPlayerOn={isPlayerOn} />}
     </Wrapper>
   );
 };

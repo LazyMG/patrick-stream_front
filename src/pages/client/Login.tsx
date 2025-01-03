@@ -25,15 +25,17 @@ interface LoginFormValues {
 }
 
 const Login = () => {
-  const { register, handleSubmit } = useForm<LoginFormValues>();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setError,
+    clearErrors,
+  } = useForm<LoginFormValues>();
   const navigate = useNavigate();
   const setUser = useSetRecoilState(userState);
 
   const onValid: SubmitHandler<LoginFormValues> = async (data) => {
-    console.log(data);
-
-    //validate
-
     //fetch
     const result = await fetch(`http://localhost:5000/auth/login`, {
       method: "POST",
@@ -53,8 +55,14 @@ const Login = () => {
       // 에러 처리
       // 1. 비밀번호 에러
       // 2. 존재하지 않는 이메일
-      // 3. DB 에러
-      console.log(result.message);
+      if (!result.error) {
+        setError("email", {
+          message: "이메일 또는 비밀번호가 일치하지 않습니다.",
+        });
+      } else {
+        // 3. DB 에러
+        alert("Server Error");
+      }
     }
   };
 
@@ -62,22 +70,50 @@ const Login = () => {
     window.location.href = googleLoginUrl;
   };
 
+  const handleChange = (
+    id: "email" | "username" | "password" | "passwordConfirm"
+  ) => {
+    if (id === "email" || id === "password") {
+      clearErrors(id);
+    }
+  };
+
   return (
     <FormContainer formType="login">
       <Form onSubmit={handleSubmit(onValid)}>
         <InputRow
-          register={register("email")}
+          register={register("email", {
+            required: "이메일을 입력해주세요.",
+            pattern: {
+              value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+              message: "유효한 이메일 주소를 입력해주세요.",
+            },
+          })}
+          errorMsg={errors.email ? errors.email.message : ""}
           id="email"
           name="이메일"
           placeHolder="Email"
           type="email"
+          handleChange={handleChange}
         />
         <InputRow
-          register={register("password")}
+          register={register("password", {
+            required: "비밀번호를 입력해주세요.",
+            minLength: {
+              value: 4,
+              message: "비밀번호는 4자 이상이어야 합니다.",
+            },
+            maxLength: {
+              value: 12,
+              message: "비밀번호는 12자 이하이어야 합니다.",
+            },
+          })}
+          errorMsg={errors.password ? errors.password.message : ""}
           id="password"
           name="비밀번호"
           placeHolder="Password"
           type="password"
+          handleChange={handleChange}
         />
         <SubmitButton text="로그인" />
         <Divider />

@@ -111,7 +111,7 @@ const ButtonContainer = styled.div`
 const Button = styled.button<{ $alter: boolean }>`
   border: none;
   background-color: ${(props) => (props.$alter ? "white" : "#F5A3A5")};
-  color: ${(props) => (props.$alter ? "black" : "white")};
+  color: #000;
   width: 120px;
   padding: 10px 0;
   border-radius: 20px;

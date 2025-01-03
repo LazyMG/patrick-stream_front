@@ -38,7 +38,6 @@ const Title = styled.h1`
   color: #fff;
   font-size: 22px;
   font-weight: bold;
-  width: 100%;
   padding-bottom: 10px;
   padding-left: 25px;
 
@@ -77,7 +76,6 @@ interface IAddMusicPlaylistModal {
 const AddMusicPlaylistModal = ({ closeModal }: IAddMusicPlaylistModal) => {
   const currentUserPlaylist = useRecoilValue(currentUserPlaylistState);
 
-  console.log(currentUserPlaylist);
   return createPortal(
     <ModalOverlay onClick={closeModal}>
       <ContentModal

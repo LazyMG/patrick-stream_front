@@ -74,6 +74,12 @@ const ModalForm = styled.form`
   }
 `;
 
+const InputDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+`;
+
 const ButtonRow = styled.div`
   width: 100%;
   height: 100%;
@@ -93,6 +99,11 @@ const ButtonRow = styled.div`
   }
 `;
 
+const ErrorMessage = styled.span`
+  font-size: 13px;
+  color: red;
+`;
+
 interface ICreatePlaylistModal {
   closeModal: () => void;
 }
@@ -104,7 +115,13 @@ interface PlaylistFormValues {
 
 const CreatePlaylistModal = ({ closeModal }: ICreatePlaylistModal) => {
   const user = useRecoilValue(userState);
-  const { register, handleSubmit } = useForm<PlaylistFormValues>();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    clearErrors,
+    setError,
+  } = useForm<PlaylistFormValues>();
   const setCurrentUserPlaylist = useSetRecoilState(currentUserPlaylistState);
   const loginUserData = useRecoilValue(loginUserDataState);
 
@@ -137,6 +154,10 @@ const CreatePlaylistModal = ({ closeModal }: ICreatePlaylistModal) => {
           ...prev,
         ]);
         closeModal();
+      } else {
+        if (!result.error) {
+          setError("title", { message: "제목을 입력해주세요." });
+        }
       }
     }
   };
@@ -151,13 +172,19 @@ const CreatePlaylistModal = ({ closeModal }: ICreatePlaylistModal) => {
         <Content>
           <Title>새 재생목록</Title>
           <ModalForm onSubmit={handleSubmit(createPlaylist)}>
-            <input
-              placeholder="제목"
-              type="text"
-              {...register("title", {
-                required: true,
-              })}
-            />
+            <InputDiv>
+              <input
+                placeholder="제목"
+                type="text"
+                {...register("title", {
+                  required: "제목을 입력해주세요.",
+                })}
+                onChange={() => clearErrors("title")}
+              />
+              {errors.title && (
+                <ErrorMessage>{errors.title.message}</ErrorMessage>
+              )}
+            </InputDiv>
             <input placeholder="설명" type="text" {...register("info")} />
             <ButtonRow>
               <button onClick={closeModal} type="button">

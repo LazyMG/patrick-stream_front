@@ -26,6 +26,7 @@ const MaskDiv = styled.div`
 const CheckBox = styled.input`
   width: 20px;
   height: 20px;
+  accent-color: #f5a3a5;
 `;
 
 const Wrapper = styled.div<{
@@ -133,6 +134,12 @@ const RowListMusicItem = ({
   }, [selectedMusic, music._id]);
 
   useEffect(() => {
+    if (checkboxInput.current && !isToastOpen) {
+      checkboxInput.current.checked = false;
+    }
+  }, [isToastOpen]);
+
+  useEffect(() => {
     if (!isMine) {
       setIsToastOpen(false);
     }
@@ -149,13 +156,18 @@ const RowListMusicItem = ({
       let flag = false;
       setPlaylistMusics((prev) => {
         if (!prev) return prev;
-        const newStateList = [...prev.states];
-        newStateList[index] = isChecked;
-        flag = newStateList.some((state) => state);
-        return {
-          ...prev,
-          states: newStateList,
-        };
+        const newPlaylistMusicStateList = [...prev].map((item, idx) => {
+          if (idx === index) {
+            return {
+              ...item,
+              state: isChecked,
+            };
+          } else {
+            return item;
+          }
+        });
+        flag = newPlaylistMusicStateList.some((item) => item.state);
+        return newPlaylistMusicStateList;
       });
       setIsToastOpen(flag);
     }

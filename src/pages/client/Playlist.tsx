@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { DefaultButton } from "../../shared/ui/DefaultButton";
 import RowList from "../../widgets/client/RowList";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { useCallback, useEffect, useState } from "react";
 import { APIPlaylist } from "../../shared/models/playlist";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
@@ -10,17 +10,19 @@ import {
   currentUserPlaylistState,
   playlistMusicsState,
 } from "../../app/entities/playlist/atom";
-import { backgroundState } from "../../app/entities/global/atom";
+import {
+  backgroundState,
+  isToastOpenState,
+} from "../../app/entities/global/atom";
 import { playingPlaylistState } from "../../app/entities/music/atom";
 import { usePlayMusic } from "../../shared/hooks/usePlayMusic";
+import ToastContainer from "../../widgets/client/ToastContainer";
 
 const Wrapper = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
   gap: 70px;
-
-  /* background-color: blue; */
 `;
 
 const InfoContainer = styled.div`
@@ -32,8 +34,6 @@ const InfoContainer = styled.div`
   flex-direction: column;
   justify-content: flex-start;
   gap: 15px;
-
-  /* background-color: green; */
 `;
 
 const InfoProfile = styled.div`
@@ -148,7 +148,9 @@ const Playlist = () => {
   const currentFollowers = playlistData?.followers?.length ?? 0;
 
   const loginUserData = useRecoilValue(loginUserDataState);
-  const currentUserPlaylist = useRecoilValue(currentUserPlaylistState);
+  const [currentUserPlaylist, setCurrentUserPlaylist] = useRecoilState(
+    currentUserPlaylistState
+  );
 
   const setBackground = useSetRecoilState(backgroundState);
 
@@ -157,6 +159,9 @@ const Playlist = () => {
   );
   const setPlayingPlaylist = useSetRecoilState(playingPlaylistState);
   const playMusic = usePlayMusic();
+  const navigate = useNavigate();
+
+  const [isToastOpen, setIsToastOpen] = useRecoilState(isToastOpenState);
 
   useEffect(() => {
     setFollowers((prev) =>
@@ -194,12 +199,17 @@ const Playlist = () => {
         setIsMine(true);
         setPlaylistData(thisPlaylist);
         if (thisPlaylist.musics)
-          setPlaylistMusics({
-            musics: thisPlaylist.musics,
-            states: Array.from(
-              { length: thisPlaylist.musics.length },
-              () => false
-            ),
+          setPlaylistMusics((prev) => {
+            if (!thisPlaylist.musics) return prev;
+            const playlistMusicStatesList = [...thisPlaylist.musics].map(
+              (music) => {
+                return {
+                  music,
+                  state: false,
+                };
+              }
+            );
+            return playlistMusicStatesList;
           });
         setIsLoading(false);
         return;
@@ -242,6 +252,29 @@ const Playlist = () => {
     if (!playlistData?.musics) return;
     setPlayingPlaylist(playlistData.musics);
     playMusic(playlistData.musics[0]);
+  };
+
+  const deletePlaylist = async () => {
+    if (!playlistId) return;
+    // 현재 사용자 플레이리스트에서 삭제
+    setCurrentUserPlaylist((prev) => {
+      if (!prev) return prev;
+      return [...prev].filter((playlist) => playlist._id !== playlistId);
+    });
+
+    // DB에서 삭제
+    const result = await fetch(`http://localhost:5000/playlist/${playlistId}`, {
+      method: "DELETE",
+      credentials: "include",
+    }).then((res) => res.json());
+
+    if (result.ok) {
+      navigate("/");
+    }
+  };
+
+  const closeToast = () => {
+    setIsToastOpen(false);
   };
 
   return (
@@ -303,7 +336,9 @@ const Playlist = () => {
             {isMine ? (
               <>
                 <FollowButton $follow={false}>수정하기</FollowButton>
-                <FollowButton $follow={true}>삭제하기</FollowButton>
+                <FollowButton $follow={true} onClick={deletePlaylist}>
+                  삭제하기
+                </FollowButton>
               </>
             ) : (
               <FollowButton $follow={follow} onClick={followPlaylist}>
@@ -317,9 +352,16 @@ const Playlist = () => {
         <RowList
           title="재생목록 음악"
           subTitle="공개"
-          list={playlistMusics?.musics || playlistData?.musics}
+          list={
+            isMine
+              ? playlistMusics?.map((item) => item.music)
+              : playlistData?.musics
+          }
           isMine={isMine}
         />
+      )}
+      {isToastOpen && playlistId && (
+        <ToastContainer id={playlistId} closeToast={closeToast} />
       )}
     </Wrapper>
   );

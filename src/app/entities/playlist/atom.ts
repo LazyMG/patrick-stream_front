@@ -7,12 +7,12 @@ export const currentUserPlaylistState = atom<APIPlaylist[]>({
   default: [],
 });
 
-interface IPlaylistMusics {
-  musics: APIMusic[];
-  states: boolean[];
+interface IPlaylistMusic {
+  music: APIMusic;
+  state: boolean;
 }
 
-export const playlistMusicsState = atom<IPlaylistMusics | null>({
+export const playlistMusicsState = atom<IPlaylistMusic[] | null>({
   key: "playlistMusicsState",
   default: null,
 });

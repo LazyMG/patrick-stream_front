@@ -245,14 +245,18 @@ const PlayBarContentUtilVolumeButton = styled.div`
   }
 `;
 
-const PlayBarContentUtilVolumeRange = styled.input`
+const PlayBarContentUtilVolumeRange = styled.input<{
+  value: number;
+  min: number;
+  max: number;
+}>`
   position: absolute;
   right: 30px;
   top: 9px;
   opacity: 0;
   transition: opacity 0.2s ease-in-out;
   -webkit-appearance: none;
-  /* background: ${(props) => {
+  background: ${(props) => {
     const percentage =
       ((props.value - props.min) / (props.max - props.min)) * 100;
     return `
@@ -260,7 +264,7 @@ const PlayBarContentUtilVolumeRange = styled.input`
         white ${percentage}%, 
         gray ${percentage}%)
     `;
-  }}; */
+  }};
   outline: none;
   transition: background 0.2s ease;
   height: 4px;

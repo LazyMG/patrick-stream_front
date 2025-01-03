@@ -46,12 +46,12 @@ const FormContainer = ({ children, formType }: IFormContainer) => {
       <Message>
         {formType === "signIn" ? (
           <>
-            <span>이미 계정이 있다면?</span>
+            <span>이미 계정이 있다면?&nbsp;</span>
             <Link to={"/login"}>로그인하기</Link>
           </>
         ) : (
           <>
-            <span>계정이 없다면?</span>
+            <span>계정이 없다면?&nbsp;</span>
             <Link to={"/signIn"}>회원가입하기</Link>
           </>
         )}

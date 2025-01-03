@@ -282,7 +282,6 @@ const User = () => {
                 style={{
                   width: "150px",
                   height: "24px",
-                  backgroundColor: "yellow",
                 }}
               />
             ) : (
@@ -294,7 +293,6 @@ const User = () => {
                 style={{
                   width: "150px",
                   height: "24px",
-                  backgroundColor: "yellow",
                 }}
               />
             ) : (
@@ -321,7 +319,6 @@ const User = () => {
                 style={{
                   width: "150px",
                   height: "35px",
-                  backgroundColor: "yellow",
                 }}
               />
             )
@@ -330,7 +327,6 @@ const User = () => {
               style={{
                 width: "150px",
                 height: "35px",
-                backgroundColor: "lightgray",
               }}
             />
           )}

@@ -149,7 +149,6 @@ const Artist = () => {
       ).then((res) => res.json());
 
       if (result.ok) {
-        // console.log(result.artist);
         setArtistData(result.artist);
         setArtistMusics(result.artist.musics);
         setBackground((prev) => {
