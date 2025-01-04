@@ -2,17 +2,22 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { IMusicFormInput } from "../../../shared/types";
 import AdminFormLayout from "../AdminFormLayout";
-import AdminForm from "../../../widgets/admin/AdminForm";
-import { musicFields } from "../../../shared/lib/admin/formFields";
+import AdminMusicForm from "./AdminMusicForm";
+import { MusicIDs } from "../../../shared/models/music";
 
 const AdminMusicsNew: React.FC = () => {
-  const { register, handleSubmit, trigger } = useForm<IMusicFormInput>();
+  const {
+    register,
+    handleSubmit,
+    trigger,
+    setError,
+    formState: { errors },
+    clearErrors,
+    setFocus,
+  } = useForm<IMusicFormInput>();
   const navigate = useNavigate();
 
   const onSubmit: SubmitHandler<IMusicFormInput> = async (event) => {
-    // 데이터 보내기
-    console.log(event);
-
     const musicData: IMusicFormInput = {
       title: event.title,
       duration: event.duration,
@@ -28,26 +33,40 @@ const AdminMusicsNew: React.FC = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ musicData }),
+      credentials: "include",
     }).then((result) => result.json());
 
     if (result.ok) {
       navigate("/admin/musics");
+    } else {
+      if (result.error) {
+        alert("Upload Failed");
+        navigate("/admin/musics");
+      } else {
+        setError("ytId", { message: "이미 존재하는 아이디입니다." });
+        setFocus("ytId");
+      }
     }
   };
 
   const submitForm = async () => {
-    //validate
     const isValid = await trigger();
     if (isValid) {
       handleSubmit(onSubmit)();
-    } else {
-      console.log("error");
     }
+  };
+
+  const handleChange = (id: MusicIDs) => {
+    clearErrors(id);
   };
 
   return (
     <AdminFormLayout backFunc={() => navigate(-1)} submitForm={submitForm}>
-      <AdminForm fields={musicFields} register={register} />
+      <AdminMusicForm
+        errors={errors}
+        handleChange={handleChange}
+        register={register}
+      />
     </AdminFormLayout>
   );
 };

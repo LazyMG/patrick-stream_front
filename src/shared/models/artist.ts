@@ -32,3 +32,15 @@ export interface APIArtist {
   __v?: number;
   _id: string;
 }
+
+export type ArtistIDs =
+  | "artistname"
+  | "country"
+  | "coverImg"
+  | "introduction"
+  | "debut_at";
+
+export interface IOutletArtist {
+  artist: APIArtist;
+  setArtist: React.Dispatch<React.SetStateAction<APIArtist>>;
+}

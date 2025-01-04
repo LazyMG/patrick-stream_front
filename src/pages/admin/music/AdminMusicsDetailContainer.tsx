@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Outlet, useParams } from "react-router-dom";
+import { APIMusic } from "../../../shared/models/music";
 
 const AdminMusicsDetailContainer: React.FC = () => {
   const { musicId } = useParams();
-  const [music, setMusic] = useState();
+  const [musicData, setMusicData] = useState<APIMusic | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const getMusic = async (id = "") => {
     const result = await fetch(
@@ -11,8 +13,8 @@ const AdminMusicsDetailContainer: React.FC = () => {
     ).then((res) => res.json());
 
     if (result.ok) {
-      // console.log(result.music);
-      setMusic(result.music);
+      setMusicData(result.music);
+      setIsLoading(false);
     }
   };
 
@@ -20,7 +22,15 @@ const AdminMusicsDetailContainer: React.FC = () => {
     getMusic(musicId);
   }, [musicId]);
 
-  return <Outlet context={music} />;
+  return (
+    <>
+      {isLoading ? (
+        <div>Loading...</div>
+      ) : (
+        <Outlet context={{ music: musicData, setMusic: setMusicData }} />
+      )}
+    </>
+  );
 };
 
 export default AdminMusicsDetailContainer;

@@ -1,55 +1,117 @@
-import React, { useEffect, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
-import { Artist } from "../../../shared/models/artist";
+import { ArtistIDs, IOutletArtist } from "../../../shared/models/artist";
 import { IArtistFormInput } from "../../../shared/types";
 import { SubmitHandler, useForm } from "react-hook-form";
 import AdminFormLayout from "../AdminFormLayout";
-import AdminForm from "../../../widgets/admin/AdminForm";
-import { artistFields } from "../../../shared/lib/admin/formFields";
+import AdminArtistForm from "./AdminArtistForm";
 
 const AdminArtistsEdit: React.FC = () => {
-  const artist = useOutletContext<Artist | undefined>();
-  const [currentArtist, setCurrentArtist] = useState<IArtistFormInput>();
-  const { register, setValue, handleSubmit, trigger, getValues } = useForm<
-    IArtistFormInput
-  >();
-
-  const defaultValue = {
-    artistname: artist?.artistname || "",
-    introduction: artist?.introduction || "",
-    debut_at: artist?.debut_at || "",
-    country: artist?.country || "",
-    coverImg: artist?.coverImg || "",
-  };
+  const outletAritst = useOutletContext<IOutletArtist | undefined>();
+  const {
+    register,
+    handleSubmit,
+    trigger,
+    formState: { errors },
+    clearErrors,
+  } = useForm<IArtistFormInput>({
+    defaultValues: {
+      artistname: outletAritst?.artist.artistname || "",
+      introduction: outletAritst?.artist.introduction || "",
+      debut_at: outletAritst?.artist.debut_at || "",
+      country: outletAritst?.artist.country || "",
+      coverImg: outletAritst?.artist.coverImg || "",
+    },
+  });
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (artist) {
-      setCurrentArtist({
-        artistname: artist?.artistname,
-        introduction: artist?.introduction,
-        debut_at: artist?.debut_at,
-        country: artist?.country,
-        coverImg: artist?.coverImg,
-      });
-    }
-  }, [artist]);
+  const handleChange = (id: ArtistIDs) => {
+    clearErrors(id);
+  };
 
-  const onSubmit: SubmitHandler<IArtistFormInput> = (event) => {
-    if (!currentArtist) return;
+  const onSubmit: SubmitHandler<IArtistFormInput> = async (event) => {
+    const changedFields: Partial<IArtistFormInput> = {};
 
     (Object.keys(event) as (keyof IArtistFormInput)[]).forEach((key) => {
-      if (getValues(key) === "") {
-        setValue(key, currentArtist[key]);
+      const newValue = event[key];
+      const oldValue = outletAritst?.artist[key];
+
+      if (newValue !== oldValue) {
+        changedFields[key] = newValue as IArtistFormInput[typeof key];
       }
     });
 
-    // // 데이터 보내기
-    // const data = getValues();
+    if (Object.keys(changedFields).length === 0) {
+      alert("수정된 내용이 없습니다.");
+      return;
+    }
+
+    const result = await fetch(
+      `http://localhost:5000/artist/${outletAritst?.artist._id}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ changedFields }),
+        credentials: "include",
+      }
+    ).then((res) => res.json());
+
+    if (result.ok) {
+      if (outletAritst) {
+        outletAritst.setArtist((prev) => {
+          if (!prev) return prev;
+          const changedArtist = { ...prev };
+          (Object.keys(changedFields) as (keyof IArtistFormInput)[]).forEach(
+            (key) => {
+              switch (key) {
+                case "introduction":
+                  if (changedFields.introduction !== undefined) {
+                    changedArtist.introduction = changedFields.introduction;
+                  }
+                  break;
+
+                case "coverImg":
+                  if (changedFields.coverImg !== undefined) {
+                    changedArtist.coverImg = changedFields.coverImg;
+                  }
+                  break;
+
+                case "debut_at":
+                  if (changedFields.debut_at !== undefined) {
+                    changedArtist.debut_at = changedFields.debut_at;
+                  }
+                  break;
+
+                case "artistname":
+                  if (changedFields.artistname !== undefined) {
+                    changedArtist.artistname = changedFields.artistname;
+                  }
+                  break;
+
+                case "country":
+                  if (changedFields.country !== undefined) {
+                    changedArtist.country = changedFields.country;
+                  }
+                  break;
+                default:
+                  break;
+              }
+            }
+          );
+          return changedArtist;
+        });
+      }
+    } else {
+      alert("Server Error");
+    }
+    navigate(`/admin/artists/${outletAritst?.artist._id}`);
   };
 
   const submitForm = async () => {
+    if (!outletAritst?.artist) return;
+
     const isValid = await trigger();
     if (isValid) {
       handleSubmit(onSubmit)();
@@ -58,10 +120,10 @@ const AdminArtistsEdit: React.FC = () => {
 
   return (
     <AdminFormLayout backFunc={() => navigate(-1)} submitForm={submitForm}>
-      <AdminForm
+      <AdminArtistForm
+        errors={errors}
+        handleChange={handleChange}
         register={register}
-        fields={artistFields}
-        initialData={defaultValue as IArtistFormInput}
       />
     </AdminFormLayout>
   );

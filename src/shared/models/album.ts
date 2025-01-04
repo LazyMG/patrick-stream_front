@@ -38,6 +38,11 @@ export interface APIAlbum {
   _id: string;
 }
 
+export interface IOutletAlbum {
+  album: APIAlbum;
+  setAlbum: React.Dispatch<React.SetStateAction<APIAlbum | null>>;
+}
+
 export interface Test {
   category: string;
   coverImg: string;
@@ -51,3 +56,11 @@ export interface Test {
   title: string;
   _id: string;
 }
+
+export type AlbumIDs =
+  | "title"
+  | "length"
+  | "category"
+  | "coverImg"
+  | "introduction"
+  | "released_at";

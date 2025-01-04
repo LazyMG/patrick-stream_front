@@ -47,3 +47,16 @@ export interface APIMusic {
   __v?: number;
   _id: string;
 }
+
+export interface IOutletMusic {
+  music: APIMusic;
+  setMusic: React.Dispatch<React.SetStateAction<APIMusic | null>>;
+}
+
+export type MusicIDs =
+  | "title"
+  | "duration"
+  | "ytId"
+  | "coverImg"
+  | "genre"
+  | "released_at";

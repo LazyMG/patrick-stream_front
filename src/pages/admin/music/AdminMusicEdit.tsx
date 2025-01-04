@@ -1,59 +1,143 @@
-import { useEffect, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
-import { Music } from "../../../shared/models/music";
+import { IOutletMusic, MusicIDs } from "../../../shared/models/music";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { IMusicFormInput } from "../../../shared/types";
 import AdminFormLayout from "../AdminFormLayout";
-import AdminForm from "../../../widgets/admin/AdminForm";
-import { musicFields } from "../../../shared/lib/admin/formFields";
+import AdminMusicForm from "./AdminMusicForm";
 
 const AdminMusicEdit: React.FC = () => {
-  const music = useOutletContext<Music | undefined>();
-  const [currentMusic, setCurrentMusic] = useState<IMusicFormInput>();
-  const { register, setValue, handleSubmit, trigger, getValues } = useForm<
-    IMusicFormInput
-  >();
+  const outletMusic = useOutletContext<IOutletMusic | undefined>();
+  const {
+    register,
+    handleSubmit,
+    trigger,
+    formState: { errors },
+    clearErrors,
+  } = useForm<IMusicFormInput>({
+    defaultValues: {
+      title: outletMusic?.music.title || "",
+      duration: outletMusic?.music.duration || 0,
+      ytId: outletMusic?.music.ytId || "",
+      released_at: outletMusic?.music.released_at || "",
+      genre: outletMusic?.music.genre.toString() || "",
+      coverImg: outletMusic?.music.coverImg || "",
+    },
+  });
 
   const navigate = useNavigate();
 
-  const defaultValue = {
-    title: music?.title || "",
-    duration: music?.duration || 0,
-    ytId: music?.ytId || "",
-    released_at: music?.released_at || "",
-    genre: music?.genre.toString() || "",
-    coverImg: music?.coverImg || "",
+  const handleChange = (id: MusicIDs) => {
+    clearErrors(id);
   };
 
-  useEffect(() => {
-    if (music) {
-      setCurrentMusic({
-        title: music.title,
-        duration: music.duration,
-        ytId: music.ytId,
-        released_at: music.released_at,
-        genre: music.genre.toString(),
-        coverImg: music.coverImg,
-      });
-    }
-  }, [music]);
+  const onSubmit: SubmitHandler<IMusicFormInput> = async (event) => {
+    if (!outletMusic?.music) return;
 
-  const onSubmit: SubmitHandler<IMusicFormInput> = (event) => {
-    if (!currentMusic) return;
+    const changedFields: Partial<IMusicFormInput> = {};
 
     (Object.keys(event) as (keyof IMusicFormInput)[]).forEach((key) => {
-      if (getValues(key) === "") {
-        setValue(key, currentMusic[key]);
+      const newValue = event[key];
+      const oldValue = outletMusic?.music[key];
+
+      if (key === "duration") {
+        const numValue =
+          typeof newValue === "string" ? Number(newValue) : newValue;
+        if (numValue !== oldValue) {
+          changedFields.duration = numValue;
+        }
+        return;
+      } else if (key === "genre" && Array.isArray(oldValue)) {
+        const genreValue = outletMusic?.music[key].join(",");
+        if (newValue !== genreValue) {
+          changedFields.genre = newValue.toString();
+        }
+        return;
+      }
+
+      if (newValue !== oldValue) {
+        changedFields[key] = newValue as IMusicFormInput[typeof key];
       }
     });
 
-    // // 데이터 보내기
-    // const data = getValues();
+    if (Object.keys(changedFields).length === 0) {
+      alert("수정된 내용이 없습니다.");
+      return;
+    }
 
-    console.log(getValues());
+    const result = await fetch(
+      `http://localhost:5000/music/${outletMusic?.music._id}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ changedFields }),
+        credentials: "include",
+      }
+    ).then((res) => res.json());
+
+    if (result.ok) {
+      if (outletMusic) {
+        outletMusic.setMusic((prev) => {
+          if (!prev) return prev;
+          const changedMusic = { ...prev };
+          (Object.keys(changedFields) as (keyof IMusicFormInput)[]).forEach(
+            (key) => {
+              switch (key) {
+                case "duration":
+                  if (changedFields.duration !== undefined) {
+                    changedMusic.duration = Number(changedFields.duration);
+                  }
+                  break;
+
+                case "genre":
+                  if (changedFields.genre !== undefined) {
+                    changedMusic.genre = changedFields.genre.split(",");
+                  }
+                  break;
+
+                case "coverImg":
+                  if (changedFields.coverImg !== undefined) {
+                    changedMusic.coverImg = changedFields.coverImg;
+                  }
+                  break;
+
+                case "released_at":
+                  if (changedFields.released_at !== undefined) {
+                    changedMusic.released_at = changedFields.released_at;
+                  }
+                  break;
+
+                case "title":
+                  if (changedFields.title !== undefined) {
+                    changedMusic.title = changedFields.title;
+                  }
+                  break;
+
+                case "ytId":
+                  if (changedFields.ytId !== undefined) {
+                    changedMusic.ytId = changedFields.ytId;
+                  }
+                  break;
+
+                default:
+                  break;
+              }
+            }
+          );
+          return changedMusic;
+        });
+      }
+    } else {
+      alert("Server Error");
+    }
+    navigate(`/admin/musics/${outletMusic?.music._id}`);
   };
 
   const submitForm = async () => {
+    if (!outletMusic?.music) {
+      return;
+    }
     const isValid = await trigger();
     if (isValid) {
       handleSubmit(onSubmit)();
@@ -62,10 +146,10 @@ const AdminMusicEdit: React.FC = () => {
 
   return (
     <AdminFormLayout backFunc={() => navigate(-1)} submitForm={submitForm}>
-      <AdminForm
+      <AdminMusicForm
+        errors={errors}
+        handleChange={handleChange}
         register={register}
-        fields={musicFields}
-        initialData={defaultValue as IMusicFormInput}
       />
     </AdminFormLayout>
   );

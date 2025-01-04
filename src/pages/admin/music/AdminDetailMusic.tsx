@@ -1,18 +1,18 @@
 import React, { useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
-import { Music } from "../../../shared/models/music";
+import { IOutletMusic } from "../../../shared/models/music";
 import AdminDetailLayout from "../AdminDetailLayout";
 import AdminModalProvider from "../../../widgets/admin/AdminModalProvider";
 
 const AdminDetailMusic: React.FC = () => {
-  const music = useOutletContext<Music | undefined>();
+  const outletMusic = useOutletContext<IOutletMusic | undefined>();
   const [isAlbumModalOpen, setIsAlbumModalOpen] = useState<boolean>(false);
   const [isArtistModalOpen, setIsArtistModalOpen] = useState<boolean>(false);
 
   const navigate = useNavigate();
 
   const deleteMusic = () => {
-    if (confirm(`[${music?.title}]을(를) 삭제하시겠습니까?`)) {
+    if (confirm(`[${outletMusic?.music.title}]을(를) 삭제하시겠습니까?`)) {
       //삭제 로직
       navigate("/admin/musics");
     } else {
@@ -30,13 +30,15 @@ const AdminDetailMusic: React.FC = () => {
 
   // infoData 만드는 함수 필요
   const infoData = [
-    `제목: ${music?.title}`,
-    `아티스트: ${music?.artists ?? music?.artists.length ?? "없음"}`,
-    `앨범: ${music?.album || "없음"}`,
-    `재생시간: ${music?.duration}`,
-    `발매 일자: ${music?.released_at}`,
-    `등록 일자: ${music?.created_at}`,
-    `장르: ${music?.genre}`,
+    `제목: ${outletMusic?.music.title}`,
+    `아티스트: ${
+      outletMusic?.music.artists ?? outletMusic?.music.artists.length ?? "없음"
+    }`,
+    `앨범: ${outletMusic?.music.album || "없음"}`,
+    `재생시간: ${outletMusic?.music.duration}`,
+    `발매 일자: ${outletMusic?.music.released_at}`,
+    `등록 일자: ${outletMusic?.music.created_at}`,
+    `장르: ${outletMusic?.music.genre}`,
   ];
 
   const buttonConfig = {
@@ -48,7 +50,7 @@ const AdminDetailMusic: React.FC = () => {
       modalOpen: openArtistModal,
       buttonText: "아티스트에 등록하기",
     },
-    path: `/musics/${music?._id}`,
+    path: `/musics/${outletMusic?.music._id}`,
     deleteFunc: deleteMusic,
   };
 
@@ -72,7 +74,11 @@ const AdminDetailMusic: React.FC = () => {
 
   // 앨범에 음악 추가하는 코드 필요
   const addMusicToAlbum = async (albumId: string, albumTitle?: string) => {
-    if (confirm(`${music?.title}을(를) ${albumTitle}에 추가하시겠습니까?`)) {
+    if (
+      confirm(
+        `${outletMusic?.music.title}을(를) ${albumTitle}에 추가하시겠습니까?`
+      )
+    ) {
       const result = await fetch(
         `http://localhost:5000/album/${albumId}/music`,
         {
@@ -80,7 +86,7 @@ const AdminDetailMusic: React.FC = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ musicId: music?._id }),
+          body: JSON.stringify({ musicId: outletMusic?.music._id }),
         }
       ).then((res) => res.json());
       if (result.ok) {
@@ -93,7 +99,11 @@ const AdminDetailMusic: React.FC = () => {
 
   // 아티스트에 음악 추가하는 코드 필요
   const addMusicToArtist = async (artistId: string, artistname?: string) => {
-    if (confirm(`${music?.title}을(를) ${artistname}에 추가하시겠습니까?`)) {
+    if (
+      confirm(
+        `${outletMusic?.music.title}을(를) ${artistname}에 추가하시겠습니까?`
+      )
+    ) {
       const result = await fetch(
         `http://localhost:5000/artist/${artistId}/music`,
         {
@@ -101,7 +111,7 @@ const AdminDetailMusic: React.FC = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ musicId: music?._id }),
+          body: JSON.stringify({ musicId: outletMusic?.music._id }),
         }
       ).then((res) => res.json());
       if (result.ok) {
@@ -134,10 +144,10 @@ const AdminDetailMusic: React.FC = () => {
       )}
       <AdminDetailLayout
         infoData={infoData}
-        imageSrc={music?.coverImg || ""}
+        imageSrc={outletMusic?.music.coverImg || ""}
         buttonsConfig={buttonConfig}
         comments={[<div>Comment</div>, <div>Comment</div>]}
-        ytId={music?.ytId || ""}
+        ytId={outletMusic?.music.ytId || ""}
       />
     </>
   );

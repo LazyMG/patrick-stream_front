@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
-import { Artist } from "../../../shared/models/artist";
+import { IOutletArtist } from "../../../shared/models/artist";
 import AdminDetailLayout from "../AdminDetailLayout";
 import AdminModalProvider from "../../../widgets/admin/AdminModalProvider";
 
 const AdminDetailArtist: React.FC = () => {
-  const artist = useOutletContext<Artist | undefined>();
+  const outletArtist = useOutletContext<IOutletArtist | undefined>();
   const [isThisArtistMusicModalOpen, setIsThisArtistMusicModalOpen] = useState<
     boolean
   >(false);
@@ -16,7 +16,9 @@ const AdminDetailArtist: React.FC = () => {
   const navigate = useNavigate();
 
   const deleteArtist = () => {
-    if (confirm(`[${artist?.artistname}]을(를) 삭제하시겠습니까?`)) {
+    if (
+      confirm(`[${outletArtist?.artist.artistname}]을(를) 삭제하시겠습니까?`)
+    ) {
       //삭제 로직
       navigate("/admin/artists");
     } else {
@@ -33,12 +35,12 @@ const AdminDetailArtist: React.FC = () => {
   const closeThisArtistAlbumModal = () => setIsThisArtistAlbumModalOpen(false);
 
   const infoData = [
-    `이름: ${artist?.artistname}`,
-    `음악 수: ${artist?.musics.length}`,
-    `앨범 수: ${artist?.albums.length}`,
-    `데뷔 일자: ${artist?.debut_at}`,
-    `등록 일자: ${artist?.created_at}`,
-    `국가: ${artist?.country}`,
+    `이름: ${outletArtist?.artist.artistname}`,
+    `음악 수: ${outletArtist?.artist.musics?.length || 0}`,
+    `앨범 수: ${outletArtist?.artist.albums?.length || 0}`,
+    `데뷔 일자: ${outletArtist?.artist.debut_at}`,
+    `등록 일자: ${outletArtist?.artist.created_at}`,
+    `국가: ${outletArtist?.artist.country}`,
   ];
 
   const buttonConfig = {
@@ -50,14 +52,14 @@ const AdminDetailArtist: React.FC = () => {
       modalOpen: openThisArtistAlbumModal,
       buttonText: "앨범 삭제하기",
     },
-    path: `/artists/${artist?._id}`,
+    path: `/artists/${outletArtist?.artist._id}`,
     deleteFunc: deleteArtist,
   };
 
   // 자기 음악 fetch
   const fetchThisAritstMusics = async () => {
     const result = await fetch(
-      `http://localhost:5000/artist/${artist?._id}/musics`
+      `http://localhost:5000/artist/${outletArtist?.artist._id}/musics`
     ).then((res) => res.json());
     if (result.ok) return result.musics;
     else [];
@@ -66,7 +68,7 @@ const AdminDetailArtist: React.FC = () => {
   // 자기 앨범 fetch
   const fetchThisAritstAlbum = async () => {
     const result = await fetch(
-      `http://localhost:5000/artist/${artist?._id}/albums`
+      `http://localhost:5000/artist/${outletArtist?.artist._id}/albums`
     ).then((res) => res.json());
     if (result.ok) return result.albums;
     else [];
@@ -74,24 +76,30 @@ const AdminDetailArtist: React.FC = () => {
 
   // 자기 음악 리스트에서 음악 삭제
   const deleteMusicToArtist = async (musicId: string) => {
-    await fetch(`http://localhost:5000/artist/${artist?._id}/music`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ musicId }),
-    });
+    await fetch(
+      `http://localhost:5000/artist/${outletArtist?.artist._id}/music`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ musicId }),
+      }
+    );
   };
 
   // 자기 앨범 리스트에서 앨범 삭제
   const deleteAlbumToArtist = async (albumId: string) => {
-    await fetch(`http://localhost:5000/artist/${artist?._id}/album`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ albumId }),
-    });
+    await fetch(
+      `http://localhost:5000/artist/${outletArtist?.artist._id}/album`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ albumId }),
+      }
+    );
   };
 
   return (
@@ -116,9 +124,9 @@ const AdminDetailArtist: React.FC = () => {
       <AdminDetailLayout
         buttonsConfig={buttonConfig}
         infoData={infoData}
-        imageSrc={artist?.coverImg || ""}
+        imageSrc={outletArtist?.artist.coverImg || ""}
         comments={[<div>Comment</div>, <div>Comment</div>]}
-        introduction={artist?.introduction}
+        introduction={outletArtist?.artist.introduction}
       />
     </>
   );

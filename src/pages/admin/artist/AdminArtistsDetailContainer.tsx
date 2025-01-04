@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Outlet, useParams } from "react-router-dom";
+import { APIArtist } from "../../../shared/models/artist";
 
 const AdminArtistsDetailContainer: React.FC = () => {
   const { artistId } = useParams();
-  const [artist, setArtist] = useState();
+  const [artistData, setArtistData] = useState<APIArtist | null>();
+  const [isLoading, setIsLoading] = useState(true);
 
   const getArtist = async (id = "") => {
     const result = await fetch(
@@ -11,8 +13,8 @@ const AdminArtistsDetailContainer: React.FC = () => {
     ).then((res) => res.json());
 
     if (result.ok) {
-      console.log(result.artist);
-      setArtist(result.artist);
+      setArtistData(result.artist);
+      setIsLoading(false);
     }
   };
 
@@ -20,7 +22,15 @@ const AdminArtistsDetailContainer: React.FC = () => {
     getArtist(artistId);
   }, [artistId]);
 
-  return <Outlet context={artist} />;
+  return (
+    <>
+      {isLoading ? (
+        <div>Loading...</div>
+      ) : (
+        <Outlet context={{ artist: artistData, setArtist: setArtistData }} />
+      )}
+    </>
+  );
 };
 
 export default AdminArtistsDetailContainer;

@@ -3,11 +3,17 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { IArtistFormInput } from "../../../shared/types";
 import AdminFormLayout from "../AdminFormLayout";
-import AdminForm from "../../../widgets/admin/AdminForm";
-import { artistFields } from "../../../shared/lib/admin/formFields";
+import AdminArtistForm from "./AdminArtistForm";
+import { ArtistIDs } from "../../../shared/models/artist";
 
 const AdminArtistsNew: React.FC = () => {
-  const { register, handleSubmit, trigger } = useForm<IArtistFormInput>();
+  const {
+    register,
+    handleSubmit,
+    trigger,
+    formState: { errors },
+    clearErrors,
+  } = useForm<IArtistFormInput>();
   const navigate = useNavigate();
 
   const onSubmit: SubmitHandler<IArtistFormInput> = async (event) => {
@@ -28,6 +34,7 @@ const AdminArtistsNew: React.FC = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ artistData }),
+      credentials: "include",
     }).then((result) => result.json());
 
     if (result.ok) {
@@ -40,14 +47,20 @@ const AdminArtistsNew: React.FC = () => {
     const isValid = await trigger();
     if (isValid) {
       handleSubmit(onSubmit)();
-    } else {
-      console.log("error");
     }
+  };
+
+  const handleChange = (id: ArtistIDs) => {
+    clearErrors(id);
   };
 
   return (
     <AdminFormLayout backFunc={() => navigate(-1)} submitForm={submitForm}>
-      <AdminForm register={register} fields={artistFields} />
+      <AdminArtistForm
+        errors={errors}
+        handleChange={handleChange}
+        register={register}
+      />
     </AdminFormLayout>
   );
 };

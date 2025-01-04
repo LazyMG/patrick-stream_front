@@ -46,21 +46,21 @@ const Image = styled.img`
   background-color: blue;
 `;
 
-const CommentContainer = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  background-color: blue;
-  padding: 10px 15px;
-`;
+// const CommentContainer = styled.div`
+//   width: 100%;
+//   display: flex;
+//   flex-direction: column;
+//   gap: 10px;
+//   background-color: blue;
+//   padding: 10px 15px;
+// `;
 
-const Comment = styled.div`
-  display: flex;
-  height: 50px;
-  background-color: white;
-  border-radius: 15px;
-`;
+// const Comment = styled.div`
+//   display: flex;
+//   height: 50px;
+//   background-color: white;
+//   border-radius: 15px;
+// `;
 
 const YoutubeContainer = styled.iframe`
   width: 100%;
@@ -90,7 +90,7 @@ interface AdminButtonConfig {
 interface IDetailLayout {
   infoData: string[];
   imageSrc: string;
-  comments: JSX.Element[]; // 추후 comment 타입 배열로 변경
+  comments?: JSX.Element[]; // 추후 comment 타입 배열로 변경
   buttonsConfig: AdminButtonConfig;
   ytId?: string;
   introduction?: string;
@@ -99,7 +99,6 @@ interface IDetailLayout {
 const AdminDetailLayout = ({
   infoData,
   imageSrc,
-  comments,
   buttonsConfig,
   ytId,
   introduction,
@@ -126,13 +125,13 @@ const AdminDetailLayout = ({
             <Introduction>{introduction}</Introduction>
           </ContentRow>
         )}
-        <ContentRow>
+        {/* <ContentRow>
           <CommentContainer>
             {comments.map((comment, idx) => (
               <Comment key={idx}>{comment}</Comment>
             ))}
           </CommentContainer>
-        </ContentRow>
+        </ContentRow> */}
       </Content>
     </ContentContainer>
   );

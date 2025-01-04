@@ -3,6 +3,7 @@ import styled from "styled-components";
 import AdminSidebar from "../../widgets/admin/AdminSiderBar";
 import AdminHeader from "../../widgets/admin/AdminHeader";
 import AdminDashboard from "../../widgets/admin/AdminDashBoard";
+import { useAdmin } from "../../shared/hooks/useAdmin";
 
 const PageContainer = styled.div`
   display: flex;
@@ -17,6 +18,9 @@ const MainContent = styled.div`
 `;
 
 const AdminLayout = () => {
+  const getAdmin = useAdmin();
+
+  getAdmin();
   return (
     <PageContainer>
       <AdminSidebar />
