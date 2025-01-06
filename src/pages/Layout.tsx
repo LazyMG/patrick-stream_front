@@ -1,9 +1,9 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useParams } from "react-router-dom";
 import styled from "styled-components";
 import Header from "../widgets/client/Header";
 import Sidebar from "../widgets/client/Sidebar";
 import MainContainer from "../widgets/client/MainContainer";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const Wrapper = styled.div`
   width: 100vw;
@@ -18,6 +18,11 @@ const Wrapper = styled.div`
 
 const Layout = () => {
   const [navShow, setNavShow] = useState(false);
+  const params = useParams();
+
+  useEffect(() => {
+    window.scroll({ top: 0 });
+  }, [params]);
 
   const handleScroll = (scrollTop: number) => {
     if (scrollTop > 30) {

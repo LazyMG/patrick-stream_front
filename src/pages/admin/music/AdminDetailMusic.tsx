@@ -11,10 +11,20 @@ const AdminDetailMusic: React.FC = () => {
 
   const navigate = useNavigate();
 
-  const deleteMusic = () => {
+  const deleteMusic = async () => {
     if (confirm(`[${outletMusic?.music.title}]을(를) 삭제하시겠습니까?`)) {
       //삭제 로직
-      navigate("/admin/musics");
+      const result = await fetch(
+        `http://localhost:5000/music/${outletMusic?.music._id}`,
+        {
+          method: "DELETE",
+          credentials: "include",
+        }
+      ).then((res) => res.json());
+      console.log(result);
+      if (result.ok) {
+        navigate("/admin/musics");
+      }
     } else {
       return;
     }

@@ -23,8 +23,6 @@ const Wrapper = styled.div`
   position: relative;
 
   z-index: 2;
-
-  /* background-color: blue; */
 `;
 
 const ContentContainer = styled.div`
@@ -32,7 +30,8 @@ const ContentContainer = styled.div`
   display: flex;
   position: relative;
   padding-top: 20px;
-  min-height: 100vh;
+  /* min-height: 100vh; */
+  /* height: 100vh; */
 `;
 
 const AlbumInfo = styled.div`
@@ -46,6 +45,8 @@ const AlbumInfo = styled.div`
   gap: 12px;
   align-self: flex-start;
   margin-right: 80px;
+
+  z-index: 1;
 `;
 
 const AlbumArtist = styled.span`
@@ -111,6 +112,12 @@ const AlbumPlayButton = styled.button`
   svg {
     width: 20px;
   }
+
+  transition: transform 0.1s ease-in-out;
+
+  &:hover {
+    transform: scale(1.1);
+  }
 `;
 
 const AlbumFollowButton = styled(DefaultButton)<{ $follow: boolean }>`
@@ -132,9 +139,9 @@ const AlbumFollowButton = styled(DefaultButton)<{ $follow: boolean }>`
 `;
 
 const AlbumListContainer = styled.div`
-  width: 70%;
+  width: 60%;
   margin-left: auto;
-  /* min-height: 80vh; */
+  min-height: 80vh;
   padding-top: 10px;
   display: flex;
   flex-direction: column;
@@ -271,13 +278,6 @@ const Album = () => {
                   {follow ? "언팔로우" : "팔로우"}
                 </AlbumFollowButton>
               </AlbumController>
-              {/* <div
-                style={{
-                  width: "100%",
-                  height: "200px",
-                  backgroundColor: "green",
-                }}
-              /> */}
             </AlbumInfo>
             <AlbumListContainer>
               {albumData.musics?.map((item, idx) => (

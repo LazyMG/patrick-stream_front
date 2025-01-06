@@ -13,10 +13,20 @@ const AdminDetailAlbum: React.FC = () => {
 
   const navigate = useNavigate();
 
-  const deleteAblum = () => {
+  const deleteAblum = async () => {
     if (confirm(`[${outletAlbum?.album.title}]을(를) 삭제하시겠습니까?`)) {
       //삭제 로직
-      navigate("/admin/albums");
+      const result = await fetch(
+        `http://localhost:5000/album/${outletAlbum?.album._id}`,
+        {
+          method: "DELETE",
+          credentials: "include",
+        }
+      ).then((res) => res.json());
+      if (result.ok) {
+        console.log(result);
+        navigate("/admin/albums");
+      }
     } else {
       return;
     }

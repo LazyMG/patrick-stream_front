@@ -3,12 +3,7 @@ import { DefaultButton } from "../../shared/ui/DefaultButton";
 import RowList from "../../widgets/client/RowList";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { loginUserDataState, userState } from "../../app/entities/user/atom";
-import {
-  Location,
-  useLocation,
-  useNavigate,
-  useParams,
-} from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useCallback, useEffect, useState } from "react";
 import FlexList from "../../widgets/client/FlexList";
 import { backgroundState } from "../../app/entities/global/atom";
@@ -26,8 +21,6 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 70px;
-
-  /* background-color: blue; */
 `;
 
 const InfoContainer = styled.div`
@@ -38,7 +31,6 @@ const InfoContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  /* align-items: center; */
   gap: 15px;
 `;
 
@@ -112,12 +104,6 @@ const FollowButton = styled(DefaultButton)<{ $follow: boolean }>`
   }
 `;
 
-interface UserPartial {
-  _id: string;
-  username: string;
-  introduction?: string;
-}
-
 const User = () => {
   const [user, setUser] = useRecoilState(userState);
   const { userId } = useParams();
@@ -134,12 +120,6 @@ const User = () => {
   const recentMusics = useRecoilValue(recentMusicsState);
   const followingArtists = useRecoilValue(followingArtistsState);
   const followingAlbums = useRecoilValue(followingAlbumsState);
-
-  const location = useLocation() as Location & {
-    state?: UserPartial;
-  };
-
-  const [partial] = useState<UserPartial | null>(location.state ?? null);
 
   const isMyPage = userId !== undefined && user.userId === userId;
 
@@ -196,31 +176,18 @@ const User = () => {
       return;
     }
 
-    // 2) partial이 있고, 아직 userData가 없으면
-    //    => partial만 먼저 보여주고 fetch는 상황에 따라
-    if (!userData && partial) {
-      // 우선 로딩 해제해서 빠른 화면
-      setIsLoading(false);
-      // 필요하다면 추가 fetchUser(userId)로 최신화 가능
-      if (userId) {
-        getUser(userId);
-      }
-      return;
-    }
-
-    // 3) userData가 없고 userId가 있으면 fetch
+    // 2) userData가 없고 userId가 있으면 fetch
     if (!userData && userId && !user.loading) {
       getUser(userId);
     }
   }, [
+    getUser,
     isMyPage,
     loginUserData,
+    setBackground,
     userData,
-    partial,
     userId,
     user.loading,
-    getUser,
-    setBackground,
   ]);
 
   const logOut = async () => {
@@ -256,8 +223,6 @@ const User = () => {
     });
   };
 
-  const displayUser = userData ?? partial;
-
   return (
     <Wrapper>
       <InfoContainer>
@@ -277,26 +242,8 @@ const User = () => {
             </svg>
           </InfoIcon>
           <InfoText>
-            {isLoading || !displayUser?.username ? (
-              <div
-                style={{
-                  width: "150px",
-                  height: "24px",
-                }}
-              />
-            ) : (
-              <InfoName>{displayUser.username}</InfoName>
-            )}
-            {isLoading && !userData ? (
-              // 로딩중 + 아직 userData가 없는 경우
-              <div
-                style={{
-                  width: "150px",
-                  height: "24px",
-                }}
-              />
-            ) : (
-              // userData가 있거나 partial로 있으면 표시
+            {!isLoading && userData && <InfoName>{userData.username}</InfoName>}
+            {!isLoading && userData && (
               <InfoContent>{`팔로워 수: ${followers ?? 0}`}</InfoContent>
             )}
           </InfoText>

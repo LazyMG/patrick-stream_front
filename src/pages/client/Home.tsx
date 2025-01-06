@@ -59,6 +59,7 @@ const Home = () => {
       `http://localhost:5000/music/recently-updated`
     ).then((res) => res.json());
     if (result.ok) {
+      console.log(result.musics);
       setMusicsData(result.musics);
       setIsMusicLoading(false);
     }

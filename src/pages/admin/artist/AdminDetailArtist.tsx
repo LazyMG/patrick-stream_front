@@ -15,12 +15,21 @@ const AdminDetailArtist: React.FC = () => {
 
   const navigate = useNavigate();
 
-  const deleteArtist = () => {
+  const deleteArtist = async () => {
     if (
       confirm(`[${outletArtist?.artist.artistname}]을(를) 삭제하시겠습니까?`)
     ) {
       //삭제 로직
-      navigate("/admin/artists");
+      const result = await fetch(
+        `http://localhost:5000/artist/${outletArtist?.artist._id}`,
+        {
+          method: "DELETE",
+          credentials: "include",
+        }
+      ).then((res) => res.json());
+      if (result.ok) {
+        navigate("/admin/artists");
+      }
     } else {
       return;
     }
