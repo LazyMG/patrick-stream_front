@@ -125,8 +125,12 @@ const AdminModal = ({
       modalFunc(id, name);
     } else if (dataType === "artist") {
       modalFunc(id, name);
+    } else {
+      modalFunc(id, name);
     }
   };
+
+  console.log("list", dataList, dataType);
 
   return (
     <ModalOverlay onClick={closeModal}>
@@ -141,7 +145,15 @@ const AdminModal = ({
         <ItemContainer>
           {dataType === "music" &&
             isMusicList(dataList) &&
-            dataList.map((music) => <div>{music.title}</div>)}
+            dataList.map((music) => (
+              <Item
+                key={music._id}
+                onClick={() => handleItemClick(music._id, music.title)}
+              >
+                <ItemTitle>{music.title}</ItemTitle>
+                <ItemInfo>{music.released_at}</ItemInfo>
+              </Item>
+            ))}
           {dataType === "album" &&
             isAlbumList(dataList) &&
             dataList.map((album) => (

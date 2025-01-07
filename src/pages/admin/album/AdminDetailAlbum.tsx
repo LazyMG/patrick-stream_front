@@ -84,14 +84,28 @@ const AdminDetailAlbum: React.FC = () => {
   };
 
   // 자기 음악 삭제하는 코드 필요
-  const deleteMusicToAlbum = async (musicId: string) => {
-    await fetch(`http://localhost:5000/album/${outletAlbum?.album._id}/music`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ musicId }),
-    });
+  const deleteMusicToAlbum = async (musicId: string, musicTitle?: string) => {
+    if (
+      confirm(
+        `${outletAlbum?.album.title}에서 ${musicTitle}을(를) 삭제하시겠습니까?`
+      )
+    ) {
+      const result = await fetch(
+        `http://localhost:5000/album/${outletAlbum?.album._id}/music`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ musicId }),
+          credentials: "include",
+        }
+      ).then((res) => res.json());
+      if (result.ok) {
+        navigate(0);
+      }
+      return;
+    }
   };
 
   // 아티스트에 자기 추가하는 코드 필요

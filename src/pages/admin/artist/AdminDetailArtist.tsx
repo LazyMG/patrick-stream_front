@@ -84,31 +84,53 @@ const AdminDetailArtist: React.FC = () => {
   };
 
   // 자기 음악 리스트에서 음악 삭제
-  const deleteMusicToArtist = async (musicId: string) => {
-    await fetch(
-      `http://localhost:5000/artist/${outletArtist?.artist._id}/music`,
-      {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ musicId }),
+  const deleteMusicToArtist = async (musicId: string, musicTitle?: string) => {
+    if (
+      confirm(
+        `${outletArtist?.artist.artistname}에서 ${musicTitle}을(를) 삭제하시겠습니까?`
+      )
+    ) {
+      const result = await fetch(
+        `http://localhost:5000/artist/${outletArtist?.artist._id}/music`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ musicId }),
+          credentials: "include",
+        }
+      ).then((res) => res.json());
+      if (result.ok) {
+        navigate(0);
       }
-    );
+      return;
+    }
   };
 
   // 자기 앨범 리스트에서 앨범 삭제
-  const deleteAlbumToArtist = async (albumId: string) => {
-    await fetch(
-      `http://localhost:5000/artist/${outletArtist?.artist._id}/album`,
-      {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ albumId }),
+  const deleteAlbumToArtist = async (albumId: string, albumTitle?: string) => {
+    if (
+      confirm(
+        `${outletArtist?.artist.artistname}에서 ${albumTitle}을(를) 삭제하시겠습니까?`
+      )
+    ) {
+      const result = await fetch(
+        `http://localhost:5000/artist/${outletArtist?.artist._id}/album`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ albumId }),
+          credentials: "include",
+        }
+      ).then((res) => res.json());
+      if (result.ok) {
+        navigate(0);
       }
-    );
+      return;
+    }
   };
 
   return (
