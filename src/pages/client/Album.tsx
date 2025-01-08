@@ -10,6 +10,7 @@ import AlbumList from "../../widgets/client/AlbumList";
 import { loginUserDataState, userState } from "../../app/entities/user/atom";
 import { playingPlaylistState } from "../../app/entities/music/atom";
 import { usePlayMusic } from "../../shared/hooks/usePlayMusic";
+import NotFound from "./NotFound";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -157,6 +158,7 @@ const Album = () => {
 
   const [follow, setFollow] = useState(false);
   const [followers, setFollowers] = useState<number | null>(null);
+  const [isNotFound, setIsNotFound] = useState(false);
 
   const setPlayingPlaylist = useSetRecoilState(playingPlaylistState);
   const playMusic = usePlayMusic();
@@ -191,12 +193,17 @@ const Album = () => {
         setAlbumData(result.album as APIAlbum);
         setBackground({ src: result.album.coverImg, type: "blur" });
         setIsLoading(false);
+      } else {
+        if (!result.error) {
+          setIsNotFound(true);
+        }
       }
     },
     [setBackground]
   );
 
   useEffect(() => {
+    setIsNotFound(false);
     if (albumId) {
       getAlbum(albumId);
     }
@@ -230,6 +237,10 @@ const Album = () => {
     setPlayingPlaylist(albumData.musics);
     playMusic(albumData.musics[0]);
   };
+
+  if (isNotFound) {
+    return <NotFound />;
+  }
 
   return (
     <Wrapper>

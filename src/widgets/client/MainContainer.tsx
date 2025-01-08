@@ -2,7 +2,7 @@ import { ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import PlayBar from "./PlayBar";
 import YoutubeContainer from "../../pages/YoutubeContainer";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { isPlayerOnState } from "../../app/entities/player/atom";
 import { backgroundState } from "../../app/entities/global/atom";
 import {
@@ -13,6 +13,7 @@ import {
 import { loginUserDataState, userState } from "../../app/entities/user/atom";
 import { followingArtistsState } from "../../app/entities/artist/atom";
 import { followingAlbumsState } from "../../app/entities/album/atom";
+import { useLocation } from "react-router-dom";
 
 const Wrapper = styled.div<{ $backImg?: string | null }>`
   margin-left: 250.5px;
@@ -26,9 +27,9 @@ const Wrapper = styled.div<{ $backImg?: string | null }>`
 
   background-attachment: local;
 
-  overflow-y: auto;
-
   position: relative;
+
+  overflow-y: scroll;
 
   &::-webkit-scrollbar {
     display: none;
@@ -52,8 +53,7 @@ const Content = styled.div`
 
   gap: 60px;
   color: white;
-  box-sizing: border-box;
-  /* background-color: aquamarine; */
+  /* box-sizing: border-box; */
 `;
 
 const ConentContainer = styled.div`
@@ -159,26 +159,6 @@ const SimpleBackImage = styled.div<{ $backImg: string }>`
   }
 `;
 
-// const ToastContainer = styled.div<{ $isActive: boolean; $isPlayerOn: boolean }>`
-//   position: fixed;
-//   left: 0;
-//   bottom: ${(props) => (props.$isPlayerOn ? `85px` : "5px")};
-//   display: ${(props) => (props.$isActive ? `block` : "none")};
-//   transition: display 10s ease-in-out;
-
-//   width: 100vw;
-//   z-index: 10;
-// `;
-
-// const Toast = styled.div`
-//   justify-self: center;
-//   width: 20%;
-//   height: 70px;
-//   border-radius: 25px;
-
-//   background-color: #212121;
-// `;
-
 interface IMainContainer {
   children: ReactNode;
   onScroll: (scrollTop: number) => void;
@@ -188,9 +168,11 @@ const MainContainer = ({ children, onScroll }: IMainContainer) => {
   const user = useRecoilValue(userState);
   const setLikedMusics = useSetRecoilState(likedMusicsState);
   const setRecentMusics = useSetRecoilState(recentMusicsState);
-  const [loginUserData, setLoginUserData] = useRecoilState(loginUserDataState);
+  const setLoginUserData = useSetRecoilState(loginUserDataState);
   const setFollowingArtists = useSetRecoilState(followingArtistsState);
   const setFollowingAlbums = useSetRecoilState(followingAlbumsState);
+
+  const location = useLocation();
 
   const getUserProfile = useCallback(
     async (id: string) => {
@@ -198,7 +180,7 @@ const MainContainer = ({ children, onScroll }: IMainContainer) => {
         `http://localhost:5000/user/${id}`
       ).then((res) => res.json());
       if (result.ok) {
-        console.log("로그인한 사용자의 정보", result.user);
+        // console.log("로그인한 사용자의 정보", result.user);
         setLoginUserData(result.user);
         setRecentMusics(result.user.recentMusics);
         setLikedMusics(result.user.likedMusics);
@@ -242,24 +224,25 @@ const MainContainer = ({ children, onScroll }: IMainContainer) => {
   const background = useRecoilValue(backgroundState);
   const isPlayerOn = useRecoilValue(isPlayerOnState);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (wrapperRef.current) {
-        onScroll(wrapperRef.current.scrollTop);
-      }
-    };
+  const handleScroll = useCallback(() => {
+    if (wrapperRef.current) {
+      onScroll(wrapperRef.current.scrollTop);
+    }
+  }, [onScroll]);
 
+  useEffect(() => {
     const wrapper = wrapperRef.current;
     wrapper?.addEventListener("scroll", handleScroll);
 
     return () => {
       wrapper?.removeEventListener("scroll", handleScroll);
     };
-  }, [onScroll]);
+  }, [onScroll, handleScroll]);
 
   useEffect(() => {
-    console.log("render");
-  }, []);
+    const wrapper = wrapperRef.current;
+    wrapper?.scrollTo(0, 0);
+  }, [location]);
 
   return (
     <Wrapper ref={wrapperRef} $backImg={background?.src}>

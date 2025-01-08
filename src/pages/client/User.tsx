@@ -15,6 +15,7 @@ import {
 import { currentUserPlaylistState } from "../../app/entities/playlist/atom";
 import { followingArtistsState } from "../../app/entities/artist/atom";
 import { followingAlbumsState } from "../../app/entities/album/atom";
+import NotFound from "./NotFound";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -116,6 +117,7 @@ const User = () => {
   const navigate = useNavigate();
   const [follow, setFollow] = useState<boolean | null>(null);
   const [followers, setFollowers] = useState<number | null>(null);
+  const [isNotFound, setIsNotFound] = useState(false);
 
   const recentMusics = useRecoilValue(recentMusicsState);
   const followingArtists = useRecoilValue(followingArtistsState);
@@ -142,30 +144,28 @@ const User = () => {
 
   const getUser = useCallback(
     async (targetId: string) => {
-      setIsLoading(true);
-      try {
-        console.log("User get userdata for ID:", targetId);
-        const result = await fetch(`http://localhost:5000/user/${targetId}`, {
-          credentials: "include",
-        }).then((res) => res.json());
+      const result = await fetch(`http://localhost:5000/user/${targetId}`, {
+        credentials: "include",
+      }).then((res) => res.json());
 
-        if (result.ok) {
-          setUserData(result.user);
-          setLikedMusics(result.user.likedMusics);
-        } else {
-          console.error("Fetch user data error:", result.message);
+      if (result.ok) {
+        setUserData(result.user);
+        setLikedMusics(result.user.likedMusics);
+      } else {
+        console.error("Fetch user data error:", result.message);
+        if (!result.error) {
+          setIsNotFound(true);
         }
-      } catch (err) {
-        console.error("Fetch error:", err);
-      } finally {
-        setIsLoading(false);
       }
+      setIsLoading(false);
     },
     [setLikedMusics]
   );
 
   useEffect(() => {
     setBackground(null);
+    setIsLoading(true);
+    setIsNotFound(false);
 
     // 1) 자기 페이지면 -> fetch 안 함
     if (isMyPage) {
@@ -222,6 +222,14 @@ const User = () => {
       }),
     });
   };
+
+  if (isNotFound) {
+    return <NotFound />;
+  }
+
+  if (isLoading) {
+    return <div>Loading...</div>; // 로딩 상태 처리
+  }
 
   return (
     <Wrapper>

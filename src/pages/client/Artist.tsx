@@ -3,7 +3,7 @@ import RowList from "../../widgets/client/RowList";
 import { DefaultButton } from "../../shared/ui/DefaultButton";
 import FlexList from "../../widgets/client/FlexList";
 import { useCallback, useEffect, useState } from "react";
-import { Location, useLocation, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { backgroundState } from "../../app/entities/global/atom";
 import { APIArtist } from "../../shared/models/artist";
@@ -12,6 +12,7 @@ import { followingArtistsState } from "../../app/entities/artist/atom";
 import { playingPlaylistState } from "../../app/entities/music/atom";
 import { usePlayMusic } from "../../shared/hooks/usePlayMusic";
 import { APIMusic } from "../../shared/models/music";
+import NotFound from "./NotFound";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -99,15 +100,6 @@ const ContentContainer = styled.div`
   gap: 60px;
 `;
 
-interface ArtistLinkState {
-  from?: string;
-  artistLinkData?: {
-    artistname: string;
-    coverImg: string;
-    _id: string;
-  };
-}
-
 const Artist = () => {
   const user = useRecoilValue(userState);
   const { artistId } = useParams();
@@ -115,9 +107,9 @@ const Artist = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [artistData, setArtistData] = useState<APIArtist | null>(null);
   const [artistMusics, setArtistMusics] = useState<APIMusic[] | null>(null);
-  const location = useLocation() as Location & { state: ArtistLinkState };
   const [follow, setFollow] = useState(false);
   const [followers, setFollowers] = useState<number | null>(null);
+  const [isNotFound, setIsNotFound] = useState(false);
 
   const currentFollowers = artistData?.followers?.length ?? 0;
 
@@ -158,25 +150,21 @@ const Artist = () => {
           return { src: result.artist.coverImg, type: "simple" };
         });
         setIsLoading(false);
+      } else {
+        if (!result.error) {
+          setIsNotFound(true);
+        }
       }
     },
     [setBackground]
   );
 
   useEffect(() => {
+    setIsNotFound(false);
     if (artistId) {
       getArtist(artistId);
     }
   }, [artistId, getArtist]);
-
-  useEffect(() => {
-    if (location?.state) {
-      setBackground({
-        src: location.state?.artistLinkData.coverImg,
-        type: "simple",
-      });
-    }
-  }, [location?.state, setBackground]);
 
   const followArtist = async () => {
     if (!artistId || user.userId === "") return;
@@ -218,14 +206,18 @@ const Artist = () => {
     playMusic(artistData.musics[0]);
   };
 
+  if (isNotFound) {
+    return <NotFound />;
+  }
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <Wrapper>
       <InfoHeader>
-        <Title>
-          {location?.state
-            ? location.state?.artistLinkData.artistname
-            : artistData?.artistname}
-        </Title>
+        <Title>{artistData?.artistname}</Title>
         <Info>{artistData?.introduction}</Info>
         <Followers>{followers}명</Followers>
       </InfoHeader>

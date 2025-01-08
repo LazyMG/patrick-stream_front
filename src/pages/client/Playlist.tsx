@@ -17,6 +17,7 @@ import {
 import { playingPlaylistState } from "../../app/entities/music/atom";
 import { usePlayMusic } from "../../shared/hooks/usePlayMusic";
 import ToastContainer from "../../widgets/client/ToastContainer";
+import NotFound from "./NotFound";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -144,6 +145,7 @@ const Playlist = () => {
 
   const [follow, setFollow] = useState(false);
   const [followers, setFollowers] = useState<number | null>(null);
+  const [isNotFound, setIsNotFound] = useState(false);
 
   const currentFollowers = playlistData?.followers?.length ?? 0;
 
@@ -185,10 +187,15 @@ const Playlist = () => {
     if (result.ok) {
       setPlaylistData(result.playlist as APIPlaylist);
       setIsLoading(false);
+    } else {
+      if (!result.error) {
+        setIsNotFound(true);
+      }
     }
   }, []);
 
   useEffect(() => {
+    setIsNotFound(false);
     setBackground(null);
 
     if (user.userId !== "" && currentUserPlaylist && playlistId) {
@@ -276,6 +283,10 @@ const Playlist = () => {
   const closeToast = () => {
     setIsToastOpen(false);
   };
+
+  if (isNotFound) {
+    return <NotFound />;
+  }
 
   return (
     <Wrapper>

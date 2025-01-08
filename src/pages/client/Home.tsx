@@ -59,7 +59,7 @@ const Home = () => {
       `http://localhost:5000/music/recently-updated`
     ).then((res) => res.json());
     if (result.ok) {
-      console.log(result.musics);
+      // console.log(result.musics);
       setMusicsData(result.musics);
       setIsMusicLoading(false);
     }
@@ -109,14 +109,14 @@ const Home = () => {
             info={loginUserData.username}
           />
         )}
-        {/* {recentMusics && recentMusics.length !== 0 && (
+        {recentMusics && recentMusics.length !== 0 && (
           <FlexList
             list={recentMusics}
             listFlag="music"
             isCustom={false}
             title="최근 들은 음악"
           />
-        )} */}
+        )}
         {/* {likedMusics && likedMusics.length !== 0 && (
           <FlexList
             list={likedMusics}
