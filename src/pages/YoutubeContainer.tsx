@@ -66,7 +66,7 @@ function YoutubeContainer({ player, setPlayer }: IYoutubeContainer) {
     <>
       {/* <YoutubeButtonContainer player={player} setYtId={setYtId} /> */}
       <YouTube
-        videoId={ytId}
+        videoId={ytId.ytId}
         opts={opts}
         onReady={onPlayerReady}
         onPlay={onPlayerPlay}

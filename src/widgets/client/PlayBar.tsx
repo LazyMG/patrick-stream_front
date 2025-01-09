@@ -27,7 +27,7 @@ const Wrapper = styled.div`
   width: 100vw;
 
   display: block;
-  z-index: 999;
+  z-index: 10;
 
   flex-direction: column;
   align-items: center;
@@ -392,7 +392,6 @@ const PlayBar = ({ player }: IPlayBar) => {
     let updateTimer: number;
 
     if (player) {
-      // console.log("time | isPlaying?", playing, playing === 1);
       if (player.getPlayerState() === 1) {
         updateTimer = setInterval(async () => {
           const currentTime = await player.getCurrentTime();

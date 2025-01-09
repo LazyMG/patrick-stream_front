@@ -16,3 +16,8 @@ export const playlistMusicsState = atom<IPlaylistMusic[] | null>({
   key: "playlistMusicsState",
   default: null,
 });
+
+export const followingPlaylistsState = atom<APIPlaylist[] | null>({
+  key: "followingPlaylistsState",
+  default: null,
+});

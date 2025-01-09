@@ -1,5 +1,5 @@
 import { Link, useParams } from "react-router-dom";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import { backgroundState } from "../../app/entities/global/atom";
 import { useCallback, useEffect, useState } from "react";
@@ -7,10 +7,11 @@ import { APIAlbum } from "../../shared/models/album";
 import { DefaultButton } from "../../shared/ui/DefaultButton";
 import { setAlbumSeconds } from "../../shared/lib/albumDataFormat";
 import AlbumList from "../../widgets/client/AlbumList";
-import { loginUserDataState, userState } from "../../app/entities/user/atom";
+import { userState } from "../../app/entities/user/atom";
 import { playingPlaylistState } from "../../app/entities/music/atom";
 import { usePlayMusic } from "../../shared/hooks/usePlayMusic";
 import NotFound from "./NotFound";
+import { followingAlbumsState } from "../../app/entities/album/atom";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -159,11 +160,12 @@ const Album = () => {
   const [follow, setFollow] = useState(false);
   const [followers, setFollowers] = useState<number | null>(null);
   const [isNotFound, setIsNotFound] = useState(false);
+  const [followingAlbums, setFollowingAlbums] = useRecoilState(
+    followingAlbumsState
+  );
 
   const setPlayingPlaylist = useSetRecoilState(playingPlaylistState);
   const playMusic = usePlayMusic();
-
-  const loginUserData = useRecoilValue(loginUserDataState);
 
   const currentFollowers = albumData?.followers?.length ?? 0;
 
@@ -175,13 +177,11 @@ const Album = () => {
   }, [currentFollowers]);
 
   useEffect(() => {
-    if (loginUserData) {
-      const isFollow = loginUserData.followings?.followingAlbums.some(
-        (album) => album._id === albumId
-      );
+    if (followingAlbums) {
+      const isFollow = followingAlbums.some((album) => album._id === albumId);
       setFollow(!!isFollow);
     }
-  }, [loginUserData, albumId]);
+  }, [followingAlbums, albumId]);
 
   const getAlbum = useCallback(
     async (id: string) => {
@@ -220,6 +220,18 @@ const Album = () => {
       return addList ? prev + 1 : Math.max(prev - 1, 0);
     });
 
+    if (albumData) {
+      setFollowingAlbums((prev) => {
+        if (!prev) return prev;
+        if (addList) {
+          return [albumData, ...prev];
+        } else {
+          const newList = prev.filter((album) => album._id !== albumData._id);
+          return [...newList];
+        }
+      });
+    }
+
     await fetch(`http://localhost:5000/album/${albumId}/followers`, {
       method: "PATCH",
       headers: {
@@ -235,7 +247,7 @@ const Album = () => {
   const playAlbumMusics = () => {
     if (!albumData?.musics) return;
     setPlayingPlaylist(albumData.musics);
-    playMusic(albumData.musics[0]);
+    playMusic(albumData.musics[0], true);
   };
 
   if (isNotFound) {

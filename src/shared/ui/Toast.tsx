@@ -47,7 +47,9 @@ const Content = styled.div`
   font-size: 13px;
 `;
 
-const Text = styled.span``;
+const Text = styled.span`
+  color: #fff;
+`;
 
 const ConfirmButton = styled.button`
   background: none;
@@ -75,9 +77,14 @@ const Toast = ({
   closeToast,
 }: {
   text: string;
-  clickHandler: () => void;
+  clickHandler?: () => void;
   closeToast: () => void;
 }) => {
+  const onClick = () => {
+    if (clickHandler) {
+      clickHandler();
+    }
+  };
   return (
     <Wrapper>
       <ContentHeader>
@@ -99,7 +106,7 @@ const Toast = ({
       <Content>
         <Text>{text}</Text>
       </Content>
-      <ConfirmButton onClick={clickHandler}>삭제</ConfirmButton>
+      {clickHandler && <ConfirmButton onClick={onClick}>삭제</ConfirmButton>}
     </Wrapper>
   );
 };

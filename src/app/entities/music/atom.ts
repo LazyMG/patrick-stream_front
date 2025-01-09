@@ -1,9 +1,17 @@
 import { atom } from "recoil";
 import { APIMusic } from "../../../shared/models/music";
 
-export const ytIdState = atom<string>({
+interface IYtId {
+  ytId: string;
+  stamp: number;
+}
+
+export const ytIdState = atom<IYtId>({
   key: "ytIdState",
-  default: "",
+  default: {
+    ytId: "",
+    stamp: Date.now(),
+  },
 });
 
 export const selectedMusicState = atom<APIMusic | null>({

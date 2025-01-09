@@ -1,13 +1,14 @@
 import styled from "styled-components";
 import { DefaultButton } from "../../shared/ui/DefaultButton";
 import RowList from "../../widgets/client/RowList";
-import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useCallback, useEffect, useState } from "react";
 import { APIPlaylist } from "../../shared/models/playlist";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
-import { loginUserDataState, userState } from "../../app/entities/user/atom";
+import { userState } from "../../app/entities/user/atom";
 import {
   currentUserPlaylistState,
+  followingPlaylistsState,
   playlistMusicsState,
 } from "../../app/entities/playlist/atom";
 import {
@@ -18,6 +19,7 @@ import { playingPlaylistState } from "../../app/entities/music/atom";
 import { usePlayMusic } from "../../shared/hooks/usePlayMusic";
 import ToastContainer from "../../widgets/client/ToastContainer";
 import NotFound from "./NotFound";
+import { useDeletePlaylistMusic } from "../../shared/hooks/useDeletePlaylistMusic";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -137,7 +139,6 @@ const FollowButton = styled(DefaultButton)<{ $follow: boolean }>`
 
 const Playlist = () => {
   const { playlistId } = useParams();
-  const { state } = useLocation();
   const [playlistData, setPlaylistData] = useState<APIPlaylist | null>(null);
   const user = useRecoilValue(userState);
   const [isLoading, setIsLoading] = useState(true);
@@ -149,7 +150,9 @@ const Playlist = () => {
 
   const currentFollowers = playlistData?.followers?.length ?? 0;
 
-  const loginUserData = useRecoilValue(loginUserDataState);
+  const [followingPlaylists, setFollowingPlaylists] = useRecoilState(
+    followingPlaylistsState
+  );
   const [currentUserPlaylist, setCurrentUserPlaylist] = useRecoilState(
     currentUserPlaylistState
   );
@@ -164,6 +167,7 @@ const Playlist = () => {
   const navigate = useNavigate();
 
   const [isToastOpen, setIsToastOpen] = useRecoilState(isToastOpenState);
+  const deletePlaylistMusic = useDeletePlaylistMusic();
 
   useEffect(() => {
     setFollowers((prev) =>
@@ -172,13 +176,14 @@ const Playlist = () => {
   }, [currentFollowers]);
 
   useEffect(() => {
-    if (loginUserData) {
-      const isFollow = loginUserData.followings?.followingPlaylists.some(
-        (playlist) => playlist === playlistId
+    if (followingPlaylists) {
+      console.log(followingPlaylists);
+      const isFollow = followingPlaylists.some(
+        (playlist) => playlist._id === playlistId
       );
       setFollow(!!isFollow);
     }
-  }, [loginUserData, playlistId]);
+  }, [followingPlaylists, playlistId]);
 
   const getPlaylistData = useCallback(async (id: string) => {
     const result = await fetch(
@@ -197,6 +202,7 @@ const Playlist = () => {
   useEffect(() => {
     setIsNotFound(false);
     setBackground(null);
+    setIsToastOpen(false);
 
     if (user.userId !== "" && currentUserPlaylist && playlistId) {
       const thisPlaylist = currentUserPlaylist.find(
@@ -230,9 +236,8 @@ const Playlist = () => {
     user.userId,
     setBackground,
     setPlaylistMusics,
+    setIsToastOpen,
   ]);
-
-  const displayContent = state || playlistData;
 
   const followPlaylist = async () => {
     if (!playlistId || isMine || user.userId === "" || follow === null) return;
@@ -244,6 +249,20 @@ const Playlist = () => {
       if (prev === null) return prev;
       return addList ? prev + 1 : Math.max(prev - 1, 0);
     });
+
+    if (playlistData) {
+      setFollowingPlaylists((prev) => {
+        if (!prev) return prev;
+        if (addList) {
+          return [playlistData, ...prev];
+        } else {
+          const newList = prev.filter(
+            (playlist) => playlist._id !== playlistData._id
+          );
+          return [...newList];
+        }
+      });
+    }
 
     await fetch(`http://localhost:5000/playlist/${playlistId}/followers`, {
       method: "PATCH",
@@ -258,7 +277,7 @@ const Playlist = () => {
   const playPlaylistMusics = () => {
     if (!playlistData?.musics) return;
     setPlayingPlaylist(playlistData.musics);
-    playMusic(playlistData.musics[0]);
+    playMusic(playlistData.musics[0], true);
   };
 
   const deletePlaylist = async () => {
@@ -278,6 +297,10 @@ const Playlist = () => {
     if (result.ok) {
       navigate("/");
     }
+  };
+
+  const onClickHandler = (id: string) => {
+    deletePlaylistMusic(id);
   };
 
   const closeToast = () => {
@@ -303,24 +326,14 @@ const Playlist = () => {
             </svg>
           </InfoIcon>
           <InfoText>
-            {isLoading && !state ? (
-              // state가 없고 playlistData가 로딩 중일 때 전체 로딩 UI
+            {!isLoading && (
               <>
-                <div>Loading</div>
-              </>
-            ) : (
-              <>
-                <InfoTitle>{displayContent?.title || "제목"}</InfoTitle>
-                <InfoDescription>
-                  {displayContent?.info || "정보"}
-                </InfoDescription>
+                <InfoTitle>{playlistData?.title}</InfoTitle>
+                <InfoDescription>{playlistData?.introduction}</InfoDescription>
                 <InfoContent>
                   생성자:{" "}
-                  <Link
-                    to={`/users/${displayContent?.user._id}`}
-                    state={displayContent.user}
-                  >
-                    {displayContent?.user.username || "알 수 없음"}
+                  <Link to={`/users/${playlistData?.user._id}`}>
+                    {playlistData?.user.username}
                   </Link>
                 </InfoContent>
                 <InfoContent>팔로워 수: {followers}명</InfoContent>
@@ -372,7 +385,14 @@ const Playlist = () => {
         />
       )}
       {isToastOpen && playlistId && (
-        <ToastContainer id={playlistId} closeToast={closeToast} />
+        <ToastContainer
+          text={`${
+            playlistMusics?.filter((item) => item.state).length
+          }곡을 삭제하시겠습니까?`}
+          id={playlistId}
+          onClickHandler={onClickHandler}
+          closeToast={closeToast}
+        />
       )}
     </Wrapper>
   );

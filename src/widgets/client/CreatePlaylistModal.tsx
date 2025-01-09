@@ -4,6 +4,8 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 import { loginUserDataState, userState } from "../../app/entities/user/atom";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { currentUserPlaylistState } from "../../app/entities/playlist/atom";
+import ToastContainer from "./ToastContainer";
+import { useState } from "react";
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -113,6 +115,11 @@ interface PlaylistFormValues {
   info: string;
 }
 
+interface IToast {
+  state: boolean;
+  text: string;
+}
+
 const CreatePlaylistModal = ({ closeModal }: ICreatePlaylistModal) => {
   const user = useRecoilValue(userState);
   const {
@@ -124,6 +131,10 @@ const CreatePlaylistModal = ({ closeModal }: ICreatePlaylistModal) => {
   } = useForm<PlaylistFormValues>();
   const setCurrentUserPlaylist = useSetRecoilState(currentUserPlaylistState);
   const loginUserData = useRecoilValue(loginUserDataState);
+  const [isLocalToastOpen, setIsLocalToastOpen] = useState<IToast>({
+    state: false,
+    text: "",
+  });
 
   const createPlaylist: SubmitHandler<PlaylistFormValues> = async (data) => {
     //validate
@@ -137,6 +148,7 @@ const CreatePlaylistModal = ({ closeModal }: ICreatePlaylistModal) => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({ data }),
+          credentials: "include",
         }
       ).then((res) => res.json());
       if (result.ok) {
@@ -156,14 +168,28 @@ const CreatePlaylistModal = ({ closeModal }: ICreatePlaylistModal) => {
         closeModal();
       } else {
         if (!result.error) {
-          setError("title", { message: "제목을 입력해주세요." });
+          if (result.message.includes("Input")) {
+            setError("title", { message: "제목을 입력해주세요." });
+          } else {
+            setIsLocalToastOpen({
+              state: true,
+              text: "로그인을 확인해주세요.",
+            });
+          }
+        } else {
+          setIsLocalToastOpen({ state: true, text: "오류가 발생했습니다." });
         }
       }
     }
   };
 
+  const closeModalFunc = () => {
+    setIsLocalToastOpen({ state: false, text: "" });
+    closeModal();
+  };
+
   return createPortal(
-    <ModalOverlay onClick={closeModal}>
+    <ModalOverlay onClick={closeModalFunc}>
       <ContentModal
         onClick={(event: React.MouseEvent<HTMLDivElement>) =>
           event.stopPropagation()
@@ -187,7 +213,7 @@ const CreatePlaylistModal = ({ closeModal }: ICreatePlaylistModal) => {
             </InputDiv>
             <input placeholder="설명" type="text" {...register("info")} />
             <ButtonRow>
-              <button onClick={closeModal} type="button">
+              <button onClick={closeModalFunc} type="button">
                 취소
               </button>
               <button type="submit">만들기</button>
@@ -195,6 +221,12 @@ const CreatePlaylistModal = ({ closeModal }: ICreatePlaylistModal) => {
           </ModalForm>
         </Content>
       </ContentModal>
+      {isLocalToastOpen.state && (
+        <ToastContainer
+          text={isLocalToastOpen.text}
+          closeToast={() => setIsLocalToastOpen({ state: false, text: "" })}
+        />
+      )}
     </ModalOverlay>,
     document.body
   );

@@ -14,6 +14,7 @@ import { loginUserDataState, userState } from "../../app/entities/user/atom";
 import { followingArtistsState } from "../../app/entities/artist/atom";
 import { followingAlbumsState } from "../../app/entities/album/atom";
 import { useLocation } from "react-router-dom";
+import { followingPlaylistsState } from "../../app/entities/playlist/atom";
 
 const Wrapper = styled.div<{ $backImg?: string | null }>`
   margin-left: 250.5px;
@@ -171,6 +172,7 @@ const MainContainer = ({ children, onScroll }: IMainContainer) => {
   const setLoginUserData = useSetRecoilState(loginUserDataState);
   const setFollowingArtists = useSetRecoilState(followingArtistsState);
   const setFollowingAlbums = useSetRecoilState(followingAlbumsState);
+  const setFollowingPlaylists = useSetRecoilState(followingPlaylistsState);
 
   const location = useLocation();
 
@@ -186,6 +188,7 @@ const MainContainer = ({ children, onScroll }: IMainContainer) => {
         setLikedMusics(result.user.likedMusics);
         setFollowingArtists(result.user.followings.followingArtists);
         setFollowingAlbums(result.user.followings.followingAlbums);
+        setFollowingPlaylists(result.user.followings.followingPlaylists);
       }
     },
     [
@@ -194,6 +197,7 @@ const MainContainer = ({ children, onScroll }: IMainContainer) => {
       setRecentMusics,
       setFollowingArtists,
       setFollowingAlbums,
+      setFollowingPlaylists,
     ]
   );
 

@@ -4,10 +4,10 @@ import { DefaultButton } from "../../shared/ui/DefaultButton";
 import FlexList from "../../widgets/client/FlexList";
 import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { backgroundState } from "../../app/entities/global/atom";
 import { APIArtist } from "../../shared/models/artist";
-import { loginUserDataState, userState } from "../../app/entities/user/atom";
+import { userState } from "../../app/entities/user/atom";
 import { followingArtistsState } from "../../app/entities/artist/atom";
 import { playingPlaylistState } from "../../app/entities/music/atom";
 import { usePlayMusic } from "../../shared/hooks/usePlayMusic";
@@ -113,8 +113,10 @@ const Artist = () => {
 
   const currentFollowers = artistData?.followers?.length ?? 0;
 
-  const loginUserData = useRecoilValue(loginUserDataState);
-  const setFollowingArtists = useSetRecoilState(followingArtistsState);
+  const [followingArtists, setFollowingArtists] = useRecoilState(
+    followingArtistsState
+  );
+
   const setPlayingPlaylist = useSetRecoilState(playingPlaylistState);
   const playMusic = usePlayMusic();
 
@@ -126,13 +128,13 @@ const Artist = () => {
   }, [currentFollowers]);
 
   useEffect(() => {
-    if (loginUserData) {
-      const isFollow = loginUserData.followings?.followingArtists.some(
+    if (followingArtists) {
+      const isFollow = followingArtists.some(
         (artist) => artist._id === artistId
       );
       setFollow(!!isFollow);
     }
-  }, [loginUserData, artistId]);
+  }, [followingArtists, artistId]);
 
   const getArtist = useCallback(
     async (id: string) => {
@@ -203,7 +205,7 @@ const Artist = () => {
   const playArtistMusics = () => {
     if (!artistData?.musics) return;
     setPlayingPlaylist(artistData.musics);
-    playMusic(artistData.musics[0]);
+    playMusic(artistData.musics[0], true);
   };
 
   if (isNotFound) {

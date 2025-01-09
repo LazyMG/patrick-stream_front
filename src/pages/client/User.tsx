@@ -16,6 +16,7 @@ import { currentUserPlaylistState } from "../../app/entities/playlist/atom";
 import { followingArtistsState } from "../../app/entities/artist/atom";
 import { followingAlbumsState } from "../../app/entities/album/atom";
 import NotFound from "./NotFound";
+import Error from "./Error";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -118,6 +119,7 @@ const User = () => {
   const [follow, setFollow] = useState<boolean | null>(null);
   const [followers, setFollowers] = useState<number | null>(null);
   const [isNotFound, setIsNotFound] = useState(false);
+  const [isError, setIsError] = useState(false);
 
   const recentMusics = useRecoilValue(recentMusicsState);
   const followingArtists = useRecoilValue(followingArtistsState);
@@ -155,6 +157,8 @@ const User = () => {
         console.error("Fetch user data error:", result.message);
         if (!result.error) {
           setIsNotFound(true);
+        } else {
+          setIsError(true);
         }
       }
       setIsLoading(false);
@@ -164,7 +168,7 @@ const User = () => {
 
   useEffect(() => {
     setBackground(null);
-    setIsLoading(true);
+    // setIsLoading(true);
     setIsNotFound(false);
 
     // 1) 자기 페이지면 -> fetch 안 함
@@ -227,9 +231,13 @@ const User = () => {
     return <NotFound />;
   }
 
-  if (isLoading) {
-    return <div>Loading...</div>; // 로딩 상태 처리
+  if (isError) {
+    return <Error />;
   }
+
+  // if (isLoading) {
+  //   return <div>Loading...</div>; // 로딩 상태 처리
+  // }
 
   return (
     <Wrapper>

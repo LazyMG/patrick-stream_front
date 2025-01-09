@@ -58,6 +58,23 @@ const PlaylistView = styled.div`
   overflow-y: auto;
 `;
 
+const PlaylistError = styled.div`
+  width: 100%;
+  height: 60px;
+  border-radius: 15px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background-color: red;
+`;
+
+interface IError {
+  state: boolean;
+  text: string;
+}
+
 const PlayListContainer = () => {
   const user = useRecoilValue(userState);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -66,6 +83,10 @@ const PlayListContainer = () => {
   );
   const [isLoading, setIsLoading] = useState(true);
   const isPlayerOn = useRecoilValue(isPlayerOnState);
+  const [isError, setIsError] = useState<IError>({
+    state: false,
+    text: "",
+  });
 
   const openModal = () => {
     if (user.userId !== "") {
@@ -77,12 +98,18 @@ const PlayListContainer = () => {
 
   const getCurrentUserPlaylist = useCallback(async () => {
     const result = await fetch(
-      `http://localhost:5000/user/${user.userId}/allPlaylists`
+      `http://localhost:5000/user/${user.userId}/allPlaylists`,
+      {
+        credentials: "include",
+      }
     ).then((res) => res.json());
     if (result.ok) {
-      console.log("Container!");
+      // console.log("Container!");
       setCurrentUserPlaylist(result.playlists as APIPlaylist[]);
       setIsLoading(false);
+    } else {
+      console.log("error!");
+      setIsError({ state: true, text: "오류가 발생했습니다." });
     }
   }, [user.userId, setCurrentUserPlaylist]);
 
@@ -113,12 +140,16 @@ const PlayListContainer = () => {
           </svg>
           <span>새 재생목록 추가</span>
         </CreateButton>
-        <PlaylistView>
-          {!isLoading &&
-            currentUserPlaylist.map((item) => (
-              <PlaylistItem playlist={item} key={item._id} />
-            ))}
-        </PlaylistView>
+        {!isError.state ? (
+          <PlaylistView>
+            {!isLoading &&
+              currentUserPlaylist.map((item) => (
+                <PlaylistItem playlist={item} key={item._id} />
+              ))}
+          </PlaylistView>
+        ) : (
+          <PlaylistError>{isError.text}</PlaylistError>
+        )}
       </Wrapper>
     </>
   );
