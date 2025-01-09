@@ -46,6 +46,7 @@ export interface APIMusic {
   ytId: string;
   __v?: number;
   _id: string;
+  index?: number;
 }
 
 export interface IOutletMusic {
@@ -59,4 +60,5 @@ export type MusicIDs =
   | "ytId"
   | "coverImg"
   | "genre"
-  | "released_at";
+  | "released_at"
+  | "index";

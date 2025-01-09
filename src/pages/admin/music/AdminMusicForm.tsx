@@ -47,6 +47,17 @@ const AdminMusicForm = ({
         errorMsg={errors.duration ? errors.duration.message : ""}
       />
       <AdminInputRow<MusicIDs>
+        id="index"
+        name="Index"
+        placeHolder="Index"
+        type="number"
+        register={register("index", {
+          required: "음악 번호를 입력해주세요요.",
+        })}
+        handleChange={handleChange}
+        errorMsg={errors.index ? errors.index.message : ""}
+      />
+      <AdminInputRow<MusicIDs>
         id="ytId"
         name="Youtube Id"
         placeHolder="Youtube Id"

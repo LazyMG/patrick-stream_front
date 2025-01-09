@@ -5,6 +5,7 @@ export interface IMusicFormInput {
   released_at: string;
   genre: string;
   coverImg: string;
+  index: number;
 }
 
 export interface IAlbumFormInput {

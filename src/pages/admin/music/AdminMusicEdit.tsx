@@ -21,6 +21,7 @@ const AdminMusicEdit: React.FC = () => {
       released_at: outletMusic?.music.released_at || "",
       genre: outletMusic?.music.genre.toString() || "",
       coverImg: outletMusic?.music.coverImg || "",
+      index: outletMusic?.music.index || 0,
     },
   });
 
@@ -44,6 +45,13 @@ const AdminMusicEdit: React.FC = () => {
           typeof newValue === "string" ? Number(newValue) : newValue;
         if (numValue !== oldValue) {
           changedFields.duration = numValue;
+        }
+        return;
+      } else if (key === "index") {
+        const numValue =
+          typeof newValue === "string" ? Number(newValue) : newValue;
+        if (numValue !== oldValue) {
+          changedFields.index = numValue;
         }
         return;
       } else if (key === "genre" && Array.isArray(oldValue)) {

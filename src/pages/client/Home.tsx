@@ -11,6 +11,8 @@ import {
   likedMusicsState,
   recentMusicsState,
 } from "../../app/entities/music/atom";
+import FlexListSkeleton from "../../widgets/client/FlexListSkeleton";
+import GridListSkeleton from "../../widgets/client/GridListSkeleton";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -61,6 +63,7 @@ const Home = () => {
     if (result.ok) {
       // console.log(result.musics);
       setMusicsData(result.musics);
+      await new Promise((resolve) => setTimeout(resolve, 3000));
       setIsMusicLoading(false);
     }
   };
@@ -85,6 +88,9 @@ const Home = () => {
         ))}
       </ContentGenre> */}
       <ContentContainer>
+        {isMusicLoading && <GridListSkeleton />}
+
+        {isMusicLoading && <FlexListSkeleton />}
         {!isMusicLoading && musicsData && loginUserData && (
           <FlexList
             listFlag="music"
@@ -109,14 +115,14 @@ const Home = () => {
             info={loginUserData.username}
           />
         )}
-        {recentMusics && recentMusics.length !== 0 && (
+        {/* {recentMusics && recentMusics.length !== 0 && (
           <FlexList
             list={recentMusics}
             listFlag="music"
             isCustom={false}
             title="최근 들은 음악"
           />
-        )}
+        )} */}
         {/* {likedMusics && likedMusics.length !== 0 && (
           <FlexList
             list={likedMusics}

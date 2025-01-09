@@ -25,6 +25,7 @@ const AdminMusicsNew: React.FC = () => {
       ytId: event.ytId,
       coverImg: event.coverImg,
       genre: event.genre,
+      index: event.index,
     };
 
     const result = await fetch(`http://localhost:5000/music`, {

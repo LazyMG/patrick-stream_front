@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import CreatePlaylistModal from "./CreatePlaylistModal";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { userState } from "../../app/entities/user/atom";
@@ -70,6 +70,27 @@ const PlaylistError = styled.div`
   background-color: red;
 `;
 
+const pulseKeyframes = keyframes`
+  0%{
+    opacity: 1;
+  }
+  50%{
+    opacity: 0.4;
+  }
+  100%{
+    opacity: 1;
+  }
+`;
+
+const PlaylistSkeleton = styled.div`
+  width: 100%;
+  height: 60px;
+  border-radius: 15px;
+  background-color: #424242;
+
+  animation: ${pulseKeyframes} 2.5s ease-in-out infinite;
+`;
+
 interface IError {
   state: boolean;
   text: string;
@@ -116,6 +137,8 @@ const PlayListContainer = () => {
   useEffect(() => {
     if (user.userId !== "") {
       getCurrentUserPlaylist();
+    } else {
+      setIsLoading(false);
     }
   }, [getCurrentUserPlaylist, user.userId]);
 
@@ -142,10 +165,17 @@ const PlayListContainer = () => {
         </CreateButton>
         {!isError.state ? (
           <PlaylistView>
-            {!isLoading &&
+            {!isLoading ? (
               currentUserPlaylist.map((item) => (
                 <PlaylistItem playlist={item} key={item._id} />
-              ))}
+              ))
+            ) : (
+              <>
+                <PlaylistSkeleton />
+                <PlaylistSkeleton />
+                <PlaylistSkeleton />
+              </>
+            )}
           </PlaylistView>
         ) : (
           <PlaylistError>{isError.text}</PlaylistError>
