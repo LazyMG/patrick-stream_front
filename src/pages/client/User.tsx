@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { DefaultButton } from "../../shared/ui/DefaultButton";
 import RowList from "../../widgets/client/RowList";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
@@ -17,6 +17,7 @@ import { followingArtistsState } from "../../app/entities/artist/atom";
 import { followingAlbumsState } from "../../app/entities/album/atom";
 import NotFound from "./NotFound";
 import Error from "./Error";
+import RowListSkeleton from "../../widgets/client/RowListSkeleton";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -104,6 +105,55 @@ const FollowButton = styled(DefaultButton)<{ $follow: boolean }>`
     background-color: ${(props) => (props.$follow ? "#a988bd" : "transparent")};
     color: ${(props) => (props.$follow ? "#fff" : "#a988bd")};
   }
+`;
+
+const pulseKeyframes = keyframes`
+  0%{
+    opacity: 1;
+  }
+  50%{
+    opacity: 0.4;
+  }
+  100%{
+    opacity: 1;
+  }
+`;
+
+const InfoTextSkeleton = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  width: 100%;
+
+  animation: ${pulseKeyframes} 2.5s ease-in-out infinite;
+`;
+
+const InfoNameSkeleton = styled.span`
+  height: 40px;
+  background-color: #2e2e2e;
+  border-radius: 10px;
+
+  width: 40%;
+`;
+
+const InfoContentSkeleton = styled.p`
+  height: 20px;
+  background-color: #2e2e2e;
+  border-radius: 10px;
+
+  width: 20%;
+`;
+
+const InfoButtonsSkeleton = styled.div`
+  height: 32px;
+  width: 20%;
+  min-width: 180px;
+  border-radius: 10px;
+
+  background-color: #2e2e2e;
+
+  animation: ${pulseKeyframes} 2.5s ease-in-out infinite;
 `;
 
 const User = () => {
@@ -235,10 +285,6 @@ const User = () => {
     return <Error />;
   }
 
-  // if (isLoading) {
-  //   return <div>Loading...</div>; // 로딩 상태 처리
-  // }
-
   return (
     <Wrapper>
       <InfoContainer>
@@ -257,16 +303,21 @@ const User = () => {
               />
             </svg>
           </InfoIcon>
-          <InfoText>
-            {!isLoading && userData && <InfoName>{userData.username}</InfoName>}
-            {!isLoading && userData && (
+          {!isLoading && userData ? (
+            <InfoText>
+              <InfoName>{userData.username}</InfoName>
               <InfoContent>{`팔로워 수: ${followers ?? 0}`}</InfoContent>
-            )}
-          </InfoText>
+            </InfoText>
+          ) : (
+            <InfoTextSkeleton>
+              <InfoNameSkeleton />
+              <InfoContentSkeleton />
+            </InfoTextSkeleton>
+          )}
         </InfoProfile>
-        <InfoButtons>
-          {!isLoading && !user.loading ? (
-            isMyPage ? (
+        {!isLoading ? (
+          <InfoButtons>
+            {userData && isMyPage ? (
               <>
                 <Button $alter={false}>수정</Button>
                 <Button onClick={logOut} $alter={true}>
@@ -278,23 +329,48 @@ const User = () => {
                 {follow ? "언팔로우" : "팔로우"}
               </FollowButton>
             ) : (
+              <InfoButtonsSkeleton />
+            )}
+          </InfoButtons>
+        ) : (
+          <InfoButtonsSkeleton />
+        )}
+        {/* {!isLoading ? (
+          <InfoButtons>
+            {!user.loading ? (
+              isMyPage ? (
+                <>
+                  <Button $alter={false}>수정</Button>
+                  <Button onClick={logOut} $alter={true}>
+                    로그아웃
+                  </Button>
+                </>
+              ) : follow !== null ? (
+                <FollowButton $follow={follow} onClick={followUser}>
+                  {follow ? "언팔로우" : "팔로우"}
+                </FollowButton>
+              ) : (
+                <div
+                  style={{
+                    width: "150px",
+                    height: "35px",
+                  }}
+                />
+              )
+            ) : (
               <div
                 style={{
                   width: "150px",
                   height: "35px",
                 }}
               />
-            )
-          ) : (
-            <div
-              style={{
-                width: "150px",
-                height: "35px",
-              }}
-            />
-          )}
-        </InfoButtons>
+            )}
+          </InfoButtons>
+        ) : (
+          <InfoButtonsSkeleton />
+        )} */}
       </InfoContainer>
+      {isLoading && <RowListSkeleton />}
       {isMyPage && recentMusics && recentMusics?.length !== 0 && (
         <RowList title="최근 들은 음악" subTitle="공개" list={recentMusics} />
       )}

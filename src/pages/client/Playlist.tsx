@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { DefaultButton } from "../../shared/ui/DefaultButton";
 import RowList from "../../widgets/client/RowList";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -20,6 +20,7 @@ import { usePlayMusic } from "../../shared/hooks/usePlayMusic";
 import ToastContainer from "../../widgets/client/ToastContainer";
 import NotFound from "./NotFound";
 import { useDeletePlaylistMusic } from "../../shared/hooks/useDeletePlaylistMusic";
+import RowListSkeleton from "../../widgets/client/RowListSkeleton";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -137,6 +138,63 @@ const FollowButton = styled(DefaultButton)<{ $follow: boolean }>`
   }
 `;
 
+const pulseKeyframes = keyframes`
+  0%{
+    opacity: 1;
+  }
+  50%{
+    opacity: 0.4;
+  }
+  100%{
+    opacity: 1;
+  }
+`;
+
+const InfoTextSkeleton = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  width: 100%;
+
+  animation: ${pulseKeyframes} 2.5s ease-in-out infinite;
+`;
+
+const InfoTitleSkeleton = styled.span`
+  height: 40px;
+  background-color: #2e2e2e;
+  border-radius: 10px;
+
+  width: 40%;
+`;
+
+const InfoDescriptionSkeleton = styled.p`
+  max-width: 80%;
+  height: 20px;
+
+  background-color: #2e2e2e;
+  border-radius: 10px;
+`;
+
+const InfoContentSkeleton = styled.p`
+  height: 20px;
+  background-color: #2e2e2e;
+  border-radius: 10px;
+
+  width: 20%;
+`;
+
+const InfoButtonsSkeleton = styled.div`
+  height: 48px;
+  width: 30%;
+  min-width: 180px;
+  border-radius: 10px;
+
+  background-color: #2e2e2e;
+
+  animation: ${pulseKeyframes} 2.5s ease-in-out infinite;
+`;
+
 const Playlist = () => {
   const { playlistId } = useParams();
   const [playlistData, setPlaylistData] = useState<APIPlaylist | null>(null);
@@ -144,7 +202,7 @@ const Playlist = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isMine, setIsMine] = useState(false);
 
-  const [follow, setFollow] = useState(false);
+  const [follow, setFollow] = useState<boolean | null>(null);
   const [followers, setFollowers] = useState<number | null>(null);
   const [isNotFound, setIsNotFound] = useState(false);
 
@@ -191,6 +249,7 @@ const Playlist = () => {
     ).then((res) => res.json());
     if (result.ok) {
       setPlaylistData(result.playlist as APIPlaylist);
+
       setIsLoading(false);
     } else {
       if (!result.error) {
@@ -224,6 +283,7 @@ const Playlist = () => {
             );
             return playlistMusicStatesList;
           });
+
         setIsLoading(false);
         return;
       }
@@ -325,23 +385,28 @@ const Playlist = () => {
               <path d="M5.566 4.657A4.505 4.505 0 0 1 6.75 4.5h10.5c.41 0 .806.055 1.183.157A3 3 0 0 0 15.75 3h-7.5a3 3 0 0 0-2.684 1.657ZM2.25 12a3 3 0 0 1 3-3h13.5a3 3 0 0 1 3 3v6a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3v-6ZM5.25 7.5c-.41 0-.806.055-1.184.157A3 3 0 0 1 6.75 6h10.5a3 3 0 0 1 2.683 1.657A4.505 4.505 0 0 0 18.75 7.5H5.25Z" />
             </svg>
           </InfoIcon>
-          <InfoText>
-            {!isLoading && (
-              <>
-                <InfoTitle>{playlistData?.title}</InfoTitle>
-                <InfoDescription>{playlistData?.introduction}</InfoDescription>
-                <InfoContent>
-                  생성자:{" "}
-                  <Link to={`/users/${playlistData?.user._id}`}>
-                    {playlistData?.user.username}
-                  </Link>
-                </InfoContent>
-                <InfoContent>팔로워 수: {followers}명</InfoContent>
-              </>
-            )}
-          </InfoText>
+          {!isLoading ? (
+            <InfoText>
+              <InfoTitle>{playlistData?.title}</InfoTitle>
+              <InfoDescription>{playlistData?.introduction}</InfoDescription>
+              <InfoContent>
+                생성자:{" "}
+                <Link to={`/users/${playlistData?.user._id}`}>
+                  {playlistData?.user.username}
+                </Link>
+              </InfoContent>
+              <InfoContent>팔로워 수: {followers}명</InfoContent>
+            </InfoText>
+          ) : (
+            <InfoTextSkeleton>
+              <InfoTitleSkeleton />
+              <InfoDescriptionSkeleton />
+              <InfoContentSkeleton />
+              <InfoContentSkeleton />
+            </InfoTextSkeleton>
+          )}
         </InfoProfile>
-        {!isLoading && (
+        {!isLoading && follow !== null ? (
           <InfoButtons>
             <PlaylistPlayButton onClick={playPlaylistMusics}>
               <svg
@@ -365,13 +430,16 @@ const Playlist = () => {
                 </FollowButton>
               </>
             ) : (
-              <FollowButton $follow={follow} onClick={followPlaylist}>
+              <FollowButton $follow={!!follow} onClick={followPlaylist}>
                 {follow ? "언팔로우" : "팔로우"}
               </FollowButton>
             )}
           </InfoButtons>
+        ) : (
+          <InfoButtonsSkeleton />
         )}
       </InfoContainer>
+      {isLoading && <RowListSkeleton />}
       {playlistData?.musics && playlistData?.musics.length !== 0 && (
         <RowList
           title="재생목록 음악"
