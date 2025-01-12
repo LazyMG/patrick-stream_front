@@ -4,8 +4,9 @@ import styled from "styled-components";
 const SidebarContainer = styled.div`
   width: 250px;
   height: 100vh;
-  background-color: lightblue;
+  background-color: #000;
   padding: 20px;
+  padding-top: 56px;
   color: #fff;
   display: flex;
   flex-direction: column;
@@ -16,8 +17,10 @@ const MenuItem = styled.a`
   margin: 10px 0;
 
   font-size: 16px;
+
+  border-radius: 15px;
   cursor: pointer;
-  background-color: yellowgreen;
+  background-color: #2e2e2e;
 
   a {
     color: #fff;
@@ -49,7 +52,7 @@ const AdminSidebar: React.FC = () => {
         <Link to={"/admin/artists"}>Artists</Link>
       </MenuItem>
       <MenuItem>
-        <Link to={"/"}>Home</Link>
+        <Link to={"/"}>Client Home</Link>
       </MenuItem>
     </SidebarContainer>
   );

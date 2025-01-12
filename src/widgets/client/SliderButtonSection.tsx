@@ -74,6 +74,8 @@ interface ISliderButtonSection {
   goPrev: () => void;
   goNext: () => void;
   isActive: boolean;
+  buttonText?: string;
+  onClick?: () => void;
 }
 
 const SliderButtonSection = ({
@@ -82,10 +84,20 @@ const SliderButtonSection = ({
   goPrev,
   goNext,
   isActive,
+  buttonText,
+  onClick,
 }: ISliderButtonSection) => {
   return (
     <ButtonSection>
-      <MoreButton $isActive={isActive}>더보기</MoreButton>
+      <MoreButton
+        onClick={() => {
+          if (!onClick) return;
+          onClick();
+        }}
+        $isActive={isActive}
+      >
+        {buttonText || "더보기"}
+      </MoreButton>
       <ControlSection>
         <MoveButton
           disabled={isBeginning}

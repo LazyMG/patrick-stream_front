@@ -1,6 +1,6 @@
 import { Link, useParams } from "react-router-dom";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { backgroundState } from "../../app/entities/global/atom";
 import { useCallback, useEffect, useState } from "react";
 import { APIAlbum } from "../../shared/models/album";
@@ -150,6 +150,125 @@ const AlbumListContainer = styled.div`
   gap: 20px;
 `;
 
+const pulseKeyframes = keyframes`
+  0%{
+    opacity: 1;
+  }
+  50%{
+    opacity: 0.4;
+  }
+  100%{
+    opacity: 1;
+  }
+`;
+
+const AlbumInfoSkeleton = styled.div`
+  position: sticky;
+  top: 120px;
+  width: 30%;
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  align-self: flex-start;
+  margin-right: 80px;
+
+  animation: ${pulseKeyframes} 2.5s ease-in-out infinite;
+`;
+
+const AlbumArtistSkeleton = styled.span`
+  width: 100px;
+  height: 15px;
+
+  border-radius: 10px;
+
+  background-color: #2e2e2e;
+`;
+
+const AlbumImageSkeleton = styled.div`
+  width: 100%;
+  min-width: 310px;
+  aspect-ratio: 1 / 1;
+
+  border-radius: 10px;
+
+  background-color: #2e2e2e;
+`;
+
+const AlbumTitleSkeleton = styled.h1`
+  width: 100px;
+  height: 24px;
+
+  border-radius: 10px;
+
+  background-color: #2e2e2e;
+`;
+
+const AlbumDescriptionContainerSkeleton = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+`;
+
+const AlbumDescriptionSkeleton = styled.p`
+  width: 200px;
+  height: 25px;
+
+  border-radius: 10px;
+
+  background-color: #2e2e2e;
+`;
+
+const AlbumControllerSkeleton = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin-top: 10px;
+`;
+
+const AlbumPlayButtonSkeleton = styled.div`
+  border: none;
+  background: none;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+
+  background-color: #2e2e2e;
+`;
+
+const AlbumFollowButtonSkeleton = styled.div`
+  width: 110px;
+  height: 32px;
+
+  border-radius: 10px;
+
+  background-color: #2e2e2e;
+`;
+
+const AlbumListContainerSkeleton = styled.div`
+  width: 60%;
+  margin-left: auto;
+  min-height: 80vh;
+  padding-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  animation: ${pulseKeyframes} 2.5s ease-in-out infinite;
+`;
+
+const AlbumListItemSkeleton = styled.div`
+  width: 100%;
+  height: 50px;
+
+  border-radius: 10px;
+
+  background-color: #2e2e2e;
+`;
+
 const Album = () => {
   const user = useRecoilValue(userState);
   const { albumId } = useParams();
@@ -157,7 +276,7 @@ const Album = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [albumData, setAlbumData] = useState<APIAlbum | null>(null);
 
-  const [follow, setFollow] = useState(false);
+  const [follow, setFollow] = useState<boolean | null>(false);
   const [followers, setFollowers] = useState<number | null>(null);
   const [isNotFound, setIsNotFound] = useState(false);
   const [followingAlbums, setFollowingAlbums] = useRecoilState(
@@ -192,6 +311,8 @@ const Album = () => {
       if (result.ok) {
         setAlbumData(result.album as APIAlbum);
         setBackground({ src: result.album.coverImg, type: "blur" });
+        await new Promise((resolve) => setTimeout(resolve, 3000));
+
         setIsLoading(false);
       } else {
         if (!result.error) {
@@ -281,6 +402,7 @@ const Album = () => {
                   {albumData.length}곡{" • "}
                   {setAlbumSeconds(albumData.total_duration)}
                 </AlbumDescription>
+                <AlbumDescription>팔로워: {followers}명</AlbumDescription>
               </AlbumDescriptionContainer>
               <AlbumController>
                 <AlbumPlayButton onClick={playAlbumMusics}>
@@ -297,7 +419,7 @@ const Album = () => {
                     />
                   </svg>
                 </AlbumPlayButton>
-                <AlbumFollowButton $follow={follow} onClick={followAlbum}>
+                <AlbumFollowButton $follow={!!follow} onClick={followAlbum}>
                   {follow ? "언팔로우" : "팔로우"}
                 </AlbumFollowButton>
               </AlbumController>
@@ -307,6 +429,30 @@ const Album = () => {
                 <AlbumList music={item} index={idx} key={idx} />
               ))}
             </AlbumListContainer>
+          </>
+        )}
+        {isLoading && (
+          <>
+            <AlbumInfoSkeleton>
+              <AlbumArtistSkeleton />
+              <AlbumImageSkeleton />
+              <AlbumTitleSkeleton />
+              <AlbumDescriptionContainerSkeleton>
+                <AlbumDescriptionSkeleton />
+                <AlbumDescriptionSkeleton />
+                <AlbumDescriptionSkeleton />
+                <AlbumDescriptionSkeleton />
+              </AlbumDescriptionContainerSkeleton>
+              <AlbumControllerSkeleton>
+                <AlbumPlayButtonSkeleton />
+                <AlbumFollowButtonSkeleton />
+              </AlbumControllerSkeleton>
+            </AlbumInfoSkeleton>
+            <AlbumListContainerSkeleton>
+              <AlbumListItemSkeleton />
+              <AlbumListItemSkeleton />
+              <AlbumListItemSkeleton />
+            </AlbumListContainerSkeleton>
           </>
         )}
       </ContentContainer>

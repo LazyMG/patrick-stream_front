@@ -9,7 +9,6 @@ const AdminArtists: React.FC = () => {
       res.json()
     );
     if (result.ok) {
-      console.log(result.allArtists);
       setArtists(result.allArtists);
     }
   };

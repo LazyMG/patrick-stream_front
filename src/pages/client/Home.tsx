@@ -1,18 +1,15 @@
 import styled from "styled-components";
 import FlexList from "../../widgets/client/FlexList";
-import GridList from "../../widgets/client/GridList";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { backgroundState } from "../../app/entities/global/atom";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { APIMusic } from "../../shared/models/music";
 import { loginUserDataState, userState } from "../../app/entities/user/atom";
-import {
-  likedMusicsState,
-  recentMusicsState,
-} from "../../app/entities/music/atom";
-import FlexListSkeleton from "../../widgets/client/FlexListSkeleton";
-import GridListSkeleton from "../../widgets/client/GridListSkeleton";
+import { recentMusicsState } from "../../app/entities/music/atom";
+import TrendingMusics from "../../widgets/client/TrendingMusics";
+import FastSelectMusics from "../../widgets/client/FastSelectMusics";
+import PopularMusics from "../../widgets/client/PopularMusics";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -49,27 +46,25 @@ const ContentContainer = styled.div`
 const Home = () => {
   const setBackground = useSetRecoilState(backgroundState);
   const navigate = useNavigate();
-  const [musicsData, setMusicsData] = useState<APIMusic[] | null>(null);
+  const [newMusicsData, setNewMusicsData] = useState<APIMusic[] | null>(null);
+
   const [isMusicLoading, setIsMusicLoading] = useState(true);
   const user = useRecoilValue(userState);
-  const likedMusics = useRecoilValue(likedMusicsState);
   const loginUserData = useRecoilValue(loginUserDataState);
   const recentMusics = useRecoilValue(recentMusicsState);
 
-  const getMusics = async () => {
+  const getNewMusics = async () => {
     const result = await fetch(
       `http://localhost:5000/music/recently-updated`
     ).then((res) => res.json());
     if (result.ok) {
-      // console.log(result.musics);
-      setMusicsData(result.musics);
-      await new Promise((resolve) => setTimeout(resolve, 3000));
+      setNewMusicsData(result.musics);
       setIsMusicLoading(false);
     }
   };
 
   useEffect(() => {
-    getMusics();
+    getNewMusics();
   }, [user.userId]);
 
   useEffect(() => {
@@ -88,13 +83,21 @@ const Home = () => {
         ))}
       </ContentGenre> */}
       <ContentContainer>
-        {isMusicLoading && <GridListSkeleton />}
-
-        {isMusicLoading && <FlexListSkeleton />}
-        {!isMusicLoading && musicsData && loginUserData && (
+        <FastSelectMusics />
+        {recentMusics && recentMusics.length !== 0 && (
+          <FlexList
+            list={recentMusics}
+            listFlag="music"
+            isCustom={false}
+            title="최근 들은 음악"
+          />
+        )}
+        <TrendingMusics />
+        <PopularMusics />
+        {!isMusicLoading && newMusicsData && loginUserData && (
           <FlexList
             listFlag="music"
-            list={musicsData}
+            list={newMusicsData}
             onClick={gotoProfile}
             isCustom={true}
             title={"다시 듣기"}
@@ -115,23 +118,6 @@ const Home = () => {
             info={loginUserData.username}
           />
         )}
-        {/* {recentMusics && recentMusics.length !== 0 && (
-          <FlexList
-            list={recentMusics}
-            listFlag="music"
-            isCustom={false}
-            title="최근 들은 음악"
-          />
-        )} */}
-        {/* {likedMusics && likedMusics.length !== 0 && (
-          <FlexList
-            list={likedMusics}
-            listFlag="music"
-            isCustom={false}
-            title="좋아요 한 음악"
-          />
-        )} */}
-        {!isMusicLoading && musicsData && <GridList list={musicsData} />}
       </ContentContainer>
     </Wrapper>
   );

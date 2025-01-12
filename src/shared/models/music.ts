@@ -1,5 +1,5 @@
-import { Album } from "./album";
-import { Artist } from "./artist";
+import { APIAlbum } from "./album";
+import { APIArtist } from "./artist";
 import { Count } from "./count";
 
 //comment 추가 필요
@@ -21,17 +21,8 @@ export interface Music {
 }
 
 export interface APIMusic {
-  album: {
-    coverImg: string;
-    title: string;
-    _id: string;
-    category: string;
-  };
-  artists: Array<{
-    artistname: string;
-    coverImg: string;
-    _id: string;
-  }>;
+  album?: APIAlbum;
+  artists?: APIArtist[];
   comments?: string[];
   counts: {
     views: number;

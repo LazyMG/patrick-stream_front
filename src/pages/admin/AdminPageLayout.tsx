@@ -1,9 +1,9 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { Music } from "../../shared/models/music";
-import { Album } from "../../shared/models/album";
-import { Artist } from "../../shared/models/artist";
+import { APIMusic } from "../../shared/models/music";
+import { APIAlbum } from "../../shared/models/album";
+import { APIArtist } from "../../shared/models/artist";
 
 const ContentContainer = styled.div`
   display: flex;
@@ -42,22 +42,22 @@ const TabContent = styled.p`
 
 interface AdminPageLayoutProps {
   dataType: "music" | "album" | "artist";
-  dataList: Music[] | Album[] | Artist[];
+  dataList: APIMusic[] | APIAlbum[] | APIArtist[];
 }
 
-const isMusicList = (list: unknown[]): list is Music[] => {
+const isMusicList = (list: unknown[]): list is APIMusic[] => {
   return list.every(
     (item) => typeof item === "object" && item !== null && "ytId" in item
   );
 };
 
-const isAlbumList = (list: unknown[]): list is Album[] => {
+const isAlbumList = (list: unknown[]): list is APIAlbum[] => {
   return list.every(
     (item) => typeof item === "object" && item !== null && "category" in item
   );
 };
 
-const isArtistList = (list: unknown[]): list is Artist[] => {
+const isArtistList = (list: unknown[]): list is APIArtist[] => {
   return list.every(
     (item) => typeof item === "object" && item !== null && "artistname" in item
   );
@@ -91,8 +91,12 @@ const AdminPageLayout: React.FC<AdminPageLayoutProps> = ({
           dataList.map((music) => (
             <Link to={`./${music._id}`} key={music._id}>
               <Tab>
-                <TabContent>제목: {music.title}</TabContent>
-                <TabContent>가수: {music.artists[0] || "없음"}</TabContent>
+                <TabContent>제목: {music?.title}</TabContent>
+                <TabContent>
+                  가수:{" "}
+                  {(music.artists && music.artists[0]?.artistname) || "없음"}
+                </TabContent>
+                <TabContent>앨범: {music?.album?.title || "없음"}</TabContent>
               </Tab>
             </Link>
           ))}
@@ -102,9 +106,12 @@ const AdminPageLayout: React.FC<AdminPageLayoutProps> = ({
             <Link to={`./${album._id}`} key={album._id}>
               <Tab>
                 <TabContent>제목: {album.title}</TabContent>
-                <TabContent>{album.artists.toString()}</TabContent>
+                <TabContent>
+                  가수:
+                  {(album.artists && album.artists[0]?.artistname) || "없음"}
+                </TabContent>
                 <TabContent>총 곡 수: {album.length}</TabContent>
-                <TabContent>현재 곡 수: {album.musics.length}</TabContent>
+                <TabContent>현재 곡 수: {album.musics?.length}</TabContent>
                 <TabContent>{album.created_at}</TabContent>
               </Tab>
             </Link>
@@ -115,8 +122,8 @@ const AdminPageLayout: React.FC<AdminPageLayoutProps> = ({
             <Link to={`./${artist._id}`} key={artist._id}>
               <Tab>
                 <TabContent>이름: {artist.artistname}</TabContent>
-                <TabContent>앨범 수:{artist.albums.length}</TabContent>
-                <TabContent>음악 수:{artist.musics.length}</TabContent>
+                <TabContent>앨범 수:{artist.albums?.length}</TabContent>
+                <TabContent>음악 수:{artist.musics?.length}</TabContent>
                 <TabContent>등록 일자:{artist.created_at}</TabContent>
               </Tab>
             </Link>

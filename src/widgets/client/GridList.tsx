@@ -57,7 +57,15 @@ const ListContainer = styled.div`
 
 const PERVIEW = 3;
 
-const GridList = ({ list }: { list?: APIMusic[] }) => {
+const GridList = ({
+  list,
+  buttonText,
+  onClick,
+}: {
+  list?: APIMusic[];
+  buttonText?: string;
+  onClick: () => void;
+}) => {
   const swiperRef = useRef<Swiper | null>(null);
   const [isBeginning, setIsBeginning] = useState(true);
   const [isEnd, setIsEnd] = useState(false);
@@ -86,6 +94,8 @@ const GridList = ({ list }: { list?: APIMusic[] }) => {
           goPrev={goPrev}
           goNext={goNext}
           isActive={isActive}
+          buttonText={buttonText}
+          onClick={onClick}
         />
       </ListHeader>
       <ListContainer>

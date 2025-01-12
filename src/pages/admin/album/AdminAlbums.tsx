@@ -9,7 +9,6 @@ const AdminAlbums: React.FC = () => {
       res.json()
     );
     if (result.ok) {
-      console.log(result.albums);
       setAlbums(result.albums);
     }
   };

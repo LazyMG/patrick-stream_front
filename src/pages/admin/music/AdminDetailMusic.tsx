@@ -30,9 +30,21 @@ const AdminDetailMusic: React.FC = () => {
     }
   };
 
-  const openAlbumModal = () => setIsAlbumModalOpen(true);
+  const openAlbumModal = () => {
+    if (outletMusic?.music.album) {
+      alert("이미 앨범에 포함된 음악입니다.");
+      return;
+    }
+    setIsAlbumModalOpen(true);
+  };
 
-  const openArtistModal = () => setIsArtistModalOpen(true);
+  const openArtistModal = () => {
+    if (outletMusic?.music.artists) {
+      alert("이미 아티스트에 포함된 음악입니다.");
+      return;
+    }
+    setIsArtistModalOpen(true);
+  };
 
   const closeAlbumModal = () => setIsAlbumModalOpen(false);
 
@@ -42,9 +54,11 @@ const AdminDetailMusic: React.FC = () => {
   const infoData = [
     `제목: ${outletMusic?.music.title}`,
     `아티스트: ${
-      outletMusic?.music.artists ?? outletMusic?.music.artists.length ?? "없음"
+      (outletMusic?.music?.artists &&
+        outletMusic?.music?.artists[0]?.artistname) ||
+      "없음"
     }`,
-    `앨범: ${outletMusic?.music.album || "없음"}`,
+    `앨범: ${outletMusic?.music.album?.title || "없음"}`,
     `재생시간: ${outletMusic?.music.duration}`,
     `발매 일자: ${outletMusic?.music.released_at}`,
     `등록 일자: ${outletMusic?.music.created_at}`,

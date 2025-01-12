@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import RowList from "../../widgets/client/RowList";
 import { DefaultButton } from "../../shared/ui/DefaultButton";
 import FlexList from "../../widgets/client/FlexList";
@@ -13,6 +13,8 @@ import { playingPlaylistState } from "../../app/entities/music/atom";
 import { usePlayMusic } from "../../shared/hooks/usePlayMusic";
 import { APIMusic } from "../../shared/models/music";
 import NotFound from "./NotFound";
+import RowListSkeleton from "../../widgets/client/RowListSkeleton";
+import FlexListSkeleton from "../../widgets/client/FlexListSkeleton";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -100,6 +102,75 @@ const ContentContainer = styled.div`
   gap: 60px;
 `;
 
+const pulseKeyframes = keyframes`
+  0%{
+    opacity: 1;
+  }
+  50%{
+    opacity: 0.4;
+  }
+  100%{
+    opacity: 1;
+  }
+`;
+
+const TitleSkeleton = styled.h1`
+  width: 20%;
+  min-width: 200px;
+  height: 48px;
+
+  border-radius: 10px;
+
+  background-color: #2e2e2e;
+
+  animation: ${pulseKeyframes} 2.5s ease-in-out infinite;
+`;
+
+const InfoSkeleton = styled.p`
+  width: 40%;
+  min-width: 300px;
+  height: 35px;
+
+  border-radius: 10px;
+
+  background-color: #2e2e2e;
+
+  animation: ${pulseKeyframes} 2.5s ease-in-out infinite;
+`;
+
+const FollowersSkeleton = styled.span`
+  width: 20%;
+  min-width: 100px;
+  height: 25px;
+
+  border-radius: 10px;
+
+  background-color: #2e2e2e;
+
+  animation: ${pulseKeyframes} 2.5s ease-in-out infinite;
+`;
+
+const CircleButtonSkeleton = styled.div`
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+
+  background-color: #2e2e2e;
+
+  animation: ${pulseKeyframes} 2.5s ease-in-out infinite;
+`;
+
+const FollowButtonSkeleton = styled.div`
+  width: 125px;
+  height: 32px;
+
+  border-radius: 10px;
+
+  background-color: #2e2e2e;
+
+  animation: ${pulseKeyframes} 2.5s ease-in-out infinite;
+`;
+
 const Artist = () => {
   const user = useRecoilValue(userState);
   const { artistId } = useParams();
@@ -107,7 +178,7 @@ const Artist = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [artistData, setArtistData] = useState<APIArtist | null>(null);
   const [artistMusics, setArtistMusics] = useState<APIMusic[] | null>(null);
-  const [follow, setFollow] = useState(false);
+  const [follow, setFollow] = useState<boolean | null>(null);
   const [followers, setFollowers] = useState<number | null>(null);
   const [isNotFound, setIsNotFound] = useState(false);
 
@@ -145,12 +216,15 @@ const Artist = () => {
       if (result.ok) {
         setArtistData(result.artist);
         setArtistMusics(result.artist.musics);
+
         setBackground((prev) => {
           if (prev?.src === result.artist.coverImg) {
             return prev;
           }
           return { src: result.artist.coverImg, type: "simple" };
         });
+        await new Promise((resolve) => setTimeout(resolve, 3000));
+
         setIsLoading(false);
       } else {
         if (!result.error) {
@@ -203,7 +277,7 @@ const Artist = () => {
   };
 
   const playArtistMusics = () => {
-    if (!artistData?.musics) return;
+    if (!artistData?.musics || isLoading) return;
     setPlayingPlaylist(artistData.musics);
     playMusic(artistData.musics[0], true);
   };
@@ -212,49 +286,66 @@ const Artist = () => {
     return <NotFound />;
   }
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
   return (
     <Wrapper>
       <InfoHeader>
-        <Title>{artistData?.artistname}</Title>
-        <Info>{artistData?.introduction}</Info>
-        <Followers>{followers}명</Followers>
+        {!isLoading ? (
+          <>
+            <Title>{artistData?.artistname}</Title>
+            <Info>{artistData?.introduction}</Info>
+            <Followers>팔로워: {followers}명</Followers>
+          </>
+        ) : (
+          <>
+            <TitleSkeleton />
+            <InfoSkeleton />
+            <FollowersSkeleton />
+          </>
+        )}
       </InfoHeader>
       <ControlContainer>
-        <CircleButton onClick={playArtistMusics}>
-          <svg
-            fill="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-            aria-hidden="true"
-          >
-            <path
-              clipRule="evenodd"
-              fillRule="evenodd"
-              d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z"
-            />
-          </svg>
-        </CircleButton>
-        <FollowButton $follow={follow} onClick={followArtist}>
-          {follow ? "언팔로우" : "팔로우"}
-        </FollowButton>
+        {!isLoading && follow !== null ? (
+          <>
+            <CircleButton onClick={playArtistMusics}>
+              <svg
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+              >
+                <path
+                  clipRule="evenodd"
+                  fillRule="evenodd"
+                  d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z"
+                />
+              </svg>
+            </CircleButton>
+            <FollowButton $follow={!!follow} onClick={followArtist}>
+              {follow ? "언팔로우" : "팔로우"}
+            </FollowButton>
+          </>
+        ) : (
+          <>
+            <CircleButtonSkeleton />
+            <FollowButtonSkeleton />
+          </>
+        )}
       </ControlContainer>
-      {!isLoading && (
-        <ContentContainer>
-          {artistMusics && artistMusics.length !== 0 && (
-            <RowList title={"인기 음악"} list={artistMusics} />
-          )}
+      <ContentContainer>
+        {!isLoading && artistMusics && artistMusics.length !== 0 && (
+          <RowList title={"인기 음악"} list={artistMusics} />
+        )}
+        {isLoading && <RowListSkeleton />}
+        {!isLoading && artistData?.albums && (
           <FlexList
             title="앨범"
             isCustom={false}
             list={artistData?.albums}
             listFlag="album"
           />
-        </ContentContainer>
-      )}
+        )}
+        {isLoading && <FlexListSkeleton />}
+      </ContentContainer>
     </Wrapper>
   );
 };

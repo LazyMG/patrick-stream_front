@@ -5,7 +5,7 @@ const HeaderContainer = styled.header`
   justify-content: space-between;
   align-items: center;
   padding: 20px;
-  background-color: beige;
+  background-color: #000;
   color: #fff;
 `;
 
@@ -14,8 +14,7 @@ const Title = styled.h1``;
 const AdminHeader: React.FC = () => {
   return (
     <HeaderContainer>
-      <Title>Admin Dashboard</Title>
-      <div>Profile</div>
+      <Title>Patrick Stream</Title>
     </HeaderContainer>
   );
 };

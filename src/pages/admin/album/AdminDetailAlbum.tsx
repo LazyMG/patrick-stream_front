@@ -34,7 +34,13 @@ const AdminDetailAlbum: React.FC = () => {
 
   const openThisAlbumModal = () => setIsThisAlbumModalOpen(true);
 
-  const openArtistModal = () => setIsArtistModalOpen(true);
+  const openArtistModal = () => {
+    if (outletAlbum?.album.artists) {
+      alert("이미 아티스트에 포함된 앨범입니다.");
+      return;
+    }
+    setIsArtistModalOpen(true);
+  };
 
   const closeThisAlbumModal = () => setIsThisAlbumModalOpen(false);
 
@@ -55,7 +61,11 @@ const AdminDetailAlbum: React.FC = () => {
 
   const infoData = [
     `제목: ${outletAlbum?.album.title}`,
-    `아티스트: ${outletAlbum?.album.artists}`,
+    `아티스트: ${
+      (outletAlbum?.album.artists &&
+        outletAlbum?.album?.artists[0]?.artistname) ||
+      "없음"
+    }`,
     `재생시간: ${outletAlbum?.album.total_duration}`,
     `등록 일자: ${outletAlbum?.album.created_at}`,
     `발매 일자: ${outletAlbum?.album.released_at}`,
