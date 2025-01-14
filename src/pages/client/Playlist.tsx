@@ -13,7 +13,7 @@ import {
 } from "../../app/entities/playlist/atom";
 import {
   backgroundState,
-  isToastOpenState,
+  isPlaylistToastOpenState,
 } from "../../app/entities/global/atom";
 import { playingPlaylistState } from "../../app/entities/music/atom";
 import { usePlayMusic } from "../../shared/hooks/usePlayMusic";
@@ -224,7 +224,9 @@ const Playlist = () => {
   const playMusic = usePlayMusic();
   const navigate = useNavigate();
 
-  const [isToastOpen, setIsToastOpen] = useRecoilState(isToastOpenState);
+  const [isPlaylistToastOpen, setIsPlaylistToastOpen] = useRecoilState(
+    isPlaylistToastOpenState
+  );
   const deletePlaylistMusic = useDeletePlaylistMusic();
 
   useEffect(() => {
@@ -235,7 +237,6 @@ const Playlist = () => {
 
   useEffect(() => {
     if (followingPlaylists) {
-      console.log(followingPlaylists);
       const isFollow = followingPlaylists.some(
         (playlist) => playlist._id === playlistId
       );
@@ -261,7 +262,7 @@ const Playlist = () => {
   useEffect(() => {
     setIsNotFound(false);
     setBackground(null);
-    setIsToastOpen(false);
+    setIsPlaylistToastOpen(false);
 
     if (user.userId !== "" && currentUserPlaylist && playlistId) {
       const thisPlaylist = currentUserPlaylist.find(
@@ -296,7 +297,7 @@ const Playlist = () => {
     user.userId,
     setBackground,
     setPlaylistMusics,
-    setIsToastOpen,
+    setIsPlaylistToastOpen,
   ]);
 
   const followPlaylist = async () => {
@@ -364,7 +365,7 @@ const Playlist = () => {
   };
 
   const closeToast = () => {
-    setIsToastOpen(false);
+    setIsPlaylistToastOpen(false);
   };
 
   if (isNotFound) {
@@ -452,7 +453,7 @@ const Playlist = () => {
           isMine={isMine}
         />
       )}
-      {isToastOpen && playlistId && (
+      {isPlaylistToastOpen && playlistId && (
         <ToastContainer
           text={`${
             playlistMusics?.filter((item) => item.state).length

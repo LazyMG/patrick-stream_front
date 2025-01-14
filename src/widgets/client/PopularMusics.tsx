@@ -28,10 +28,11 @@ const PopularMusics = () => {
         <FlexListSkeleton />
       ) : (
         <FlexList
-          title="인기 음악"
+          title="인기있는 음악"
           listFlag="music"
           list={popularMusicsData}
           isCustom={false}
+          info="좋아요 많이 받은 음악"
         />
       )}
     </>

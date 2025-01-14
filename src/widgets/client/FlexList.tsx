@@ -31,9 +31,14 @@ const ListHeader = styled.div`
 `;
 
 const DefaultSection = styled.div`
-  color: #fff;
-  font-weight: bold;
-  font-size: 45px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+`;
+
+const DefaultInfo = styled.span`
+  color: #b5b5b5;
+  font-weight: 100;
 `;
 
 const CustomSection = styled.div`
@@ -147,7 +152,10 @@ const FlexList = ({
             </CustomUserInfo>
           </CustomSection>
         ) : (
-          <DefaultSection>{title}</DefaultSection>
+          <DefaultSection>
+            {info && <DefaultInfo>{info}</DefaultInfo>}
+            <CustomTitle>{title}</CustomTitle>
+          </DefaultSection>
         )}
         <SliderButtonSection
           isBeginning={isBeginning}

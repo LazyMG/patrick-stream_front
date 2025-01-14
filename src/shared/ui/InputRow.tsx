@@ -43,15 +43,13 @@ const ErrorMessage = styled.span`
 `;
 
 interface IInputRow {
-  id: "email" | "username" | "password" | "passwordConfirm";
+  id: "email" | "password" | "passwordConfirm";
   type: string;
   name: string;
   placeHolder: string;
   register: UseFormRegisterReturn;
   errorMsg?: string;
-  handleChange: (
-    id: "email" | "username" | "password" | "passwordConfirm"
-  ) => void;
+  handleChange: (id: "email" | "password" | "passwordConfirm") => void;
   isCustom?: boolean;
   validateFunc?: () => Promise<void>;
 }

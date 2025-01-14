@@ -29,10 +29,11 @@ const TrendingMusics = () => {
         <FlexListSkeleton />
       ) : (
         <FlexList
-          title="유행 음악"
+          title="유행하는 음악"
           listFlag="music"
           list={trendingMusicsData}
           isCustom={false}
+          info="많이 듣는 음악"
         />
       )}
     </>

@@ -7,6 +7,7 @@ import { currentUserPlaylistState } from "../../app/entities/playlist/atom";
 import PlaylistItem from "../../shared/ui/PlaylistItem";
 import { APIPlaylist } from "../../shared/models/playlist";
 import { isPlayerOnState } from "../../app/entities/player/atom";
+import { useToast } from "../../shared/hooks/useToast";
 
 const Wrapper = styled.div<{ $isPlayerOn: boolean }>`
   display: flex;
@@ -58,18 +59,6 @@ const PlaylistView = styled.div`
   overflow-y: auto;
 `;
 
-const PlaylistError = styled.div`
-  width: 100%;
-  height: 60px;
-  border-radius: 15px;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  background-color: red;
-`;
-
 const pulseKeyframes = keyframes`
   0%{
     opacity: 1;
@@ -91,11 +80,6 @@ const PlaylistSkeleton = styled.div`
   animation: ${pulseKeyframes} 2.5s ease-in-out infinite;
 `;
 
-interface IError {
-  state: boolean;
-  text: string;
-}
-
 const PlayListContainer = () => {
   const user = useRecoilValue(userState);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -104,10 +88,8 @@ const PlayListContainer = () => {
   );
   const [isLoading, setIsLoading] = useState(true);
   const isPlayerOn = useRecoilValue(isPlayerOnState);
-  const [isError, setIsError] = useState<IError>({
-    state: false,
-    text: "",
-  });
+  const { setGlobalToast } = useToast();
+  const [isError, setIsError] = useState(false);
 
   const openModal = () => {
     if (user.userId !== "") {
@@ -118,6 +100,8 @@ const PlayListContainer = () => {
   const closeModal = () => setIsModalOpen(false);
 
   const getCurrentUserPlaylist = useCallback(async () => {
+    if (isError) return;
+    console.log("fetch");
     const result = await fetch(
       `http://localhost:5000/user/${user.userId}/allPlaylists`,
       {
@@ -125,22 +109,21 @@ const PlayListContainer = () => {
       }
     ).then((res) => res.json());
     if (result.ok) {
-      // console.log("Container!");
       setCurrentUserPlaylist(result.playlists as APIPlaylist[]);
       setIsLoading(false);
     } else {
-      console.log("error!");
-      setIsError({ state: true, text: "오류가 발생했습니다." });
+      setIsError(true);
+      setGlobalToast("Playlist Error");
     }
-  }, [user.userId, setCurrentUserPlaylist]);
+  }, [user.userId, setCurrentUserPlaylist, setGlobalToast, isError]);
 
   useEffect(() => {
-    if (user.userId !== "") {
+    if (user.userId !== "" && !isError) {
       getCurrentUserPlaylist();
     } else {
       setIsLoading(false);
     }
-  }, [getCurrentUserPlaylist, user.userId]);
+  }, [getCurrentUserPlaylist, user.userId, isError]);
 
   return (
     <>
@@ -163,23 +146,19 @@ const PlayListContainer = () => {
           </svg>
           <span>새 재생목록 추가</span>
         </CreateButton>
-        {!isError.state ? (
-          <PlaylistView>
-            {!isLoading ? (
-              currentUserPlaylist.map((item) => (
-                <PlaylistItem playlist={item} key={item._id} />
-              ))
-            ) : (
-              <>
-                <PlaylistSkeleton />
-                <PlaylistSkeleton />
-                <PlaylistSkeleton />
-              </>
-            )}
-          </PlaylistView>
-        ) : (
-          <PlaylistError>{isError.text}</PlaylistError>
-        )}
+        <PlaylistView>
+          {!isLoading ? (
+            currentUserPlaylist.map((item) => (
+              <PlaylistItem playlist={item} key={item._id} />
+            ))
+          ) : (
+            <>
+              <PlaylistSkeleton />
+              <PlaylistSkeleton />
+              <PlaylistSkeleton />
+            </>
+          )}
+        </PlaylistView>
       </Wrapper>
     </>
   );

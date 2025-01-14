@@ -18,7 +18,6 @@ const Form = styled.form`
 
 interface LoginFormValues {
   email: string;
-  username: string;
   password: string;
   passwordConfirm: string;
 }
@@ -89,9 +88,7 @@ const SignIn = () => {
     window.location.href = googleLoginUrl;
   };
 
-  const handleChange = (
-    id: "email" | "username" | "password" | "passwordConfirm"
-  ) => {
+  const handleChange = (id: "email" | "password" | "passwordConfirm") => {
     clearErrors(id);
   };
 
@@ -137,16 +134,6 @@ const SignIn = () => {
               value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
               message: "유효한 이메일 주소를 입력해주세요.",
             },
-          })}
-        />
-        <InputRow
-          id="username"
-          name="사용자 이름"
-          placeHolder="Username"
-          type="text"
-          handleChange={handleChange}
-          register={register("username", {
-            required: true,
           })}
         />
         <InputRow

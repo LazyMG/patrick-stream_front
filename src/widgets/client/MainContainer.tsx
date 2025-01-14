@@ -4,17 +4,15 @@ import PlayBar from "./PlayBar";
 import YoutubeContainer from "../../pages/YoutubeContainer";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { isPlayerOnState } from "../../app/entities/player/atom";
-import { backgroundState } from "../../app/entities/global/atom";
 import {
-  likedMusicsState,
-  playingPlaylistState,
-  recentMusicsState,
-} from "../../app/entities/music/atom";
+  backgroundState,
+  globalToastConfigState,
+} from "../../app/entities/global/atom";
+import { playingPlaylistState } from "../../app/entities/music/atom";
 import { loginUserDataState, userState } from "../../app/entities/user/atom";
-import { followingArtistsState } from "../../app/entities/artist/atom";
-import { followingAlbumsState } from "../../app/entities/album/atom";
 import { useLocation } from "react-router-dom";
-import { followingPlaylistsState } from "../../app/entities/playlist/atom";
+import ToastContainer from "./ToastContainer";
+import { useLoginUser } from "../../shared/hooks/useLoginUser";
 
 const Wrapper = styled.div<{ $backImg?: string | null }>`
   margin-left: 250.5px;
@@ -167,12 +165,9 @@ interface IMainContainer {
 
 const MainContainer = ({ children, onScroll }: IMainContainer) => {
   const user = useRecoilValue(userState);
-  const setLikedMusics = useSetRecoilState(likedMusicsState);
-  const setRecentMusics = useSetRecoilState(recentMusicsState);
   const setLoginUserData = useSetRecoilState(loginUserDataState);
-  const setFollowingArtists = useSetRecoilState(followingArtistsState);
-  const setFollowingAlbums = useSetRecoilState(followingAlbumsState);
-  const setFollowingPlaylists = useSetRecoilState(followingPlaylistsState);
+  const { initiateLoginUserData } = useLoginUser();
+  const globalToastConfig = useRecoilValue(globalToastConfigState);
 
   const location = useLocation();
 
@@ -184,21 +179,10 @@ const MainContainer = ({ children, onScroll }: IMainContainer) => {
       if (result.ok) {
         // console.log("로그인한 사용자의 정보", result.user);
         setLoginUserData(result.user);
-        setRecentMusics(result.user.recentMusics);
-        setLikedMusics(result.user.likedMusics);
-        setFollowingArtists(result.user.followings.followingArtists);
-        setFollowingAlbums(result.user.followings.followingAlbums);
-        setFollowingPlaylists(result.user.followings.followingPlaylists);
+        initiateLoginUserData(result.user);
       }
     },
-    [
-      setLikedMusics,
-      setLoginUserData,
-      setRecentMusics,
-      setFollowingArtists,
-      setFollowingAlbums,
-      setFollowingPlaylists,
-    ]
+    [setLoginUserData, initiateLoginUserData]
   );
 
   useEffect(() => {
@@ -261,6 +245,15 @@ const MainContainer = ({ children, onScroll }: IMainContainer) => {
         <Footer />
       </Content>
       {isPlayerOn && <PlayBar player={player} setPlayer={setPlayer} />}
+      {globalToastConfig &&
+        globalToastConfig.toasts.length !== 0 &&
+        globalToastConfig.toasts.map((item) => (
+          <ToastContainer
+            closeToast={() => globalToastConfig.closeToast(item.key)}
+            text={item.text}
+            key={item.key}
+          />
+        ))}
       <YoutubeContainer player={player} setPlayer={setPlayer} />
     </Wrapper>
   );

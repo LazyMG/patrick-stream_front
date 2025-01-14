@@ -35,11 +35,17 @@ const ListContainer = styled.div`
   width: 100%;
   color: #fff;
 
+  &:hover .swiper-scrollbar {
+    opacity: 1;
+  }
+
   /* Custom Scrollbar Style */
   .swiper-scrollbar {
     background-color: #1c1c1c; /* 트랙 색상 */
     height: 5px; /* 스크롤바의 높이 조정 */
     border-radius: 0;
+
+    opacity: 0;
   }
 
   .swiper-scrollbar-drag {

@@ -10,7 +10,22 @@ export const backgroundState = atom<IBackgroundState | null>({
   default: null,
 });
 
-export const isToastOpenState = atom<boolean>({
-  key: "isToastOpenState",
+interface IToast {
+  text: string;
+  key: number;
+}
+
+interface IGlobalToastConfig {
+  closeToast: (key: number) => void;
+  toasts: IToast[];
+}
+
+export const globalToastConfigState = atom<IGlobalToastConfig | null>({
+  key: "globalToastConfigState",
+  default: null,
+});
+
+export const isPlaylistToastOpenState = atom<boolean>({
+  key: "isPlaylistToastOpenState",
   default: false,
 });

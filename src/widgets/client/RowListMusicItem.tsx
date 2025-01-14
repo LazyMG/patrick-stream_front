@@ -6,8 +6,8 @@ import { setMusicSeconds } from "../../shared/lib/musicDataFormat";
 import { useEffect, useRef, useState } from "react";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { selectedMusicState } from "../../app/entities/music/atom";
-import { isToastOpenState } from "../../app/entities/global/atom";
 import { playlistMusicsState } from "../../app/entities/playlist/atom";
+import { isPlaylistToastOpenState } from "../../app/entities/global/atom";
 
 const Number = styled.span`
   color: #fff;
@@ -121,7 +121,9 @@ const RowListMusicItem = ({
   const playMusic = usePlayMusic();
   const [views, setViews] = useState<number>(music?.counts.views || 0);
   const checkboxInput = useRef<HTMLInputElement>(null);
-  const [isToastOpen, setIsToastOpen] = useRecoilState(isToastOpenState);
+  const [isPlaylistToastOpen, setIsPlaylistToastOpen] = useRecoilState(
+    isPlaylistToastOpenState
+  );
 
   const selectedMusic = useRecoilValue(selectedMusicState);
 
@@ -134,16 +136,16 @@ const RowListMusicItem = ({
   }, [selectedMusic, music._id]);
 
   useEffect(() => {
-    if (checkboxInput.current && !isToastOpen) {
+    if (checkboxInput.current && !isPlaylistToastOpen) {
       checkboxInput.current.checked = false;
     }
-  }, [isToastOpen]);
+  }, [isPlaylistToastOpen]);
 
   useEffect(() => {
     if (!isMine) {
-      setIsToastOpen(false);
+      setIsPlaylistToastOpen(false);
     }
-  }, [isMine, setIsToastOpen]);
+  }, [isMine, setIsPlaylistToastOpen]);
 
   const clickViews = () => {
     if (selectedMusic?._id === music._id) return;
@@ -169,7 +171,7 @@ const RowListMusicItem = ({
         flag = newPlaylistMusicStateList.some((item) => item.state);
         return newPlaylistMusicStateList;
       });
-      setIsToastOpen(flag);
+      setIsPlaylistToastOpen(flag);
     }
   };
 
@@ -178,7 +180,7 @@ const RowListMusicItem = ({
       key={music._id}
       $isLast={length === index + 1}
       $isMine={isMine}
-      $isToastOpen={isToastOpen}
+      $isToastOpen={isPlaylistToastOpen}
     >
       <MaskDiv>
         <CheckBox
@@ -194,13 +196,15 @@ const RowListMusicItem = ({
         <span onClick={clickViews}>{music.title}</span>
       </Title>
       <Artist>
-        <Link to={`/artists/${music.artists[0]._id}`}>
-          {music.artists[0].artistname}
+        <Link to={`/artists/${music.artists ? music.artists[0]._id : ""}`}>
+          {music.artists ? music.artists[0].artistname : "알 수 없음"}
         </Link>
       </Artist>
       <Views>{views}회</Views>
       <Album>
-        <Link to={`/albums/${music.album._id}`}>{music.album.title}</Link>
+        <Link to={`/albums/${music.album ? music.album._id : ""}`}>
+          {music.album ? music.album.title : "알 수 없음"}
+        </Link>
       </Album>
       <Duration>{setMusicSeconds(music.duration)}</Duration>
     </Wrapper>

@@ -717,14 +717,28 @@ const PlayBar = ({ player }: IPlayBar) => {
               </PlayBarContentMainInfoTitle>
               <PlayBarContentMainInfoOverview>
                 <PlayBarContentMainInfoOverviewArtist>
-                  <Link to={`/artists/${selectedMusic?.artists[0]._id}`}>
-                    {selectedMusic?.artists[0].artistname}
+                  <Link
+                    to={`/artists/${
+                      selectedMusic?.artists
+                        ? selectedMusic?.artists[0]._id
+                        : ""
+                    }`}
+                  >
+                    {selectedMusic?.artists
+                      ? selectedMusic?.artists[0].artistname
+                      : "알 수 없음"}
                   </Link>
                 </PlayBarContentMainInfoOverviewArtist>
                 •{" "}
                 <PlayBarContentMainInfoOverviewAlbum>
-                  <Link to={`/albums/${selectedMusic?.album._id}`}>
-                    {selectedMusic?.album.title}
+                  <Link
+                    to={`/albums/${
+                      selectedMusic?.album ? selectedMusic?.album._id : ""
+                    }`}
+                  >
+                    {selectedMusic?.album
+                      ? selectedMusic?.album.title
+                      : "알 수 없음"}
                   </Link>
                 </PlayBarContentMainInfoOverviewAlbum>{" "}
                 •<span>{setDates(selectedMusic?.released_at, 1)}</span>
@@ -762,7 +776,7 @@ const PlayBar = ({ player }: IPlayBar) => {
                   </svg>
                 )}
               </PlayBarContentMainButton>
-              <PlayBarContentMainButton>
+              {/* <PlayBarContentMainButton>
                 <svg
                   fill="none"
                   strokeWidth={1.5}
@@ -777,7 +791,7 @@ const PlayBar = ({ player }: IPlayBar) => {
                     d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z"
                   />
                 </svg>
-              </PlayBarContentMainButton>
+              </PlayBarContentMainButton> */}
             </PlayBarContentMainUtil>
           </PlayBarContentMainContainer>
           <PlayBarContentUtilContainer>

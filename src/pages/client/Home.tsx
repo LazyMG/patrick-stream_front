@@ -2,7 +2,7 @@ import styled from "styled-components";
 import FlexList from "../../widgets/client/FlexList";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { backgroundState } from "../../app/entities/global/atom";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { APIMusic } from "../../shared/models/music";
 import { loginUserDataState, userState } from "../../app/entities/user/atom";
@@ -10,6 +10,7 @@ import { recentMusicsState } from "../../app/entities/music/atom";
 import TrendingMusics from "../../widgets/client/TrendingMusics";
 import FastSelectMusics from "../../widgets/client/FastSelectMusics";
 import PopularMusics from "../../widgets/client/PopularMusics";
+import { useToast } from "../../shared/hooks/useToast";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -52,20 +53,26 @@ const Home = () => {
   const user = useRecoilValue(userState);
   const loginUserData = useRecoilValue(loginUserDataState);
   const recentMusics = useRecoilValue(recentMusicsState);
+  const { setGlobalToast } = useToast();
+  const [isError, setIsError] = useState(false);
 
-  const getNewMusics = async () => {
+  const getNewMusics = useCallback(async () => {
+    if (isError) return;
     const result = await fetch(
       `http://localhost:5000/music/recently-updated`
     ).then((res) => res.json());
     if (result.ok) {
       setNewMusicsData(result.musics);
       setIsMusicLoading(false);
+    } else {
+      setGlobalToast("Home Error");
+      setIsError(true);
     }
-  };
+  }, [setGlobalToast, isError]);
 
   useEffect(() => {
     getNewMusics();
-  }, [user.userId]);
+  }, [user.userId, getNewMusics]);
 
   useEffect(() => {
     setBackground(null);

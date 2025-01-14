@@ -14,14 +14,14 @@ export interface APIUser {
     followingUsers: string[];
     followingAlbums: APIAlbum[];
     followingArtists: APIArtist[];
-    followingPlaylists: string[];
+    followingPlaylists: APIPlaylist[];
   };
   introduction?: string;
   isAdmin?: boolean;
   likedComments?: string[];
   likedMusics?: APIMusic[];
   password?: string;
-  playlists?: string[];
+  playlists?: APIPlaylist[];
   recentMusics?: APIMusic[];
   username: string;
   __v?: number;

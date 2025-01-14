@@ -4,13 +4,13 @@ import {
   currentUserPlaylistState,
   playlistMusicsState,
 } from "../../app/entities/playlist/atom";
-import { isToastOpenState } from "../../app/entities/global/atom";
+import { isPlaylistToastOpenState } from "../../app/entities/global/atom";
 
 export const useDeletePlaylistMusic = () => {
   const user = useRecoilValue(userState);
   const loginUserData = useRecoilValue(loginUserDataState);
   const setPlaylistMusics = useSetRecoilState(playlistMusicsState);
-  const setIsToastOpen = useSetRecoilState(isToastOpenState);
+  const setIsPlaylistToastOpen = useSetRecoilState(isPlaylistToastOpenState);
   const setcurrentUserPlaylist = useSetRecoilState(currentUserPlaylistState);
 
   const deletePlaylistMusic = async (playlistId: string) => {
@@ -28,7 +28,7 @@ export const useDeletePlaylistMusic = () => {
       return [...prev].filter((item) => !item.state);
     });
 
-    setIsToastOpen(false);
+    setIsPlaylistToastOpen(false);
 
     if (targetMusics.length === 0) return;
 
