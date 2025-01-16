@@ -6,25 +6,25 @@ export const useToast = () => {
     globalToastConfigState
   );
 
-  const setGlobalToast = (text: string) => {
+  const setGlobalToast = (text: string, toastKey: string) => {
     if (globalToastConfig === null) {
       setGlobalToastConfig({
-        closeToast: (key: number) =>
+        closeToast: (key: string) =>
           setGlobalToastConfig((prev) => {
             if (!prev) return prev;
             return {
               ...prev,
-              toasts: prev.toasts.filter((toast) => toast.key !== key), // 해당 key의 Toast만 삭제
+              toasts: prev.toasts.filter((toast) => toast.toastKey !== key), // 해당 key의 Toast만 삭제
             };
           }),
-        toasts: [{ text, key: Date.now() }],
+        toasts: [{ text, toastKey }],
       });
       return;
     }
 
     if (globalToastConfig && globalToastConfig.toasts) {
       const isToastExists = globalToastConfig.toasts.some(
-        (toast) => toast.text === text
+        (toast) => toast.toastKey === toastKey
       );
       if (isToastExists) {
         return; // 같은 내용의 toast가 이미 있으면 추가하지 않음
@@ -35,15 +35,15 @@ export const useToast = () => {
 
         return {
           ...prev,
-          closeToast: (key: number) =>
+          closeToast: (key: string) =>
             setGlobalToastConfig((prev) => {
               if (!prev) return prev;
               return {
                 ...prev,
-                toasts: prev.toasts.filter((toast) => toast.key !== key), // 해당 key의 Toast만 삭제
+                toasts: prev.toasts.filter((toast) => toast.toastKey !== key),
               };
             }),
-          toasts: [...prev.toasts, { text, key: Date.now() }],
+          toasts: [...prev.toasts, { text, toastKey }],
         };
       });
     }

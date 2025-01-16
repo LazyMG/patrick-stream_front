@@ -2,7 +2,7 @@ import styled, { keyframes } from "styled-components";
 import RowList from "../../widgets/client/RowList";
 import { DefaultButton } from "../../shared/ui/DefaultButton";
 import FlexList from "../../widgets/client/FlexList";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { backgroundState } from "../../app/entities/global/atom";
@@ -15,6 +15,7 @@ import { APIMusic } from "../../shared/models/music";
 import NotFound from "./NotFound";
 import RowListSkeleton from "../../widgets/client/RowListSkeleton";
 import FlexListSkeleton from "../../widgets/client/FlexListSkeleton";
+import { debounce } from "lodash";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -242,8 +243,31 @@ const Artist = () => {
     }
   }, [artistId, getArtist]);
 
+  const patchArtistFollowers = useCallback(
+    async (addList: boolean) => {
+      await fetch(`http://localhost:5000/artist/${artistId}/followers`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          activeUserId: user.userId,
+          addList,
+        }),
+      });
+    },
+    [artistId, user.userId]
+  );
+
+  const debouncedFollowArtist = useMemo(
+    () => debounce((addList) => patchArtistFollowers(addList), 100),
+    [patchArtistFollowers]
+  );
+
   const followArtist = async () => {
     if (!artistId || user.userId === "") return;
+
+    console.log("update");
 
     const addList = !follow;
     setFollow(addList);
@@ -264,16 +288,18 @@ const Artist = () => {
         }
       });
     }
-    await fetch(`http://localhost:5000/artist/${artistId}/followers`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        activeUserId: user.userId,
-        addList,
-      }),
-    });
+    debouncedFollowArtist(addList);
+
+    // await fetch(`http://localhost:5000/artist/${artistId}/followers`, {
+    //   method: "PATCH",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify({
+    //     activeUserId: user.userId,
+    //     addList,
+    //   }),
+    // });
   };
 
   const playArtistMusics = () => {

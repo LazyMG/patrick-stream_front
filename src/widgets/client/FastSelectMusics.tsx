@@ -23,6 +23,7 @@ const FastSelectMusics = () => {
     ).then((res) => res.json());
     if (result.ok) {
       setFastSelectMusicData(result.musics);
+
       setIsFastSelectMusicLoading(false);
     }
   };

@@ -101,7 +101,9 @@ const PlayListContainer = () => {
 
   const getCurrentUserPlaylist = useCallback(async () => {
     if (isError) return;
+
     console.log("fetch");
+
     const result = await fetch(
       `http://localhost:5000/user/${user.userId}/allPlaylists`,
       {
@@ -113,17 +115,18 @@ const PlayListContainer = () => {
       setIsLoading(false);
     } else {
       setIsError(true);
-      setGlobalToast("Playlist Error");
+      setGlobalToast("Playlist Error", "PLAYLIST_FETCH_ERROR");
+      setIsLoading(false);
     }
   }, [user.userId, setCurrentUserPlaylist, setGlobalToast, isError]);
 
   useEffect(() => {
-    if (user.userId !== "" && !isError) {
+    if (user.userId !== "") {
       getCurrentUserPlaylist();
     } else {
       setIsLoading(false);
     }
-  }, [getCurrentUserPlaylist, user.userId, isError]);
+  }, [user.userId]);
 
   return (
     <>

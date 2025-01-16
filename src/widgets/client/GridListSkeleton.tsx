@@ -20,6 +20,8 @@ const Wrapper = styled.div`
   gap: 20px;
 
   animation: ${pulseKeyframes} 2.5s ease-in-out infinite;
+
+  margin-bottom: 10px;
 `;
 
 const GirdListHeaderSkeleton = styled.div`

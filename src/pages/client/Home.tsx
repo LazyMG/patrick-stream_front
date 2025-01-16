@@ -2,15 +2,15 @@ import styled from "styled-components";
 import FlexList from "../../widgets/client/FlexList";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { backgroundState } from "../../app/entities/global/atom";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { APIMusic } from "../../shared/models/music";
 import { loginUserDataState, userState } from "../../app/entities/user/atom";
 import { recentMusicsState } from "../../app/entities/music/atom";
 import TrendingMusics from "../../widgets/client/TrendingMusics";
 import FastSelectMusics from "../../widgets/client/FastSelectMusics";
 import PopularMusics from "../../widgets/client/PopularMusics";
-import { useToast } from "../../shared/hooks/useToast";
+import FlexListSkeleton from "../../widgets/client/FlexListSkeleton";
+import NewMusics from "../../widgets/client/NewMusics";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -47,32 +47,9 @@ const ContentContainer = styled.div`
 const Home = () => {
   const setBackground = useSetRecoilState(backgroundState);
   const navigate = useNavigate();
-  const [newMusicsData, setNewMusicsData] = useState<APIMusic[] | null>(null);
-
-  const [isMusicLoading, setIsMusicLoading] = useState(true);
   const user = useRecoilValue(userState);
   const loginUserData = useRecoilValue(loginUserDataState);
   const recentMusics = useRecoilValue(recentMusicsState);
-  const { setGlobalToast } = useToast();
-  const [isError, setIsError] = useState(false);
-
-  const getNewMusics = useCallback(async () => {
-    if (isError) return;
-    const result = await fetch(
-      `http://localhost:5000/music/recently-updated`
-    ).then((res) => res.json());
-    if (result.ok) {
-      setNewMusicsData(result.musics);
-      setIsMusicLoading(false);
-    } else {
-      setGlobalToast("Home Error");
-      setIsError(true);
-    }
-  }, [setGlobalToast, isError]);
-
-  useEffect(() => {
-    getNewMusics();
-  }, [user.userId, getNewMusics]);
 
   useEffect(() => {
     setBackground(null);
@@ -91,40 +68,48 @@ const Home = () => {
       </ContentGenre> */}
       <ContentContainer>
         <FastSelectMusics />
-        {recentMusics && recentMusics.length !== 0 && (
-          <FlexList
-            list={recentMusics}
-            listFlag="music"
-            isCustom={false}
-            title="최근 들은 음악"
-          />
+        {user.loading ? (
+          <FlexListSkeleton />
+        ) : loginUserData ? (
+          recentMusics ? (
+            <FlexList
+              listFlag="music"
+              list={recentMusics}
+              onClick={gotoProfile}
+              isCustom={true}
+              title={"다시 듣기"}
+              icon={
+                <svg
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
+                >
+                  <path
+                    clipRule="evenodd"
+                    fillRule="evenodd"
+                    d="M18.685 19.097A9.723 9.723 0 0 0 21.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 0 0 3.065 7.097A9.716 9.716 0 0 0 12 21.75a9.716 9.716 0 0 0 6.685-2.653Zm-12.54-1.285A7.486 7.486 0 0 1 12 15a7.486 7.486 0 0 1 5.855 2.812A8.224 8.224 0 0 1 12 20.25a8.224 8.224 0 0 1-5.855-2.438ZM15.75 9a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"
+                  />
+                </svg>
+              }
+              info={loginUserData.username}
+            />
+          ) : (
+            <FlexListSkeleton />
+          )
+        ) : (
+          recentMusics && (
+            <FlexList
+              list={recentMusics}
+              listFlag="music"
+              isCustom={false}
+              title="최근 들은 음악"
+            />
+          )
         )}
+        <NewMusics />
         <TrendingMusics />
         <PopularMusics />
-        {!isMusicLoading && newMusicsData && loginUserData && (
-          <FlexList
-            listFlag="music"
-            list={newMusicsData}
-            onClick={gotoProfile}
-            isCustom={true}
-            title={"다시 듣기"}
-            icon={
-              <svg
-                fill="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-                aria-hidden="true"
-              >
-                <path
-                  clipRule="evenodd"
-                  fillRule="evenodd"
-                  d="M18.685 19.097A9.723 9.723 0 0 0 21.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 0 0 3.065 7.097A9.716 9.716 0 0 0 12 21.75a9.716 9.716 0 0 0 6.685-2.653Zm-12.54-1.285A7.486 7.486 0 0 1 12 15a7.486 7.486 0 0 1 5.855 2.812A8.224 8.224 0 0 1 12 20.25a8.224 8.224 0 0 1-5.855-2.438ZM15.75 9a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"
-                />
-              </svg>
-            }
-            info={loginUserData.username}
-          />
-        )}
       </ContentContainer>
     </Wrapper>
   );

@@ -32,7 +32,7 @@ const FlexListHeaderSkeleton = styled.div`
 
 const FlexListSectionSkeleton = styled.div`
   font-weight: bold;
-  height: 50px;
+  height: 60px;
   width: 40%;
   border-radius: 10px;
 

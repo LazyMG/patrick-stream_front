@@ -12,12 +12,12 @@ import {
   likedMusicsState,
   recentMusicsState,
 } from "../../app/entities/music/atom";
-import { currentUserPlaylistState } from "../../app/entities/playlist/atom";
 import { followingArtistsState } from "../../app/entities/artist/atom";
 import { followingAlbumsState } from "../../app/entities/album/atom";
 import NotFound from "./NotFound";
 import Error from "./Error";
 import RowListSkeleton from "../../widgets/client/RowListSkeleton";
+import { useLogout } from "../../shared/hooks/useLogout";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -157,14 +157,13 @@ const InfoButtonsSkeleton = styled.div`
 `;
 
 const User = () => {
-  const [user, setUser] = useRecoilState(userState);
+  const user = useRecoilValue(userState);
   const { userId } = useParams();
   const [userData, setUserData] = useState<APIUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const setBackground = useSetRecoilState(backgroundState);
   const [likedMusics, setLikedMusics] = useRecoilState(likedMusicsState);
-  const [loginUserData, setLoginUserData] = useRecoilState(loginUserDataState);
-  const setCurrentUserPlaylist = useSetRecoilState(currentUserPlaylistState);
+  const loginUserData = useRecoilValue(loginUserDataState);
   const navigate = useNavigate();
   const [follow, setFollow] = useState<boolean | null>(null);
   const [followers, setFollowers] = useState<number | null>(null);
@@ -174,6 +173,8 @@ const User = () => {
   const recentMusics = useRecoilValue(recentMusicsState);
   const followingArtists = useRecoilValue(followingArtistsState);
   const followingAlbums = useRecoilValue(followingAlbumsState);
+
+  const { cleanUserInfo } = useLogout();
 
   const isMyPage = userId !== undefined && user.userId === userId;
 
@@ -250,9 +251,7 @@ const User = () => {
       credentials: "include",
     }).then((res) => res.json());
     if (result.ok) {
-      setUser({ userId: "", loading: false });
-      setLoginUserData(null);
-      setCurrentUserPlaylist([]);
+      cleanUserInfo();
       navigate("/");
     }
   };

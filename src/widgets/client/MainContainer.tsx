@@ -249,9 +249,9 @@ const MainContainer = ({ children, onScroll }: IMainContainer) => {
         globalToastConfig.toasts.length !== 0 &&
         globalToastConfig.toasts.map((item) => (
           <ToastContainer
-            closeToast={() => globalToastConfig.closeToast(item.key)}
+            closeToast={() => globalToastConfig.closeToast(item.toastKey)}
             text={item.text}
-            key={item.key}
+            key={item.toastKey}
           />
         ))}
       <YoutubeContainer player={player} setPlayer={setPlayer} />

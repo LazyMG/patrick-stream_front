@@ -12,11 +12,11 @@ export const backgroundState = atom<IBackgroundState | null>({
 
 interface IToast {
   text: string;
-  key: number;
+  toastKey: string;
 }
 
 interface IGlobalToastConfig {
-  closeToast: (key: number) => void;
+  closeToast: (key: string) => void;
   toasts: IToast[];
 }
 
