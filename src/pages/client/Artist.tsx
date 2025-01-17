@@ -260,7 +260,7 @@ const Artist = () => {
   );
 
   const debouncedFollowArtist = useMemo(
-    () => debounce((addList) => patchArtistFollowers(addList), 100),
+    () => debounce((addList) => patchArtistFollowers(addList), 200),
     [patchArtistFollowers]
   );
 
@@ -289,17 +289,6 @@ const Artist = () => {
       });
     }
     debouncedFollowArtist(addList);
-
-    // await fetch(`http://localhost:5000/artist/${artistId}/followers`, {
-    //   method: "PATCH",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify({
-    //     activeUserId: user.userId,
-    //     addList,
-    //   }),
-    // });
   };
 
   const playArtistMusics = () => {

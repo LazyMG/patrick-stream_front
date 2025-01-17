@@ -4,7 +4,7 @@ import RowList from "../../widgets/client/RowList";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { loginUserDataState, userState } from "../../app/entities/user/atom";
 import { useNavigate, useParams } from "react-router-dom";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import FlexList from "../../widgets/client/FlexList";
 import { backgroundState } from "../../app/entities/global/atom";
 import { APIUser } from "../../shared/models/user";
@@ -18,6 +18,7 @@ import NotFound from "./NotFound";
 import Error from "./Error";
 import RowListSkeleton from "../../widgets/client/RowListSkeleton";
 import { useLogout } from "../../shared/hooks/useLogout";
+import { debounce } from "lodash";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -256,6 +257,25 @@ const User = () => {
     }
   };
 
+  const patchUserFollowers = useCallback(
+    async (addList: boolean) => {
+      await fetch(`http://localhost:5000/user/${userId}/followers`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          activeUserId: user.userId,
+          addList,
+        }),
+      });
+    },
+    [userId, user.userId]
+  );
+
+  const debouncedFollowUser = useMemo(
+    () => debounce((addList) => patchUserFollowers(addList), 200),
+    [patchUserFollowers]
+  );
+
   const followUser = async () => {
     if (!userId || isMyPage || user.userId === "" || follow === null) return;
 
@@ -266,14 +286,7 @@ const User = () => {
       return addList ? prev + 1 : Math.max(prev - 1, 0);
     });
 
-    await fetch(`http://localhost:5000/user/${userId}/followers`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        activeUserId: user.userId,
-        addList,
-      }),
-    });
+    debouncedFollowUser(addList);
   };
 
   if (isNotFound) {

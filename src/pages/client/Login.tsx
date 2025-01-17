@@ -15,8 +15,6 @@ const Form = styled.form`
   flex-direction: column;
   width: 80%;
   gap: 25px;
-
-  /* background-color: green; */
 `;
 
 interface LoginFormValues {
@@ -30,7 +28,6 @@ const Login = () => {
     handleSubmit,
     formState: { errors },
     setError,
-    clearErrors,
   } = useForm<LoginFormValues>();
   const navigate = useNavigate();
   const setUser = useSetRecoilState(userState);
@@ -70,14 +67,6 @@ const Login = () => {
     window.location.href = googleLoginUrl;
   };
 
-  const handleChange = (
-    id: "email" | "username" | "password" | "passwordConfirm"
-  ) => {
-    if (id === "email" || id === "password") {
-      clearErrors(id);
-    }
-  };
-
   return (
     <FormContainer formType="login">
       <Form onSubmit={handleSubmit(onValid)}>
@@ -94,11 +83,9 @@ const Login = () => {
           name="이메일"
           placeHolder="Email"
           type="email"
-          handleChange={handleChange}
         />
         <InputRow
           register={register("password", {
-            required: "비밀번호를 입력해주세요.",
             minLength: {
               value: 4,
               message: "비밀번호는 4자 이상이어야 합니다.",
@@ -107,13 +94,13 @@ const Login = () => {
               value: 12,
               message: "비밀번호는 12자 이하이어야 합니다.",
             },
+            required: "비밀번호를 입력해주세요.",
           })}
           errorMsg={errors.password ? errors.password.message : ""}
           id="password"
           name="비밀번호"
           placeHolder="Password"
           type="password"
-          handleChange={handleChange}
         />
         <SubmitButton text="로그인" />
         <Divider />

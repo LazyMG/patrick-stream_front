@@ -18,6 +18,7 @@ import { userState } from "../../app/entities/user/atom";
 import { usePlayMusic } from "../../shared/hooks/usePlayMusic";
 import AddMusicPlaylistModal from "./AddMusicPlaylistModal";
 import CurrentPlaylistModal from "./CurrentPlaylistModal";
+import PlayBarTimeline from "../../shared/ui/PlayBarTimeline";
 
 const Wrapper = styled.div`
   position: fixed;
@@ -35,71 +36,6 @@ const Wrapper = styled.div`
   background-color: #212121;
 
   color: #fff;
-`;
-
-interface PlayBarTimelineProps {
-  value: number;
-  min: number;
-  max: number;
-  showThumb?: boolean; // 선택적 프로퍼티
-}
-
-const PlayBarTimeline = styled.input<PlayBarTimelineProps>`
-  -webkit-appearance: none;
-  position: absolute;
-  top: -2px;
-  left: -2px;
-  width: 100%;
-  height: 3px;
-
-  background: ${(props) => {
-    const percentage =
-      ((props.value - props.min) / (props.max - props.min)) * 100;
-    return `
-      linear-gradient(to right, 
-        #D2DC23 ${percentage}%, 
-        gray ${percentage}%)
-    `;
-  }};
-  transition: height 0.2s ease;
-
-  &:hover {
-    height: 4px;
-    &::-webkit-slider-thumb {
-      width: 15px;
-      height: 15px;
-    }
-    &::-moz-range-thumb {
-      width: 15px;
-      height: 15px;
-    }
-  }
-
-  &::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: ${(props) => (props.showThumb ? "12px" : "0")};
-    height: ${(props) => (props.showThumb ? "12px" : "0")};
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: #d2dc23;
-    cursor: pointer;
-    transition: width 0.2s ease, height 0.2s ease;
-  }
-
-  &::-moz-range-thumb {
-    width: ${(props) => (props.showThumb ? "12px" : "0")};
-    height: ${(props) => (props.showThumb ? "12px" : "0")};
-    border-radius: 50%;
-    background: #d2dc23;
-    width: 12px;
-    height: 12px;
-    cursor: pointer;
-    transition: width 0.2s ease, height 0.2s ease;
-  }
-
-  cursor: pointer;
 `;
 
 const PlayBarContentContainer = styled.div`
@@ -370,9 +306,9 @@ const PlayBar = ({ player }: IPlayBar) => {
     if (player && player.getPlayerState() === 1) {
       // console.log("playbar", player);
       player.stopVideo();
-      player.playVideo();
       setTime("00:00");
       setTimeline(0);
+      player.playVideo();
     }
   }, [player, ytId]);
 
@@ -444,9 +380,9 @@ const PlayBar = ({ player }: IPlayBar) => {
       (player.getPlayerState() === 1 || player.getPlayerState() === 0)
     ) {
       player.stopVideo();
-      player.playVideo();
       setTime("00:00");
       setTimeline(0);
+      player.playVideo();
     }
   };
 
@@ -619,11 +555,9 @@ const PlayBar = ({ player }: IPlayBar) => {
     <Wrapper>
       <>
         <PlayBarTimeline
-          type="range"
-          value={timeline}
-          min={0}
-          max={player?.getDuration() || 0}
-          onChange={timelineChange}
+          currentDuration={player?.getDuration()}
+          timeline={timeline}
+          timelineChange={timelineChange}
         />
         <PlayBarContentContainer>
           <PlayBarContentControlContainer>

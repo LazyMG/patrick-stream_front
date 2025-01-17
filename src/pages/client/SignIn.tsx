@@ -88,10 +88,6 @@ const SignIn = () => {
     window.location.href = googleLoginUrl;
   };
 
-  const handleChange = (id: "email" | "password" | "passwordConfirm") => {
-    clearErrors(id);
-  };
-
   const emailValidate = async () => {
     const value = getValues("email");
 
@@ -125,7 +121,6 @@ const SignIn = () => {
           placeHolder="Email"
           type="email"
           errorMsg={errors.email ? errors.email.message : ""}
-          handleChange={handleChange}
           isCustom={true}
           validateFunc={emailValidate}
           register={register("email", {
@@ -141,7 +136,6 @@ const SignIn = () => {
           name="비밀번호"
           placeHolder="Password"
           type="password"
-          handleChange={handleChange}
           errorMsg={errors.password ? errors.password.message : ""}
           register={register("password", {
             required: "비밀번호를 입력해주세요.",
@@ -160,7 +154,6 @@ const SignIn = () => {
           name="비밀번호 확인"
           placeHolder="Password Confirm"
           type="password"
-          handleChange={handleChange}
           errorMsg={
             errors.passwordConfirm ? errors.passwordConfirm.message : ""
           }

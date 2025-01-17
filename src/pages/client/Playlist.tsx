@@ -2,7 +2,7 @@ import styled, { keyframes } from "styled-components";
 import { DefaultButton } from "../../shared/ui/DefaultButton";
 import RowList from "../../widgets/client/RowList";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { APIPlaylist } from "../../shared/models/playlist";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { userState } from "../../app/entities/user/atom";
@@ -21,6 +21,7 @@ import ToastContainer from "../../widgets/client/ToastContainer";
 import NotFound from "./NotFound";
 import { useDeletePlaylistMusic } from "../../shared/hooks/useDeletePlaylistMusic";
 import RowListSkeleton from "../../widgets/client/RowListSkeleton";
+import { debounce } from "lodash";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -300,6 +301,25 @@ const Playlist = () => {
     setIsPlaylistToastOpen,
   ]);
 
+  const patchPlaylistFollowers = useCallback(
+    async (addList: boolean) => {
+      await fetch(`http://localhost:5000/playlist/${playlistId}/followers`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          activeUserId: user.userId,
+          addList,
+        }),
+      });
+    },
+    [playlistId, user.userId]
+  );
+
+  const debouncedFollowPlaylist = useMemo(
+    () => debounce((addList) => patchPlaylistFollowers(addList), 200),
+    [patchPlaylistFollowers]
+  );
+
   const followPlaylist = async () => {
     if (!playlistId || isMine || user.userId === "" || follow === null) return;
 
@@ -325,14 +345,7 @@ const Playlist = () => {
       });
     }
 
-    await fetch(`http://localhost:5000/playlist/${playlistId}/followers`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        activeUserId: user.userId,
-        addList,
-      }),
-    });
+    debouncedFollowPlaylist(addList);
   };
 
   const playPlaylistMusics = () => {

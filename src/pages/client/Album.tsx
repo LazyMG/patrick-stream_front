@@ -2,7 +2,7 @@ import { Link, useParams } from "react-router-dom";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import styled, { keyframes } from "styled-components";
 import { backgroundState } from "../../app/entities/global/atom";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { APIAlbum } from "../../shared/models/album";
 import { DefaultButton } from "../../shared/ui/DefaultButton";
 import { setAlbumSeconds } from "../../shared/lib/albumDataFormat";
@@ -12,6 +12,7 @@ import { playingPlaylistState } from "../../app/entities/music/atom";
 import { usePlayMusic } from "../../shared/hooks/usePlayMusic";
 import NotFound from "./NotFound";
 import { followingAlbumsState } from "../../app/entities/album/atom";
+import { debounce } from "lodash";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -330,6 +331,27 @@ const Album = () => {
     }
   }, [albumId, getAlbum]);
 
+  const patchAlbumFollowers = useCallback(
+    async (addList: boolean) => {
+      await fetch(`http://localhost:5000/album/${albumId}/followers`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          activeUserId: user.userId,
+          addList,
+        }),
+      });
+    },
+    [albumId, user.userId]
+  );
+
+  const debouncedFollowAlbum = useMemo(
+    () => debounce((addList) => patchAlbumFollowers(addList), 200),
+    [patchAlbumFollowers]
+  );
+
   const followAlbum = async () => {
     if (!albumId || user.userId === "" || follow === null) return;
 
@@ -353,16 +375,7 @@ const Album = () => {
       });
     }
 
-    await fetch(`http://localhost:5000/album/${albumId}/followers`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        activeUserId: user.userId,
-        addList,
-      }),
-    });
+    debouncedFollowAlbum(addList);
   };
 
   const playAlbumMusics = () => {

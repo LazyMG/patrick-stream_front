@@ -49,7 +49,6 @@ interface IInputRow {
   placeHolder: string;
   register: UseFormRegisterReturn;
   errorMsg?: string;
-  handleChange: (id: "email" | "password" | "passwordConfirm") => void;
   isCustom?: boolean;
   validateFunc?: () => Promise<void>;
 }
@@ -61,7 +60,6 @@ const InputRow = ({
   type,
   register,
   errorMsg,
-  handleChange,
   isCustom,
   validateFunc,
 }: IInputRow) => {
@@ -70,25 +68,13 @@ const InputRow = ({
       <Label htmlFor={id}>{name}</Label>
       {isCustom ? (
         <CustomDiv>
-          <Input
-            type={type}
-            placeholder={placeHolder}
-            id={id}
-            {...register}
-            onChange={() => handleChange(id)}
-          />
+          <Input type={type} placeholder={placeHolder} id={id} {...register} />
           <ConfirmButton type="button" onClick={validateFunc}>
             confirm
           </ConfirmButton>
         </CustomDiv>
       ) : (
-        <Input
-          type={type}
-          placeholder={placeHolder}
-          id={id}
-          {...register}
-          onChange={() => handleChange(id)}
-        />
+        <Input type={type} placeholder={placeHolder} id={id} {...register} />
       )}
       {errorMsg && <ErrorMessage>{errorMsg}</ErrorMessage>}
     </Wrapper>
