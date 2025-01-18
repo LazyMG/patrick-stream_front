@@ -115,7 +115,7 @@ const PlayListContainer = () => {
       setIsLoading(false);
     } else {
       setIsError(true);
-      setGlobalToast("Playlist Error", "PLAYLIST_FETCH_ERROR");
+      setGlobalToast("Playlist Error", "USER_PLAYLIST_FETCH_ERROR");
       setIsLoading(false);
     }
   }, [user.userId, setCurrentUserPlaylist, setGlobalToast, isError]);

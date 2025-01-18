@@ -16,6 +16,7 @@ import NotFound from "./NotFound";
 import RowListSkeleton from "../../widgets/client/RowListSkeleton";
 import FlexListSkeleton from "../../widgets/client/FlexListSkeleton";
 import { debounce } from "lodash";
+import { useToast } from "../../shared/hooks/useToast";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -191,6 +192,8 @@ const Artist = () => {
 
   const setPlayingPlaylist = useSetRecoilState(playingPlaylistState);
   const playMusic = usePlayMusic();
+  const { setGlobalToast } = useToast();
+  const [isError, setIsError] = useState(false);
 
   useEffect(() => {
     setFollowers((prev) => {
@@ -210,6 +213,7 @@ const Artist = () => {
 
   const getArtist = useCallback(
     async (id: string) => {
+      if (isError) return;
       const result = await fetch(
         `http://localhost:5000/artist/${id}`
       ).then((res) => res.json());
@@ -228,20 +232,27 @@ const Artist = () => {
 
         setIsLoading(false);
       } else {
+        setIsError(true);
         if (!result.error) {
           setIsNotFound(true);
+        } else {
+          setGlobalToast("Artist Error", "ARTIST_DATA_FETCH_ERROR");
+          setIsLoading(false);
         }
       }
     },
-    [setBackground]
+    [setBackground, setGlobalToast, isError]
   );
 
   useEffect(() => {
     setIsNotFound(false);
+  }, [artistId]);
+
+  useEffect(() => {
     if (artistId) {
       getArtist(artistId);
     }
-  }, [artistId, getArtist]);
+  }, [artistId]);
 
   const patchArtistFollowers = useCallback(
     async (addList: boolean) => {
@@ -266,8 +277,6 @@ const Artist = () => {
 
   const followArtist = async () => {
     if (!artistId || user.userId === "") return;
-
-    console.log("update");
 
     const addList = !follow;
     setFollow(addList);
@@ -306,9 +315,9 @@ const Artist = () => {
       <InfoHeader>
         {!isLoading ? (
           <>
-            <Title>{artistData?.artistname}</Title>
-            <Info>{artistData?.introduction}</Info>
-            <Followers>팔로워: {followers}명</Followers>
+            <Title>{artistData?.artistname || ""}</Title>
+            <Info>{artistData?.introduction || ""}</Info>
+            <Followers>{artistData ? `팔로워: ${followers}명` : ``}</Followers>
           </>
         ) : (
           <>
@@ -320,25 +329,27 @@ const Artist = () => {
       </InfoHeader>
       <ControlContainer>
         {!isLoading && follow !== null ? (
-          <>
-            <CircleButton onClick={playArtistMusics}>
-              <svg
-                fill="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-                aria-hidden="true"
-              >
-                <path
-                  clipRule="evenodd"
-                  fillRule="evenodd"
-                  d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z"
-                />
-              </svg>
-            </CircleButton>
-            <FollowButton $follow={!!follow} onClick={followArtist}>
-              {follow ? "언팔로우" : "팔로우"}
-            </FollowButton>
-          </>
+          isNotFound && (
+            <>
+              <CircleButton onClick={playArtistMusics}>
+                <svg
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
+                >
+                  <path
+                    clipRule="evenodd"
+                    fillRule="evenodd"
+                    d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z"
+                  />
+                </svg>
+              </CircleButton>
+              <FollowButton $follow={!!follow} onClick={followArtist}>
+                {follow ? "언팔로우" : "팔로우"}
+              </FollowButton>
+            </>
+          )
         ) : (
           <>
             <CircleButtonSkeleton />

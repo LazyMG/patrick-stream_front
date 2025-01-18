@@ -15,10 +15,10 @@ import {
 import { followingArtistsState } from "../../app/entities/artist/atom";
 import { followingAlbumsState } from "../../app/entities/album/atom";
 import NotFound from "./NotFound";
-import Error from "./Error";
 import RowListSkeleton from "../../widgets/client/RowListSkeleton";
 import { useLogout } from "../../shared/hooks/useLogout";
 import { debounce } from "lodash";
+import { useToast } from "../../shared/hooks/useToast";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -176,6 +176,7 @@ const User = () => {
   const followingAlbums = useRecoilValue(followingAlbumsState);
 
   const { cleanUserInfo } = useLogout();
+  const { setGlobalToast } = useToast();
 
   const isMyPage = userId !== undefined && user.userId === userId;
 
@@ -198,6 +199,7 @@ const User = () => {
 
   const getUser = useCallback(
     async (targetId: string) => {
+      if (isError) return;
       const result = await fetch(`http://localhost:5000/user/${targetId}`, {
         credentials: "include",
       }).then((res) => res.json());
@@ -205,23 +207,27 @@ const User = () => {
       if (result.ok) {
         setUserData(result.user);
         setLikedMusics(result.user.likedMusics);
+        setIsLoading(false);
       } else {
-        console.error("Fetch user data error:", result.message);
         if (!result.error) {
           setIsNotFound(true);
         } else {
+          setGlobalToast("User Error", "USER_DATA_FETCH_ERROR");
           setIsError(true);
+          setIsLoading(false);
         }
       }
-      setIsLoading(false);
     },
-    [setLikedMusics]
+    [setLikedMusics, setGlobalToast, isError]
   );
 
   useEffect(() => {
-    setBackground(null);
-    // setIsLoading(true);
     setIsNotFound(false);
+  }, [userId]);
+
+  useEffect(() => {
+    setBackground(null);
+    setIsError(false);
 
     // 1) 자기 페이지면 -> fetch 안 함
     if (isMyPage) {
@@ -236,15 +242,7 @@ const User = () => {
     if (!userData && userId && !user.loading) {
       getUser(userId);
     }
-  }, [
-    getUser,
-    isMyPage,
-    loginUserData,
-    setBackground,
-    userData,
-    userId,
-    user.loading,
-  ]);
+  }, [isMyPage, loginUserData, setBackground, userData, userId, user.loading]);
 
   const logOut = async () => {
     const result = await fetch("http://localhost:5000/auth/logout", {
@@ -291,10 +289,6 @@ const User = () => {
 
   if (isNotFound) {
     return <NotFound />;
-  }
-
-  if (isError) {
-    return <Error />;
   }
 
   return (
@@ -347,40 +341,6 @@ const User = () => {
         ) : (
           <InfoButtonsSkeleton />
         )}
-        {/* {!isLoading ? (
-          <InfoButtons>
-            {!user.loading ? (
-              isMyPage ? (
-                <>
-                  <Button $alter={false}>수정</Button>
-                  <Button onClick={logOut} $alter={true}>
-                    로그아웃
-                  </Button>
-                </>
-              ) : follow !== null ? (
-                <FollowButton $follow={follow} onClick={followUser}>
-                  {follow ? "언팔로우" : "팔로우"}
-                </FollowButton>
-              ) : (
-                <div
-                  style={{
-                    width: "150px",
-                    height: "35px",
-                  }}
-                />
-              )
-            ) : (
-              <div
-                style={{
-                  width: "150px",
-                  height: "35px",
-                }}
-              />
-            )}
-          </InfoButtons>
-        ) : (
-          <InfoButtonsSkeleton />
-        )} */}
       </InfoContainer>
       {isLoading && <RowListSkeleton />}
       {isMyPage && recentMusics && recentMusics?.length !== 0 && (

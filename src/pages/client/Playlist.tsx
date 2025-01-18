@@ -22,6 +22,7 @@ import NotFound from "./NotFound";
 import { useDeletePlaylistMusic } from "../../shared/hooks/useDeletePlaylistMusic";
 import RowListSkeleton from "../../widgets/client/RowListSkeleton";
 import { debounce } from "lodash";
+import { useToast } from "../../shared/hooks/useToast";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -206,6 +207,7 @@ const Playlist = () => {
   const [follow, setFollow] = useState<boolean | null>(null);
   const [followers, setFollowers] = useState<number | null>(null);
   const [isNotFound, setIsNotFound] = useState(false);
+  const [isError, setIsError] = useState(false);
 
   const currentFollowers = playlistData?.followers?.length ?? 0;
 
@@ -229,6 +231,7 @@ const Playlist = () => {
     isPlaylistToastOpenState
   );
   const deletePlaylistMusic = useDeletePlaylistMusic();
+  const { setGlobalToast } = useToast();
 
   useEffect(() => {
     setFollowers((prev) =>
@@ -245,23 +248,33 @@ const Playlist = () => {
     }
   }, [followingPlaylists, playlistId]);
 
-  const getPlaylistData = useCallback(async (id: string) => {
-    const result = await fetch(
-      `http://localhost:5000/playlist/${id}`
-    ).then((res) => res.json());
-    if (result.ok) {
-      setPlaylistData(result.playlist as APIPlaylist);
-
-      setIsLoading(false);
-    } else {
-      if (!result.error) {
-        setIsNotFound(true);
+  const getPlaylistData = useCallback(
+    async (id: string) => {
+      if (isError) return;
+      const result = await fetch(
+        `http://localhost:5000/playlist/${id}`
+      ).then((res) => res.json());
+      if (result.ok) {
+        setPlaylistData(result.playlist as APIPlaylist);
+        setIsLoading(false);
+      } else {
+        setIsError(true);
+        if (!result.error) {
+          setIsNotFound(true);
+        } else {
+          setGlobalToast("Playlist Error", "PLAYLIST_DATA_FETCH_ERROR");
+          setIsLoading(false);
+        }
       }
-    }
-  }, []);
+    },
+    [setGlobalToast, isError]
+  );
 
   useEffect(() => {
     setIsNotFound(false);
+  }, [playlistId]);
+
+  useEffect(() => {
     setBackground(null);
     setIsPlaylistToastOpen(false);
 
@@ -293,7 +306,6 @@ const Playlist = () => {
     if (playlistId) getPlaylistData(playlistId);
   }, [
     currentUserPlaylist,
-    getPlaylistData,
     playlistId,
     user.userId,
     setBackground,

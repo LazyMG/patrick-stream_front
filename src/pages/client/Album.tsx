@@ -13,6 +13,7 @@ import { usePlayMusic } from "../../shared/hooks/usePlayMusic";
 import NotFound from "./NotFound";
 import { followingAlbumsState } from "../../app/entities/album/atom";
 import { debounce } from "lodash";
+import { useToast } from "../../shared/hooks/useToast";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -286,6 +287,8 @@ const Album = () => {
 
   const setPlayingPlaylist = useSetRecoilState(playingPlaylistState);
   const playMusic = usePlayMusic();
+  const { setGlobalToast } = useToast();
+  const [isError, setIsError] = useState(false);
 
   const currentFollowers = albumData?.followers?.length ?? 0;
 
@@ -305,6 +308,7 @@ const Album = () => {
 
   const getAlbum = useCallback(
     async (id: string) => {
+      if (isError) return;
       const result = await fetch(
         `http://localhost:5000/album/${id}`
       ).then((res) => res.json());
@@ -316,20 +320,27 @@ const Album = () => {
 
         setIsLoading(false);
       } else {
+        setIsError(true);
         if (!result.error) {
           setIsNotFound(true);
+        } else {
+          setGlobalToast("Album Error", "ALBUM_DATA_FETCH_ERROR");
+          setIsLoading(false);
         }
       }
     },
-    [setBackground]
+    [setBackground, setGlobalToast, isError]
   );
 
   useEffect(() => {
     setIsNotFound(false);
+  }, [albumId]);
+
+  useEffect(() => {
     if (albumId) {
       getAlbum(albumId);
     }
-  }, [albumId, getAlbum]);
+  }, [albumId]);
 
   const patchAlbumFollowers = useCallback(
     async (addList: boolean) => {
