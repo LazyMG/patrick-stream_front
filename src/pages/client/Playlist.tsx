@@ -283,6 +283,7 @@ const Playlist = () => {
         (item) => item._id === playlistId
       );
       if (thisPlaylist) {
+        console.log("this playlist", thisPlaylist);
         setIsMine(true);
         setPlaylistData(thisPlaylist);
         if (thisPlaylist.musics)

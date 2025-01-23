@@ -3,6 +3,7 @@ import { useRecoilValue } from "recoil";
 import styled from "styled-components";
 import { currentUserPlaylistState } from "../../app/entities/playlist/atom";
 import AddMusicPlaylistItem from "./AddMusicPlaylistItem";
+import { useEffect } from "react";
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -50,14 +51,13 @@ const ListContainer = styled.div`
 
   display: flex;
   flex-direction: column;
-  /* gap: 5px; */
 
   overflow-y: scroll;
 
   overflow-y: auto;
 
   &::-webkit-scrollbar {
-    display: none; /* 스크롤바 숨김 */
+    display: none;
   }
 `;
 
@@ -75,6 +75,23 @@ interface IAddMusicPlaylistModal {
 
 const AddMusicPlaylistModal = ({ closeModal }: IAddMusicPlaylistModal) => {
   const currentUserPlaylist = useRecoilValue(currentUserPlaylistState);
+
+  const handlePopState = () => {
+    // 뒤로 가기가 발생하면 모달을 닫음
+    closeModal();
+  };
+
+  useEffect(() => {
+    // 모달이 열릴 때 현재 상태를 push
+    window.history.pushState({ modalOpen: true }, "");
+
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+      window.history.back(); // 모달이 닫힐 때 상태를 되돌림
+    };
+  }, []);
 
   return createPortal(
     <ModalOverlay onClick={closeModal}>

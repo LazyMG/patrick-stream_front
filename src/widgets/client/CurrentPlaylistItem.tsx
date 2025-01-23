@@ -22,7 +22,6 @@ const ListItemIcon = styled.svg`
 const ListItem = styled.div<{ $isSelectedMusic: boolean }>`
   width: 100%;
   min-height: 70px;
-  /* background-color: beige; */
 
   padding: 5px 20px;
   box-sizing: border-box;
@@ -102,7 +101,6 @@ const CurrentPlaylistItem = ({
 
   const deleteMusic = (event: React.MouseEvent<HTMLOrSVGElement>) => {
     event.stopPropagation();
-    console.log("click");
     setPlayingPlaylist((prev) => {
       if (!prev) return prev;
       if (prev.some((item) => item._id === music._id)) {
@@ -120,7 +118,9 @@ const CurrentPlaylistItem = ({
         <ListItemInfo>
           <ListItemDescription>
             <ListItemTitle>{music.title}</ListItemTitle>
-            <ListItemArtist>{music.artists[0].artistname}</ListItemArtist>
+            <ListItemArtist>
+              {music.artists ? music.artists[0].artistname : "알 수 없음"}
+            </ListItemArtist>
           </ListItemDescription>
           <ListItemDuration>{setMusicSeconds(music.duration)}</ListItemDuration>
           <ListItemIcon

@@ -3,13 +3,13 @@ import styled, { keyframes } from "styled-components";
 import { isPlayerOnState } from "../../app/entities/player/atom";
 import Toast from "../../shared/ui/Toast";
 
-const slideUp = keyframes`
+const slideUp = keyframes<{ $isPlayerOn: boolean }>`
   0% {
     bottom: -100px;
     opacity: 0;
   }
   100% {
-    bottom: 20px;
+    bottom: ${(props) => (props.$isPlayerOn ? `100px` : "20px")};
     opacity: 1;
   }
 `;
@@ -38,6 +38,7 @@ const ToastContainer = ({
   text: string;
 }) => {
   const isPlayerOn = useRecoilValue(isPlayerOnState);
+  console.log("isPlayerOn", isPlayerOn);
 
   return (
     <Wrapper $isPlayerOn={isPlayerOn}>

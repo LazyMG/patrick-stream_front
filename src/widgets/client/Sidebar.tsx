@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import PlayListContainer from "./PlayListContainer";
-import { Link } from "react-router-dom";
+import { Link, useMatch } from "react-router-dom";
 
 const Wrapper = styled.div`
   position: fixed;
@@ -9,10 +9,7 @@ const Wrapper = styled.div`
   height: 100%;
   width: 250px;
 
-  /* border-right: 1px solid #3d3d3d; */
   box-shadow: 1px 0 0 #3d3d3d;
-
-  /* background-color: #a52a2a; */
 
   display: flex;
   flex-direction: column;
@@ -32,8 +29,6 @@ const MenuContainer = styled.div`
       text-decoration: none;
     }
   }
-
-  /* background-color: fuchsia; */
 `;
 
 const Menu = styled.div<{ $isActive: boolean }>`
@@ -73,15 +68,15 @@ const Divider = styled.div`
 `;
 
 const Sidebar = () => {
-  const isActive = true;
+  const homeMatch = useMatch("/");
 
   return (
     <>
       <Wrapper>
         <MenuContainer>
           <Link to={"/"}>
-            <Menu $isActive={isActive}>
-              {isActive ? (
+            <Menu $isActive={!!homeMatch}>
+              {homeMatch ? (
                 <svg
                   fill="currentColor"
                   viewBox="0 0 24 24"

@@ -5,7 +5,7 @@ import { loginUserDataState, userState } from "../../app/entities/user/atom";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { currentUserPlaylistState } from "../../app/entities/playlist/atom";
 import ToastContainer from "./ToastContainer";
-import { useState } from "react";
+import { useEffect } from "react";
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -115,11 +115,6 @@ interface PlaylistFormValues {
   info: string;
 }
 
-interface IToast {
-  state: boolean;
-  text: string;
-}
-
 const CreatePlaylistModal = ({ closeModal }: ICreatePlaylistModal) => {
   const user = useRecoilValue(userState);
   const {
@@ -131,10 +126,6 @@ const CreatePlaylistModal = ({ closeModal }: ICreatePlaylistModal) => {
   } = useForm<PlaylistFormValues>();
   const setCurrentUserPlaylist = useSetRecoilState(currentUserPlaylistState);
   const loginUserData = useRecoilValue(loginUserDataState);
-  const [isLocalToastOpen, setIsLocalToastOpen] = useState<IToast>({
-    state: false,
-    text: "",
-  });
 
   const createPlaylist: SubmitHandler<PlaylistFormValues> = async (data) => {
     //validate
@@ -171,25 +162,42 @@ const CreatePlaylistModal = ({ closeModal }: ICreatePlaylistModal) => {
           if (result.message.includes("Input")) {
             setError("title", { message: "제목을 입력해주세요." });
           } else {
-            setIsLocalToastOpen({
-              state: true,
-              text: "로그인을 확인해주세요.",
-            });
+            // setIsLocalToastOpen({
+            //   state: true,
+            //   text: "로그인을 확인해주세요.",
+            // });
           }
         } else {
-          setIsLocalToastOpen({ state: true, text: "오류가 발생했습니다." });
+          //setIsLocalToastOpen({ state: true, text: "오류가 발생했습니다." });
         }
       }
     }
   };
 
-  const closeModalFunc = () => {
-    setIsLocalToastOpen({ state: false, text: "" });
+  // const closeModalFunc = () => {
+  //   // setIsLocalToastOpen({ state: false, text: "" });
+  //   closeModal();
+  // };
+
+  const handlePopState = () => {
+    // 뒤로 가기가 발생하면 모달을 닫음
     closeModal();
   };
 
+  useEffect(() => {
+    // 모달이 열릴 때 현재 상태를 push
+    window.history.pushState({ modalOpen: true }, "");
+
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+      window.history.back(); // 모달이 닫힐 때 상태를 되돌림
+    };
+  }, []);
+
   return createPortal(
-    <ModalOverlay onClick={closeModalFunc}>
+    <ModalOverlay onClick={closeModal}>
       <ContentModal
         onClick={(event: React.MouseEvent<HTMLDivElement>) =>
           event.stopPropagation()
@@ -213,7 +221,7 @@ const CreatePlaylistModal = ({ closeModal }: ICreatePlaylistModal) => {
             </InputDiv>
             <input placeholder="설명" type="text" {...register("info")} />
             <ButtonRow>
-              <button onClick={closeModalFunc} type="button">
+              <button onClick={closeModal} type="button">
                 취소
               </button>
               <button type="submit">만들기</button>
@@ -221,12 +229,12 @@ const CreatePlaylistModal = ({ closeModal }: ICreatePlaylistModal) => {
           </ModalForm>
         </Content>
       </ContentModal>
-      {isLocalToastOpen.state && (
+      {/* {isLocalToastOpen.state && (
         <ToastContainer
           text={isLocalToastOpen.text}
           closeToast={() => setIsLocalToastOpen({ state: false, text: "" })}
         />
-      )}
+      )} */}
     </ModalOverlay>,
     document.body
   );

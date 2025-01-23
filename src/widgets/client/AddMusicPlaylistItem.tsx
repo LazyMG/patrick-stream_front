@@ -93,8 +93,6 @@ const AddMusicPlaylistItem = ({
       return;
     }
 
-    const addMusic = true;
-
     const result = await fetch(
       `http://localhost:5000/playlist/${playlist._id}`,
       {
@@ -104,7 +102,7 @@ const AddMusicPlaylistItem = ({
         },
         body: JSON.stringify({
           musicId: selectedMusic._id,
-          addMusic,
+          addMusic: true,
         }),
         credentials: "include",
       }

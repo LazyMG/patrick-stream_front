@@ -6,6 +6,7 @@ import {
   selectedMusicState,
 } from "../../app/entities/music/atom";
 import CurrentPlaylistItem from "./CurrentPlaylistItem";
+import { useEffect } from "react";
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -74,6 +75,24 @@ const CurrentPlaylistModal = ({ closeModal }: ICurrentPlaylistModal) => {
   const playingPlaylist = useRecoilValue(playingPlaylistState);
   const selectedMusic = useRecoilValue(selectedMusicState);
   const setPlayingPlaylist = useSetRecoilState(playingPlaylistState);
+
+  const handlePopState = () => {
+    // 뒤로 가기가 발생하면 모달을 닫음
+    closeModal();
+  };
+
+  useEffect(() => {
+    console.log("modal open");
+    // 모달이 열릴 때 현재 상태를 push
+    window.history.pushState({ modalOpen: true }, "");
+
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+      window.history.back(); // 모달이 닫힐 때 상태를 되돌림
+    };
+  }, []);
 
   return createPortal(
     <ModalOverlay onClick={closeModal}>
