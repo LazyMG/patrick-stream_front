@@ -94,6 +94,7 @@ const Home = () => {
                   </svg>
                 }
                 info={loginUserData.username}
+                buttonFunc={() => navigate("/listen_again")}
               />
             )
           ) : (
@@ -106,6 +107,7 @@ const Home = () => {
               listFlag="music"
               isCustom={false}
               title="최근 들은 음악"
+              buttonFunc={() => navigate("/listen_again")}
             />
           )
         )}

@@ -2,12 +2,14 @@ import { useEffect, useState } from "react";
 import { APIMusic } from "../../shared/models/music";
 import FlexListSkeleton from "./FlexListSkeleton";
 import FlexList from "./FlexList";
+import { useNavigate } from "react-router-dom";
 
 const TrendingMusics = () => {
   const [trendingMusicsData, setTrendingMusicsData] = useState<
     APIMusic[] | null
   >(null);
   const [isTrendingMusicLoading, setIsTrendingMusicLoading] = useState(true);
+  const navigate = useNavigate();
 
   const getTrendingMusics = async () => {
     const result = await fetch(
@@ -34,6 +36,7 @@ const TrendingMusics = () => {
           list={trendingMusicsData}
           isCustom={false}
           info="많이 듣는 음악"
+          buttonFunc={() => navigate("/trending")}
         />
       )}
     </>

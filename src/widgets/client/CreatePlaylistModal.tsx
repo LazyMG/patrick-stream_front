@@ -4,7 +4,6 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 import { loginUserDataState, userState } from "../../app/entities/user/atom";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { currentUserPlaylistState } from "../../app/entities/playlist/atom";
-import ToastContainer from "./ToastContainer";
 import { useEffect } from "react";
 
 const ModalOverlay = styled.div`
@@ -121,7 +120,6 @@ const CreatePlaylistModal = ({ closeModal }: ICreatePlaylistModal) => {
     register,
     handleSubmit,
     formState: { errors },
-    clearErrors,
     setError,
   } = useForm<PlaylistFormValues>();
   const setCurrentUserPlaylist = useSetRecoilState(currentUserPlaylistState);
@@ -174,11 +172,6 @@ const CreatePlaylistModal = ({ closeModal }: ICreatePlaylistModal) => {
     }
   };
 
-  // const closeModalFunc = () => {
-  //   // setIsLocalToastOpen({ state: false, text: "" });
-  //   closeModal();
-  // };
-
   const handlePopState = () => {
     // 뒤로 가기가 발생하면 모달을 닫음
     closeModal();
@@ -212,8 +205,11 @@ const CreatePlaylistModal = ({ closeModal }: ICreatePlaylistModal) => {
                 type="text"
                 {...register("title", {
                   required: "제목을 입력해주세요.",
+                  maxLength: {
+                    value: 20,
+                    message: "최대 20자까지 입력 가능합니다.",
+                  },
                 })}
-                onChange={() => clearErrors("title")}
               />
               {errors.title && (
                 <ErrorMessage>{errors.title.message}</ErrorMessage>
@@ -229,12 +225,6 @@ const CreatePlaylistModal = ({ closeModal }: ICreatePlaylistModal) => {
           </ModalForm>
         </Content>
       </ContentModal>
-      {/* {isLocalToastOpen.state && (
-        <ToastContainer
-          text={isLocalToastOpen.text}
-          closeToast={() => setIsLocalToastOpen({ state: false, text: "" })}
-        />
-      )} */}
     </ModalOverlay>,
     document.body
   );

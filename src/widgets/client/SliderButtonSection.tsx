@@ -92,7 +92,7 @@ const SliderButtonSection = ({
       <MoreButton
         onClick={() => {
           if (!onClick) return;
-          onClick();
+          if (isActive) onClick();
         }}
         $isActive={isActive}
       >

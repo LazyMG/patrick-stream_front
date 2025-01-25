@@ -316,7 +316,7 @@ const Album = () => {
       if (result.ok) {
         setAlbumData(result.album as APIAlbum);
         setBackground({ src: result.album.coverImg, type: "blur" });
-        await new Promise((resolve) => setTimeout(resolve, 3000));
+        await new Promise((resolve) => setTimeout(resolve, 100));
 
         setIsLoading(false);
       } else {

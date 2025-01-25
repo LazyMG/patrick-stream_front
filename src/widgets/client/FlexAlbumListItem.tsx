@@ -5,17 +5,11 @@ import { setDates } from "../../shared/lib/musicDataFormat";
 
 const ListItem = styled.div`
   width: 100%;
-  //max-width: 180px; /* 최대 너비 제한 */
-
-  /* flex: 1 1 auto;
-  flex-shrink: 0; */
 
   display: flex;
   flex-direction: column;
   gap: 15px;
   padding-bottom: 5px;
-
-  /* background-color: coral; */
 `;
 
 const ImageMask = styled.div`
@@ -45,8 +39,6 @@ const Image = styled.div<{ $imgUrl: string }>`
   &:hover ${ImageMask} {
     display: block;
   }
-
-  background-color: brown;
 `;
 
 const Info = styled.div`

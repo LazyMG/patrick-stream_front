@@ -173,11 +173,10 @@ const MainContainer = ({ children, onScroll }: IMainContainer) => {
 
   const getUserProfile = useCallback(
     async (id: string) => {
-      const result = await fetch(
-        `http://localhost:5000/user/${id}`
-      ).then((res) => res.json());
+      const result = await fetch(`http://localhost:5000/user/${id}`, {
+        credentials: "include",
+      }).then((res) => res.json());
       if (result.ok) {
-        // console.log("로그인한 사용자의 정보", result.user);
         setLoginUserData(result.user);
         initiateLoginUserData(result.user);
       }

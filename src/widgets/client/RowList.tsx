@@ -25,6 +25,7 @@ const ListTitle = styled.h1`
   color: #fff;
   font-size: 24px;
   font-weight: bold;
+  z-index: 10;
 `;
 
 const ListContainer = styled.div`
@@ -65,9 +66,19 @@ interface IRowList {
   subTitle?: string;
   list?: APIMusic[];
   isMine?: boolean;
+  noLimit?: boolean;
+  buttonFunc?: () => void;
 }
 
-const RowList = ({ title, subTitle, list, isMine }: IRowList) => {
+const RowList = ({
+  title,
+  subTitle,
+  list,
+  isMine,
+  buttonFunc,
+  noLimit = false,
+}: IRowList) => {
+  const isActive = list && list.length >= 5 ? true : false;
   return (
     <Wrapper>
       <ListHeader>
@@ -75,20 +86,39 @@ const RowList = ({ title, subTitle, list, isMine }: IRowList) => {
         <ListTitle>{title}</ListTitle>
       </ListHeader>
       <ListContainer>
-        {list?.map((item, idx) => (
-          <RowListMusicItem
-            music={item}
-            index={idx}
-            key={item._id}
-            length={list?.length}
-            isMine={isMine}
-          />
-        ))}
-        <ListFooter>
-          <MoreButton $isActive={list && list.length >= 5 ? true : false}>
-            모두 표시
-          </MoreButton>
-        </ListFooter>
+        {!noLimit
+          ? list
+              ?.slice(0, 5)
+              .map((item, idx) => (
+                <RowListMusicItem
+                  music={item}
+                  index={idx}
+                  key={item._id}
+                  length={list?.length && list?.length >= 5 ? 5 : list?.length}
+                  isMine={isMine}
+                />
+              ))
+          : list?.map((item, idx) => (
+              <RowListMusicItem
+                music={item}
+                index={idx}
+                key={item._id}
+                length={list?.length}
+                isMine={isMine}
+              />
+            ))}
+        {!noLimit && (
+          <ListFooter>
+            <MoreButton
+              $isActive={isActive}
+              onClick={() => {
+                if (buttonFunc && isActive) buttonFunc();
+              }}
+            >
+              모두 표시
+            </MoreButton>
+          </ListFooter>
+        )}
       </ListContainer>
     </Wrapper>
   );

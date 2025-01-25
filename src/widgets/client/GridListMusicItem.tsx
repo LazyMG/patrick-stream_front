@@ -70,11 +70,13 @@ const GridListMusicItem = ({ music }: { music: APIMusic }) => {
       <Info>
         <Title onClick={() => playMusic(music)}>{music.title}</Title>
         <Description>
-          <Link to={`/artists/${music.artists[0]._id}`}>
-            {music.artists[0].artistname}
+          <Link to={`/artists/${music.artists ? music.artists[0]._id : ""}`}>
+            {music.artists ? music.artists[0].artistname : ""}
           </Link>
           {" • "}
-          <Link to={`/albums/${music.album._id}`}>{music.album.title}</Link>
+          <Link to={`/albums/${music.album ? music.album._id : ""}`}>
+            {music.album ? music.album.title : ""}
+          </Link>
         </Description>
       </Info>
     </Wrapper>

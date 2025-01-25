@@ -329,7 +329,7 @@ const Artist = () => {
       </InfoHeader>
       <ControlContainer>
         {!isLoading && follow !== null ? (
-          isNotFound && (
+          !isNotFound && (
             <>
               <CircleButton onClick={playArtistMusics}>
                 <svg

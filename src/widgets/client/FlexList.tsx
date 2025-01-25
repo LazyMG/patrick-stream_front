@@ -13,6 +13,8 @@ import { APIAlbum } from "../../shared/models/album";
 import FlexListAlbumItem from "./FlexAlbumListItem";
 import { APIArtist } from "../../shared/models/artist";
 import FlexListAritstItem from "./FlexListArtistItem";
+import { APIPlaylist } from "../../shared/models/playlist";
+import FlexlistPlaylistItem from "./FlexlistPlaylistItem";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -107,7 +109,8 @@ interface IFlexList {
   title: string;
   info?: string;
   onClick?: () => void;
-  list?: APIMusic[] | APIAlbum[] | APIArtist[];
+  buttonFunc?: () => void;
+  list?: APIMusic[] | APIAlbum[] | APIArtist[] | APIPlaylist[];
   listFlag: "music" | "album" | "playlist" | "artist";
 }
 
@@ -121,6 +124,7 @@ const FlexList = ({
   onClick,
   list,
   listFlag,
+  buttonFunc,
 }: IFlexList) => {
   const swiperRef = useRef<Swiper | null>(null);
   const [isBeginning, setIsBeginning] = useState(true);
@@ -163,6 +167,7 @@ const FlexList = ({
           goPrev={goPrev}
           goNext={goNext}
           isActive={isActive}
+          onClick={buttonFunc}
         />
       </ListHeader>
       <ListContainer>
@@ -196,6 +201,9 @@ const FlexList = ({
                 )}
                 {listFlag === "artist" && (
                   <FlexListAritstItem artist={item as APIArtist} />
+                )}
+                {listFlag === "playlist" && (
+                  <FlexlistPlaylistItem playlist={item as APIPlaylist} />
                 )}
               </SwiperSlide>
             ))}

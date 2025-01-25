@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { userState } from "../../app/entities/user/atom";
 import { useRecoilValue } from "recoil";
@@ -25,12 +25,36 @@ const IconContainer = styled.div<{ $navShow: boolean }>`
   justify-content: center;
   align-items: center;
 
+  position: relative;
+
   ${(props) => (props.$navShow ? `` : `box-shadow: 1px 0 0 #3d3d3d;`)}
 
   color: #fff;
 
   img {
     width: 65px;
+  }
+`;
+
+const InfoButton = styled.div`
+  background-color: #4f4f4f;
+  width: 25px;
+  height: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+
+  font-weight: bold;
+  font-size: 12px;
+
+  position: absolute;
+  right: 12px;
+
+  cursor: pointer;
+
+  a {
+    color: #fff;
   }
 `;
 
@@ -152,7 +176,12 @@ const Header = ({ $navShow }: IHeader) => {
 
   return (
     <Wrapper $navShow={$navShow}>
-      <IconContainer $navShow={$navShow}>Patrick Stream</IconContainer>
+      <IconContainer $navShow={$navShow}>
+        Patrick Stream
+        <InfoButton>
+          <Link to={"/info"}>i</Link>
+        </InfoButton>
+      </IconContainer>
       <SearchContainer>
         <SearchForm>
           <input type="text" />

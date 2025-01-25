@@ -53,6 +53,10 @@ const ListInfo = styled.div`
 
 const ListTitle = styled.span`
   font-weight: bold;
+  max-width: 150px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 const ListOwner = styled.span``;

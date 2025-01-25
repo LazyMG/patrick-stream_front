@@ -80,7 +80,7 @@ const InfoContent = styled.p`
 `;
 
 const InfoDescription = styled.p`
-  max-width: 80%; /* 부모 요소의 최대 너비를 따르도록 설정 */
+  max-width: 950px;
   word-break: break-word; /* 긴 단어가 있을 때 강제로 줄바꿈 */
   overflow-wrap: break-word; /* 컨테이너를 벗어나지 않도록 줄바꿈 */
   white-space: normal; /* 기본 줄바꿈 규칙을 따르도록 설정 */
@@ -171,7 +171,7 @@ const InfoTitleSkeleton = styled.span`
 `;
 
 const InfoDescriptionSkeleton = styled.p`
-  max-width: 80%;
+  width: 950px;
   height: 20px;
 
   background-color: #2e2e2e;
@@ -283,7 +283,6 @@ const Playlist = () => {
         (item) => item._id === playlistId
       );
       if (thisPlaylist) {
-        console.log("this playlist", thisPlaylist);
         setIsMine(true);
         setPlaylistData(thisPlaylist);
         if (thisPlaylist.musics)
@@ -477,6 +476,7 @@ const Playlist = () => {
               : playlistData?.musics
           }
           isMine={isMine}
+          noLimit={true}
         />
       )}
       {isPlaylistToastOpen && playlistId && (

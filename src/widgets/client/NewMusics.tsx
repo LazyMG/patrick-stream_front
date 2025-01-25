@@ -3,12 +3,14 @@ import { APIMusic } from "../../shared/models/music";
 import { useToast } from "../../shared/hooks/useToast";
 import FlexList from "./FlexList";
 import FlexListSkeleton from "./FlexListSkeleton";
+import { useNavigate } from "react-router-dom";
 
 const NewMusics = () => {
   const [newMusicsData, setNewMusicsData] = useState<APIMusic[] | null>(null);
   const [isNewMusicLoading, setIsNewMusicLoading] = useState(true);
   const { setGlobalToast } = useToast();
   const [isError, setIsError] = useState(false);
+  const navigate = useNavigate();
 
   const getNewMusics = useCallback(async () => {
     if (isError) return;
@@ -26,7 +28,7 @@ const NewMusics = () => {
 
   useEffect(() => {
     getNewMusics();
-  }, [getNewMusics]);
+  }, []);
 
   return (
     <>
@@ -39,6 +41,7 @@ const NewMusics = () => {
           list={newMusicsData}
           isCustom={false}
           info="최근 추가된 음악"
+          buttonFunc={() => navigate("/new_releases")}
         />
       )}
     </>

@@ -7,17 +7,11 @@ import { playingPlaylistState } from "../../app/entities/music/atom";
 
 const ListItem = styled.div`
   width: 100%;
-  //max-width: 180px; /* 최대 너비 제한 */
-
-  /* flex: 1 1 auto;
-  flex-shrink: 0; */
 
   display: flex;
   flex-direction: column;
   gap: 15px;
   padding-bottom: 5px;
-
-  /* background-color: coral; */
 `;
 
 const ImageMask = styled.div`
@@ -47,8 +41,6 @@ const Image = styled.div<{ $imgUrl: string }>`
   &:hover ${ImageMask} {
     display: block;
   }
-
-  background-color: brown;
 `;
 
 const Info = styled.div`
@@ -117,11 +109,8 @@ const FlexListMusicItem = ({ music }: { music: APIMusic }) => {
           <Category>노래</Category>
           {" • "}
           <Aritst>
-            <Link
-              to={`/artists/${music.artists[0]._id}`}
-              state={{ artistLinkData: music.artists[0] }}
-            >
-              {music.artists[0].artistname}
+            <Link to={`/artists/${music.artists ? music.artists[0]._id : ""}`}>
+              {music.artists ? music.artists[0].artistname : ""}
             </Link>
           </Aritst>
         </Description>

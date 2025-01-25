@@ -9,6 +9,12 @@ import Playlist from "../../pages/client/Playlist";
 import Album from "../../pages/client/Album";
 import GoogleLogin from "../../pages/client/GoogleLogin";
 import RequireNoAuth from "../../pages/RequireNoAuth";
+import Info from "../../pages/Info";
+import Comming from "../../pages/client/Comming";
+import ThemeMusic from "../../pages/client/ThemeMusic";
+import ArtistWrapper from "../../pages/client/ArtistWrapper";
+import ArtistContent from "../../pages/client/ArtistContent";
+import ArtistMusics from "../../pages/client/ArtistMusics";
 
 const router = createBrowserRouter([
   ...adminRoute,
@@ -27,7 +33,17 @@ const router = createBrowserRouter([
       },
       {
         path: "artists/:artistId",
-        element: <Artist />,
+        element: <ArtistWrapper />,
+        children: [
+          {
+            path: "",
+            element: <ArtistContent />,
+          },
+          {
+            path: "musics",
+            element: <ArtistMusics />,
+          },
+        ],
       },
       {
         path: "playlists/:playlistId",
@@ -36,6 +52,34 @@ const router = createBrowserRouter([
       {
         path: "albums/:albumId",
         element: <Album />,
+      },
+      {
+        path: "info",
+        element: <Info />,
+      },
+      {
+        path: "comming",
+        element: <Comming />,
+      },
+      {
+        path: "new_releases",
+        element: <ThemeMusic />,
+      },
+      {
+        path: "trending",
+        element: <ThemeMusic />,
+      },
+      {
+        path: "popular",
+        element: <ThemeMusic />,
+      },
+      {
+        path: "listen_again",
+        element: <ThemeMusic />,
+      },
+      {
+        path: "liked",
+        element: <ThemeMusic />,
       },
     ],
   },

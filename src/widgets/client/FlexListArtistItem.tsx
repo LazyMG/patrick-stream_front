@@ -45,8 +45,6 @@ const Image = styled.div<{ $imgUrl: string }>`
   &:hover ${ImageMask} {
     display: block;
   }
-
-  background-color: brown;
 `;
 
 const Info = styled.div`

@@ -1,7 +1,7 @@
 import styled, { keyframes } from "styled-components";
 import { DefaultButton } from "../../shared/ui/DefaultButton";
 import RowList from "../../widgets/client/RowList";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { loginUserDataState, userState } from "../../app/entities/user/atom";
 import { useNavigate, useParams } from "react-router-dom";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -19,6 +19,7 @@ import RowListSkeleton from "../../widgets/client/RowListSkeleton";
 import { useLogout } from "../../shared/hooks/useLogout";
 import { debounce } from "lodash";
 import { useToast } from "../../shared/hooks/useToast";
+import { APIPlaylist } from "../../shared/models/playlist";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -158,19 +159,24 @@ const InfoButtonsSkeleton = styled.div`
 `;
 
 const User = () => {
-  const user = useRecoilValue(userState);
   const { userId } = useParams();
+  const navigate = useNavigate();
+
+  const user = useRecoilValue(userState);
+  const loginUserData = useRecoilValue(loginUserDataState);
+
   const [userData, setUserData] = useState<APIUser | null>(null);
+  const [userPlaylists, setUserPlaylists] = useState<APIPlaylist[] | null>(
+    null
+  );
   const [isLoading, setIsLoading] = useState(true);
   const setBackground = useSetRecoilState(backgroundState);
-  const [likedMusics, setLikedMusics] = useRecoilState(likedMusicsState);
-  const loginUserData = useRecoilValue(loginUserDataState);
-  const navigate = useNavigate();
   const [follow, setFollow] = useState<boolean | null>(null);
   const [followers, setFollowers] = useState<number | null>(null);
   const [isNotFound, setIsNotFound] = useState(false);
   const [isError, setIsError] = useState(false);
 
+  const likedMusics = useRecoilValue(likedMusicsState);
   const recentMusics = useRecoilValue(recentMusicsState);
   const followingArtists = useRecoilValue(followingArtistsState);
   const followingAlbums = useRecoilValue(followingAlbumsState);
@@ -206,7 +212,8 @@ const User = () => {
 
       if (result.ok) {
         setUserData(result.user);
-        setLikedMusics(result.user.likedMusics);
+        console.log(result.user.playlists);
+        setUserPlaylists(result.user.playlists);
         setIsLoading(false);
       } else {
         if (!result.error) {
@@ -218,7 +225,7 @@ const User = () => {
         }
       }
     },
-    [setLikedMusics, setGlobalToast, isError]
+    [setGlobalToast, isError]
   );
 
   useEffect(() => {
@@ -344,20 +351,23 @@ const User = () => {
       </InfoContainer>
       {isLoading && <RowListSkeleton />}
       {isMyPage && recentMusics && recentMusics?.length !== 0 && (
-        <RowList title="최근 들은 음악" subTitle="공개" list={recentMusics} />
+        <RowList
+          title="최근 들은 음악"
+          subTitle="공개"
+          list={recentMusics}
+          buttonFunc={() => navigate("/listen_again")}
+        />
       )}
-      {!isMyPage &&
-        userData &&
-        userData.recentMusics &&
-        userData.recentMusics.length !== 0 && (
-          <RowList
-            title="최근 들은 음악"
-            subTitle="공개"
-            list={userData.recentMusics}
-          />
-        )}
-      {likedMusics && likedMusics.length !== 0 && (
+      {isMyPage && likedMusics && likedMusics.length !== 0 && (
         <RowList title="좋아요 한 음악" subTitle="공개" list={likedMusics} />
+      )}
+      {userPlaylists && userPlaylists.length !== 0 && (
+        <FlexList
+          list={userPlaylists}
+          isCustom={false}
+          listFlag="playlist"
+          title="재생목록"
+        />
       )}
       {isMyPage && followingArtists && followingArtists.length !== 0 && (
         <FlexList
