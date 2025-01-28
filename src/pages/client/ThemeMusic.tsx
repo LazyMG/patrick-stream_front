@@ -6,7 +6,7 @@ import {
   recentMusicsState,
 } from "../../app/entities/music/atom";
 import { APIMusic } from "../../shared/models/music";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { usePlayMusic } from "../../shared/hooks/usePlayMusic";
 
 const Wrapper = styled.div`
@@ -99,6 +99,66 @@ const ItemDescription = styled.span`
   }
 `;
 
+const pulseKeyframes = keyframes`
+  0%{
+    opacity: 1;
+  }
+  50%{
+    opacity: 0.4;
+  }
+  100%{
+    opacity: 1;
+  }
+`;
+
+const ContainerSkeleton = styled.div`
+  width: 100%;
+
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  column-gap: 20px;
+  row-gap: 20px;
+
+  animation: ${pulseKeyframes} 2.5s ease-in-out infinite;
+`;
+
+const ItemSkeleton = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+`;
+
+const ItemImageSkeleton = styled.div`
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 10px;
+
+  background-color: #2e2e2e;
+`;
+
+const ItemInfoSkeleton = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+`;
+
+const ItemTitleSkeleton = styled.span`
+  width: 100%;
+  height: 15px;
+  border-radius: 10px;
+
+  background-color: #2e2e2e;
+`;
+
+const ItemDescriptionSkeleton = styled.span`
+  width: 100%;
+  height: 15px;
+  border-radius: 10px;
+
+  background-color: #2e2e2e;
+`;
+
 const ThemeMusic = () => {
   const newMusicMatch = useMatch("/new_releases");
   const trendingMusicMatch = useMatch("/trending");
@@ -160,7 +220,17 @@ const ThemeMusic = () => {
           : "다시 듣기"}
       </Title>
       {isLoading ? (
-        <div>Loading...</div>
+        <ContainerSkeleton>
+          {Array.from({ length: 20 }).map((_, idx) => (
+            <ItemSkeleton key={idx}>
+              <ItemImageSkeleton />
+              <ItemInfoSkeleton>
+                <ItemTitleSkeleton />
+                <ItemDescriptionSkeleton />
+              </ItemInfoSkeleton>
+            </ItemSkeleton>
+          ))}
+        </ContainerSkeleton>
       ) : (
         <Container>
           {listsData &&

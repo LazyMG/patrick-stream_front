@@ -9,8 +9,6 @@ const Wrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
-
-  background-color: #000;
 `;
 
 const Image = styled.div<{ $imgUrl: string }>`

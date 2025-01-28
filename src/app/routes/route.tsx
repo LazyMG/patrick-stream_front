@@ -15,6 +15,7 @@ import ThemeMusic from "../../pages/client/ThemeMusic";
 import ArtistWrapper from "../../pages/client/ArtistWrapper";
 import ArtistContent from "../../pages/client/ArtistContent";
 import ArtistMusics from "../../pages/client/ArtistMusics";
+import Search from "../../pages/client/Search";
 
 const router = createBrowserRouter([
   ...adminRoute,
@@ -60,6 +61,10 @@ const router = createBrowserRouter([
       {
         path: "comming",
         element: <Comming />,
+      },
+      {
+        path: "search",
+        element: <Search />,
       },
       {
         path: "new_releases",
