@@ -10,6 +10,7 @@ import { usePlayMusic } from "../../shared/hooks/usePlayMusic";
 import { playingPlaylistState } from "../../app/entities/music/atom";
 import { useToast } from "../../shared/hooks/useToast";
 import { debounce } from "lodash";
+import { APIAlbum } from "../../shared/models/album";
 
 const ArtistWrapper = () => {
   const user = useRecoilValue(userState);
@@ -17,6 +18,7 @@ const ArtistWrapper = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [artistData, setArtistData] = useState<APIArtist | null>(null);
   const [artistMusics, setArtistMusics] = useState<APIMusic[] | null>(null);
+  const [artistAlbums, setArtistAlbums] = useState<APIAlbum[] | null>(null);
   const [follow, setFollow] = useState<boolean | null>(null);
   const [followers, setFollowers] = useState<number | null>(null);
   const [isNotFound, setIsNotFound] = useState(false);
@@ -57,7 +59,9 @@ const ArtistWrapper = () => {
 
       if (result.ok) {
         setArtistData(result.artist);
+        console.log(result);
         setArtistMusics(result.artist.musics);
+        setArtistAlbums(result.artist.albums);
         await new Promise((resolve) => setTimeout(resolve, 100));
 
         setIsLoading(false);
@@ -150,6 +154,7 @@ const ArtistWrapper = () => {
         playArtistMusics,
         followArtist,
         artistMusics,
+        artistAlbums,
         isNotFound,
       }}
     />

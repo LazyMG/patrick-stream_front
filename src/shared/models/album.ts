@@ -25,7 +25,7 @@ export interface APIAlbum {
   artists?: APIArtist[];
   category?: string;
   comments?: string[];
-  coverImg?: string;
+  coverImg: string;
   created_at?: string;
   followers?: User[];
   introduction?: string;

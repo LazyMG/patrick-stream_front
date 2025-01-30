@@ -112,6 +112,7 @@ interface IFlexList {
   buttonFunc?: () => void;
   list?: APIMusic[] | APIAlbum[] | APIArtist[] | APIPlaylist[];
   listFlag: "music" | "album" | "playlist" | "artist";
+  isMore: boolean;
 }
 
 const PERVIEW = 6;
@@ -125,6 +126,7 @@ const FlexList = ({
   list,
   listFlag,
   buttonFunc,
+  isMore = false,
 }: IFlexList) => {
   const swiperRef = useRef<Swiper | null>(null);
   const [isBeginning, setIsBeginning] = useState(true);
@@ -166,7 +168,7 @@ const FlexList = ({
           isEnd={isEnd}
           goPrev={goPrev}
           goNext={goNext}
-          isActive={isActive}
+          isActive={isActive || isMore}
           onClick={buttonFunc}
         />
       </ListHeader>

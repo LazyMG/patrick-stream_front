@@ -16,6 +16,10 @@ import ArtistWrapper from "../../pages/client/ArtistWrapper";
 import ArtistContent from "../../pages/client/ArtistContent";
 import ArtistMusics from "../../pages/client/ArtistMusics";
 import Search from "../../pages/client/Search";
+import ArtistsAlbums from "../../pages/client/ArtistsAlbums";
+import UserWrapper from "../../pages/client/UserWrapper";
+import UserContent from "../../pages/client/UserContent";
+import UserFollowings from "../../pages/client/UserFollowings";
 
 const router = createBrowserRouter([
   ...adminRoute,
@@ -30,7 +34,17 @@ const router = createBrowserRouter([
       },
       {
         path: "users/:userId",
-        element: <User />,
+        element: <UserWrapper />,
+        children: [
+          {
+            path: "",
+            element: <UserContent />,
+          },
+          {
+            path: "followings",
+            element: <UserFollowings />,
+          },
+        ],
       },
       {
         path: "artists/:artistId",
@@ -43,6 +57,10 @@ const router = createBrowserRouter([
           {
             path: "musics",
             element: <ArtistMusics />,
+          },
+          {
+            path: "albums",
+            element: <ArtistsAlbums />,
           },
         ],
       },

@@ -21,8 +21,8 @@ export interface Music {
 }
 
 export interface APIMusic {
-  album?: APIAlbum;
-  artists?: APIArtist[];
+  album: APIAlbum;
+  artists: APIArtist[];
   comments?: string[];
   counts: {
     views: number;

@@ -184,12 +184,12 @@ const FollowButtonSkeleton = styled.div`
 
 interface IArtistOutlet {
   isLoading: boolean;
-  artistData: APIArtist;
-  followers: number;
-  follow: boolean;
+  artistData: APIArtist | null;
+  followers: number | null;
+  follow: boolean | null;
   playArtistMusics: () => void;
   followArtist: () => void;
-  artistMusics: APIMusic[];
+  artistMusics: APIMusic[] | null;
   isNotFound: boolean;
 }
 
@@ -208,12 +208,16 @@ const ArtistContent = () => {
 
   useEffect(() => {
     setBackground((prev) => {
-      if (prev?.src === artistData?.coverImg) {
+      if (prev?.src === (artistData ? artistData?.coverImg : "")) {
         return prev;
       }
-      return { src: artistData?.coverImg, type: "simple" };
+      return { src: artistData ? artistData?.coverImg : "", type: "simple" };
     });
   }, [setBackground, artistData]);
+
+  const goToAlbumPage = () => {
+    navigate(`albums`);
+  };
 
   return (
     <Wrapper>
@@ -272,6 +276,8 @@ const ArtistContent = () => {
             isCustom={false}
             list={artistData?.albums}
             listFlag="album"
+            isMore={true}
+            buttonFunc={goToAlbumPage}
           />
         )}
         {isLoading && <FlexListSkeleton />}

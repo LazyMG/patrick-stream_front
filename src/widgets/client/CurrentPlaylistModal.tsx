@@ -82,7 +82,6 @@ const CurrentPlaylistModal = ({ closeModal }: ICurrentPlaylistModal) => {
   };
 
   useEffect(() => {
-    console.log("modal open");
     // 모달이 열릴 때 현재 상태를 push
     window.history.pushState({ modalOpen: true }, "");
 

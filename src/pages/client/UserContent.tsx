@@ -1,26 +1,14 @@
 import styled, { keyframes } from "styled-components";
-import { DefaultButton } from "../../shared/ui/DefaultButton";
-import RowList from "../../widgets/client/RowList";
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import { loginUserDataState, userState } from "../../app/entities/user/atom";
-import { useNavigate, useParams } from "react-router-dom";
-import { useCallback, useEffect, useMemo, useState } from "react";
 import FlexList from "../../widgets/client/FlexList";
-import { backgroundState } from "../../app/entities/global/atom";
-import { APIUser } from "../../shared/models/user";
-import {
-  likedMusicsState,
-  recentMusicsState,
-} from "../../app/entities/music/atom";
-import { followingArtistsState } from "../../app/entities/artist/atom";
-import { followingAlbumsState } from "../../app/entities/album/atom";
-import NotFound from "./NotFound";
+import RowList from "../../widgets/client/RowList";
 import RowListSkeleton from "../../widgets/client/RowListSkeleton";
-import { useLogout } from "../../shared/hooks/useLogout";
-import { debounce } from "lodash";
-import { useToast } from "../../shared/hooks/useToast";
+import { useOutletContext } from "react-router-dom";
+import { DefaultButton } from "../../shared/ui/DefaultButton";
+import { APIUser } from "../../shared/models/user";
+import { APIMusic } from "../../shared/models/music";
 import { APIPlaylist } from "../../shared/models/playlist";
-import { currentUserPlaylistState } from "../../app/entities/playlist/atom";
+import { APIArtist } from "../../shared/models/artist";
+import { APIAlbum } from "../../shared/models/album";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -159,148 +147,40 @@ const InfoButtonsSkeleton = styled.div`
   animation: ${pulseKeyframes} 2.5s ease-in-out infinite;
 `;
 
-const User = () => {
-  const { userId } = useParams();
-  const navigate = useNavigate();
+interface IUserOutlet {
+  isLoading: boolean;
+  userData: APIUser | null;
+  followers: number | null;
+  isMyPage: boolean;
+  logOut: () => Promise<void>;
+  follow: boolean | null;
+  followUser: () => Promise<void>;
+  recentMusics: APIMusic[] | null;
+  likedMusics: APIMusic[] | null;
+  userPlaylists: APIPlaylist[] | null;
+  followingArtists: APIArtist[] | null;
+  followingAlbums: APIAlbum[] | null;
+  moreButton: () => void;
+  followingPage: () => void;
+}
 
-  const user = useRecoilValue(userState);
-  const loginUserData = useRecoilValue(loginUserDataState);
-
-  const [userData, setUserData] = useState<APIUser | null>(null);
-  const [userPlaylists, setUserPlaylists] = useState<APIPlaylist[] | null>(
-    null
-  );
-  const [isLoading, setIsLoading] = useState(true);
-  const setBackground = useSetRecoilState(backgroundState);
-  const [follow, setFollow] = useState<boolean | null>(null);
-  const [followers, setFollowers] = useState<number | null>(null);
-  const [isNotFound, setIsNotFound] = useState(false);
-  const [isError, setIsError] = useState(false);
-
-  const likedMusics = useRecoilValue(likedMusicsState);
-  const recentMusics = useRecoilValue(recentMusicsState);
-  const currentPlaylist = useRecoilValue(currentUserPlaylistState);
-  const followingArtists = useRecoilValue(followingArtistsState);
-  const followingAlbums = useRecoilValue(followingAlbumsState);
-
-  const { cleanUserInfo } = useLogout();
-  const { setGlobalToast } = useToast();
-
-  const isMyPage = userId !== undefined && user.userId === userId;
-
-  useEffect(() => {
-    const currentUserInfo = isMyPage ? loginUserData : userData;
-    if (currentUserInfo) {
-      const followerCount = currentUserInfo.followers?.length ?? 0;
-      setFollowers(followerCount);
-
-      if (!isMyPage && loginUserData) {
-        const isFollow = loginUserData.followings?.followingUsers.some(
-          (user) => user === currentUserInfo._id
-        );
-        setFollow(!!isFollow);
-      } else {
-        setFollow(null);
-      }
-    }
-  }, [isMyPage, userData, loginUserData]);
-
-  const getUser = useCallback(
-    async (targetId: string) => {
-      if (isError) return;
-      const result = await fetch(`http://localhost:5000/user/${targetId}`, {
-        credentials: "include",
-      }).then((res) => res.json());
-
-      if (result.ok) {
-        setUserData(result.user);
-        console.log(result.user.playlists);
-        setUserPlaylists(result.user.playlists);
-        setIsLoading(false);
-      } else {
-        if (!result.error) {
-          setIsNotFound(true);
-        } else {
-          setGlobalToast("User Error", "USER_DATA_FETCH_ERROR");
-          setIsError(true);
-          setIsLoading(false);
-        }
-      }
-    },
-    [setGlobalToast, isError]
-  );
-
-  useEffect(() => {
-    setIsNotFound(false);
-  }, [userId]);
-
-  useEffect(() => {
-    setBackground(null);
-    setIsError(false);
-
-    // 1) 자기 페이지면 -> fetch 안 함
-    if (isMyPage) {
-      if (loginUserData) {
-        setUserData(loginUserData);
-        setUserPlaylists(currentPlaylist);
-      }
-      setIsLoading(false);
-      return;
-    }
-
-    // 2) userData가 없고 userId가 있으면 fetch
-    if (!userData && userId && !user.loading) {
-      getUser(userId);
-    }
-  }, [isMyPage, loginUserData, setBackground, userData, userId, user.loading]);
-
-  const logOut = async () => {
-    const result = await fetch("http://localhost:5000/auth/logout", {
-      method: "POST",
-      credentials: "include",
-    }).then((res) => res.json());
-    if (result.ok) {
-      cleanUserInfo();
-      navigate("/");
-    }
-  };
-
-  const patchUserFollowers = useCallback(
-    async (addList: boolean) => {
-      await fetch(`http://localhost:5000/user/${userId}/followers`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          activeUserId: user.userId,
-          addList,
-        }),
-      });
-    },
-    [userId, user.userId]
-  );
-
-  const debouncedFollowUser = useMemo(
-    () => debounce((addList) => patchUserFollowers(addList), 200),
-    [patchUserFollowers]
-  );
-
-  const followUser = async () => {
-    if (!userId || isMyPage || user.userId === "" || follow === null) return;
-
-    const addList = !follow;
-    setFollow(addList);
-    setFollowers((prev) => {
-      if (prev === null) return prev;
-      return addList ? prev + 1 : Math.max(prev - 1, 0);
-    });
-
-    debouncedFollowUser(addList);
-  };
-
-  if (isNotFound) {
-    return <NotFound />;
-  }
-
+const UserContent = () => {
+  const {
+    isLoading,
+    userData,
+    followers,
+    isMyPage,
+    logOut,
+    follow,
+    followUser,
+    recentMusics,
+    likedMusics,
+    userPlaylists,
+    followingArtists,
+    followingAlbums,
+    moreButton,
+    followingPage,
+  } = useOutletContext<IUserOutlet>();
   return (
     <Wrapper>
       <InfoContainer>
@@ -358,7 +238,7 @@ const User = () => {
           title="최근 들은 음악"
           subTitle="공개"
           list={recentMusics}
-          buttonFunc={() => navigate("/listen_again")}
+          buttonFunc={moreButton}
         />
       )}
       {isMyPage && likedMusics && likedMusics.length !== 0 && (
@@ -380,6 +260,7 @@ const User = () => {
           listFlag="artist"
           list={followingArtists}
           isMore={true}
+          buttonFunc={followingPage}
         />
       )}
       {isMyPage && followingAlbums && followingAlbums.length !== 0 && (
@@ -389,10 +270,11 @@ const User = () => {
           listFlag="album"
           list={followingAlbums}
           isMore={true}
+          buttonFunc={followingPage}
         />
       )}
     </Wrapper>
   );
 };
 
-export default User;
+export default UserContent;

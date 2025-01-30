@@ -42,6 +42,7 @@ const NewMusics = () => {
           isCustom={false}
           info="최근 추가된 음악"
           buttonFunc={() => navigate("/new_releases")}
+          isMore={false}
         />
       )}
     </>

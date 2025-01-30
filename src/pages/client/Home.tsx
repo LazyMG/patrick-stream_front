@@ -95,6 +95,7 @@ const Home = () => {
                 }
                 info={loginUserData.username}
                 buttonFunc={() => navigate("/listen_again")}
+                isMore={false}
               />
             )
           ) : (
@@ -108,6 +109,7 @@ const Home = () => {
               isCustom={false}
               title="최근 들은 음악"
               buttonFunc={() => navigate("/listen_again")}
+              isMore={false}
             />
           )
         )}

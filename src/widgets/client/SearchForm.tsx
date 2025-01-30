@@ -1,5 +1,5 @@
 import { ChangeEvent, useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 const Wrapper = styled.form`
@@ -69,8 +69,16 @@ const SearchForm = () => {
     }
   }, [location.pathname, urlKeyword]);
 
+  const navigate = useNavigate();
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault(); // 리프레시 방지
+
+    navigate(`/search?q=${encodeURIComponent(keyword)}`);
+  };
+
   return (
-    <Wrapper action="/search">
+    <Wrapper onSubmit={handleSubmit}>
       <SearchInput value={keyword} type="text" onChange={onChange} name="q" />
       <SearchButton>
         <svg

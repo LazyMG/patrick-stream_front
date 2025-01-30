@@ -37,13 +37,15 @@ const ResultItem = styled.div<{ $isLast: boolean }>`
   ${(props) => !props.$isLast && `border-bottom: 1px solid #484848;`}
 `;
 
-const ResultImage = styled.div<{ $imgUrl: string }>`
+const ResultImage = styled.div<{ $imgUrl: string; $isCircle: boolean }>`
   height: 100%;
   aspect-ratio: 1 / 1;
 
   background-image: ${(props) => props.$imgUrl && `url(${props.$imgUrl})`};
   background-size: cover;
   background-position: center;
+
+  ${(props) => props.$isCircle && `border-radius:50%`};
 
   cursor: pointer;
 `;
@@ -97,7 +99,7 @@ interface IResultContainer {
   dataList: APIMusic[] | APIAlbum[] | APIArtist[];
   dataFlag: "music" | "album" | "artist";
   isMore: boolean;
-  filteringCategory: (filter: string) => void;
+  filteringCategory: (filter: "music" | "album" | "artist") => void;
 }
 
 const ResultContainer = ({
@@ -126,7 +128,7 @@ const ResultContainer = ({
           <ResultContainerContent>
             {(dataList as APIMusic[])?.map((item, idx) => (
               <ResultItem key={item._id} $isLast={idx + 1 === dataList.length}>
-                <ResultImage $imgUrl={item.coverImg} />
+                <ResultImage $imgUrl={item.coverImg} $isCircle={false} />
                 <ResultInfo>
                   <ResultTitle onClick={() => onClick(item)}>
                     {item.title}
@@ -166,7 +168,10 @@ const ResultContainer = ({
           <ResultContainerContent>
             {(dataList as APIAlbum[])?.map((item, idx) => (
               <ResultItem key={item._id} $isLast={idx + 1 === dataList.length}>
-                <ResultImage $imgUrl={item.coverImg ? item.coverImg : ""} />
+                <ResultImage
+                  $imgUrl={item.coverImg ? item.coverImg : ""}
+                  $isCircle={false}
+                />
                 <ResultInfo>
                   <ResultTitle onClick={() => onClick(item)}>
                     {item.title}
@@ -198,12 +203,14 @@ const ResultContainer = ({
       )}
       {dataFlag === "artist" && (
         <>
-          {" "}
           <ResultContainerTitle>아티스트</ResultContainerTitle>
           <ResultContainerContent>
             {(dataList as APIArtist[])?.map((item, idx) => (
               <ResultItem key={item._id} $isLast={idx + 1 === dataList.length}>
-                <ResultImage $imgUrl={item.coverImg ? item.coverImg : ""} />
+                <ResultImage
+                  $imgUrl={item.coverImg ? item.coverImg : ""}
+                  $isCircle={true}
+                />
                 <ResultInfo>
                   <ResultTitle onClick={() => onClick(item)}>
                     {item.artistname}

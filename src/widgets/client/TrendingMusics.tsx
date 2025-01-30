@@ -37,6 +37,7 @@ const TrendingMusics = () => {
           isCustom={false}
           info="많이 듣는 음악"
           buttonFunc={() => navigate("/trending")}
+          isMore={false}
         />
       )}
     </>

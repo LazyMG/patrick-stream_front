@@ -36,6 +36,7 @@ const PopularMusics = () => {
           isCustom={false}
           info="좋아요 많이 받은 음악"
           buttonFunc={() => navigate("/popular")}
+          isMore={false}
         />
       )}
     </>

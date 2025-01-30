@@ -3,7 +3,11 @@ import {
   currentPlayerState,
   isPlayerOnState,
 } from "../../app/entities/player/atom";
-import { selectedMusicState, ytIdState } from "../../app/entities/music/atom";
+import {
+  playingPlaylistState,
+  selectedMusicState,
+  ytIdState,
+} from "../../app/entities/music/atom";
 import { APIMusic } from "../models/music";
 import { useRecentMusics } from "./useRecentMusics";
 import { updateMusicView } from "../lib/updateMusicView";
@@ -13,6 +17,7 @@ export const usePlayMusic = () => {
   const setYtId = useSetRecoilState(ytIdState);
   const setCurrentPlayer = useSetRecoilState(currentPlayerState);
   const setSelectedMusic = useSetRecoilState(selectedMusicState);
+  const setPlayingPlaylist = useSetRecoilState(playingPlaylistState);
   const { addUserRecentMusics } = useRecentMusics();
 
   const playMusic = async (music: APIMusic, noSame = false) => {
@@ -39,6 +44,14 @@ export const usePlayMusic = () => {
         stamp: noSame ? Date.now() : prev.stamp,
         ytId: music.ytId,
       };
+    });
+    setPlayingPlaylist((prev) => {
+      if (!prev) return prev;
+      const index = prev.findIndex((item) => item._id === music._id);
+      if (index === -1) {
+        return [music, ...prev];
+      }
+      return prev;
     });
     setIsPlayerOn(true);
     setCurrentPlayer((prev) => {

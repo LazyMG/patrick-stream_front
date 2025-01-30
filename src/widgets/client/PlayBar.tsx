@@ -44,6 +44,7 @@ const PlayBarContentContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 5px;
   margin-top: 5px;
 
   padding: 0 15px;
@@ -98,7 +99,9 @@ const PlayBarContentMainInfo = styled.div`
   display: flex;
   flex-direction: column;
   gap: 5px;
-  width: 300px;
+  width: fit-content;
+  min-width: 300px;
+  max-width: 40vw;
   line-height: 1.3;
 `;
 
