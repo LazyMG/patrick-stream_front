@@ -32,7 +32,7 @@ const ContentHeader = styled.div`
     cursor: pointer;
 
     &:hover {
-      background-color: #f5a3a5;
+      background-color: ${(props) => props.theme.color.pink};
     }
 
     svg {
@@ -67,7 +67,7 @@ const ConfirmButton = styled.button`
   cursor: pointer;
 
   &:hover {
-    background-color: #f5a3a5;
+    background-color: ${(props) => props.theme.color.pink};
   }
 `;
 

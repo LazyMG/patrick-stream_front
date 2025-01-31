@@ -7,14 +7,14 @@ const Wrapper = styled.button`
   border-radius: 15px;
   border: none;
   font-size: 16px;
-  background-color: #f5a3a5;
+  background-color: ${(props) => props.theme.color.pink};
   font-weight: bold;
   height: 45px;
 
   cursor: pointer;
 
   &:hover {
-    background-color: #ffc0c1;
+    background-color: ${(props) => props.theme.color.sub_pink};
   }
 `;
 

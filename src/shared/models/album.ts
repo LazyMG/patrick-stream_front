@@ -1,11 +1,7 @@
-import { APIArtist, Artist } from "./artist";
-import { APIMusic, Music } from "./music";
-import { User } from "./user";
+import { APIArtist } from "./artist";
+import { APIMusic } from "./music";
+import { APIUser } from "./user";
 
-// comment, followers 추가 필
-//id number -> string
-// Music[] -> string[]
-// Artist[] -> string[]
 export interface Album {
   _id: string;
   title: string;
@@ -27,7 +23,7 @@ export interface APIAlbum {
   comments?: string[];
   coverImg: string;
   created_at?: string;
-  followers?: User[];
+  followers?: APIUser[];
   introduction?: string;
   length?: number;
   musics?: APIMusic[];

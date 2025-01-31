@@ -1,19 +1,44 @@
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 const Wrapper = styled.div`
-  width: 100%;
-  min-height: 70vh;
-
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: 50px;
+  box-sizing: border-box;
+  background-color: #000;
+  width: 100vw;
+  height: 100vh;
+`;
 
-  font-size: 64px;
+const Title = styled.h1`
+  color: #fff;
   font-weight: bold;
+  font-size: 48px;
+`;
+
+const Button = styled.div`
+  background-color: ${(props) => props.theme.color.pink};
+
+  padding: 10px 15px;
+
+  border-radius: 15px;
+
+  a {
+  }
 `;
 
 const NotFound = () => {
-  return <Wrapper>Not Found</Wrapper>;
+  return (
+    <Wrapper>
+      <Title>잘못된 경로입니다.</Title>
+      <Button>
+        <Link to={"/"}>메인 페이지</Link>
+      </Button>
+    </Wrapper>
+  );
 };
 
 export default NotFound;

@@ -1,4 +1,5 @@
 import { APIMusic } from "./music";
+import { APIUser } from "./user";
 
 export interface APIUserPlaylist {
   id: string;
@@ -9,7 +10,7 @@ export interface APIUserPlaylist {
   username: string;
   userId: string;
 }
-// 수정 필요
+
 export interface APIPlaylist {
   duration: number;
   comments?: string[];
@@ -17,10 +18,7 @@ export interface APIPlaylist {
   introduction: string;
   musics?: APIMusic[];
   title: string;
-  user: {
-    username: string;
-    _id: string;
-  };
+  user: APIUser;
   __v?: number;
   _id: string;
 }

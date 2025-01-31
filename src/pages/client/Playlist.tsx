@@ -1,6 +1,6 @@
 import styled, { keyframes } from "styled-components";
 import { DefaultButton } from "../../shared/ui/DefaultButton";
-import RowList from "../../widgets/client/RowList";
+import RowList from "../../widgets/client/RowList/RowList";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { APIPlaylist } from "../../shared/models/playlist";
@@ -18,9 +18,9 @@ import {
 import { playingPlaylistState } from "../../app/entities/music/atom";
 import { usePlayMusic } from "../../shared/hooks/usePlayMusic";
 import ToastContainer from "../../widgets/client/ToastContainer";
-import NotFound from "./NotFound";
+import NotFoundComponent from "../../widgets/NotFoundComponent";
 import { useDeletePlaylistMusic } from "../../shared/hooks/useDeletePlaylistMusic";
-import RowListSkeleton from "../../widgets/client/RowListSkeleton";
+import RowListSkeleton from "../../widgets/client/RowList/RowListSkeleton";
 import { debounce } from "lodash";
 import { useToast } from "../../shared/hooks/useToast";
 
@@ -99,7 +99,7 @@ const PlaylistPlayButton = styled.button`
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  background-color: #f5a3a5;
+  background-color: ${(props) => props.theme.color.pink};
   color: #000;
   display: flex;
   justify-content: center;
@@ -394,7 +394,7 @@ const Playlist = () => {
   };
 
   if (isNotFound) {
-    return <NotFound />;
+    return <NotFoundComponent />;
   }
 
   return (

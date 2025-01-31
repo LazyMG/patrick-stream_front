@@ -154,7 +154,7 @@ const PlayBarContentMainButton = styled.div`
   cursor: pointer;
 
   &:hover {
-    background-color: #a988bd;
+    background-color: ${(props) => props.theme.color.purple};
   }
 
   svg {

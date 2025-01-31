@@ -21,7 +21,7 @@ const Wrapper = styled.input<PlayBarTimelineProps>`
       ((props.value - props.min) / (props.max - props.min)) * 100;
     return `
       linear-gradient(to right, 
-        #D2DC23 ${percentage}%, 
+        ${props.theme.color.green} ${percentage}%, 
         gray ${percentage}%)
     `;
   }};
@@ -47,7 +47,7 @@ const Wrapper = styled.input<PlayBarTimelineProps>`
     width: 12px;
     height: 12px;
     border-radius: 50%;
-    background: #d2dc23;
+    background: ${(props) => props.theme.color.green};
     cursor: pointer;
     transition: width 0.2s ease, height 0.2s ease;
   }
@@ -56,7 +56,7 @@ const Wrapper = styled.input<PlayBarTimelineProps>`
     width: ${(props) => (props.showThumb ? "12px" : "0")};
     height: ${(props) => (props.showThumb ? "12px" : "0")};
     border-radius: 50%;
-    background: #d2dc23;
+    background: ${(props) => props.theme.color.green};
     width: 12px;
     height: 12px;
     cursor: pointer;

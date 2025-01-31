@@ -1,8 +1,8 @@
 import { Outlet } from "react-router-dom";
 import styled from "styled-components";
-import Header from "../widgets/client/Header";
-import Sidebar from "../widgets/client/Sidebar";
-import MainContainer from "../widgets/client/MainContainer";
+import Header from "../widgets/client/layout/Header";
+import Sidebar from "../widgets/client/layout/Sidebar";
+import MainContainer from "../widgets/client/layout/MainContainer";
 import { useState } from "react";
 
 const Wrapper = styled.div`

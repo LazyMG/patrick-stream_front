@@ -19,7 +19,7 @@ const SearchInput = styled.input`
   background-color: rgba(163, 163, 163, 0.402);
 
   &:focus {
-    border: 0.1px solid #f5a3a5;
+    border: 0.1px solid ${(props) => props.theme.color.pink};
     outline: none;
     background-color: #000000;
   }
@@ -45,7 +45,7 @@ const SearchButton = styled.button`
     width: 25px;
 
     &:focus {
-      color: #f5a3a5;
+      color: ${(props) => props.theme.color.pink};
     }
   }
 `;

@@ -18,18 +18,22 @@ const MainContent = styled.div`
 `;
 
 const AdminLayout = () => {
-  const getAdmin = useAdmin();
+  const { isLoading, getAdmin } = useAdmin();
 
   getAdmin();
   return (
     <PageContainer>
-      <AdminSidebar />
-      <MainContent>
-        <AdminHeader />
-        <AdminDashboard>
-          <Outlet />
-        </AdminDashboard>
-      </MainContent>
+      {!isLoading && (
+        <>
+          <AdminSidebar />
+          <MainContent>
+            <AdminHeader />
+            <AdminDashboard>
+              <Outlet />
+            </AdminDashboard>
+          </MainContent>
+        </>
+      )}
     </PageContainer>
   );
 };

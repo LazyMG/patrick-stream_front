@@ -79,7 +79,7 @@ width: fit-content;
   background-color: black;
   ${(props) =>
     props.$isActive
-      ? `border: 1px solid #a988bd;`
+      ? `border: 1px solid ${props.theme.color.purple};;`
       : "border: 1px solid #515151;"}
 
   ${(props) => (props.$isActive ? `color: #fefefe;` : "color:  #515151;")}
@@ -89,7 +89,7 @@ width: fit-content;
     `&:hover {
     background-color: #2c2c2c;
 
-    background-color: #a988bd;
+    background-color: ${props.theme.color.purple};;
   }`}
 
   ${(props) => (props.$isActive ? `cursor:pointer;` : "cursor:auto;")}

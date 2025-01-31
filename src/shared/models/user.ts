@@ -3,8 +3,6 @@ import { APIArtist } from "./artist";
 import { APIMusic } from "./music";
 import { APIPlaylist } from "./playlist";
 
-export interface User {}
-
 export interface APIUser {
   comments?: string[];
   created_at?: string;

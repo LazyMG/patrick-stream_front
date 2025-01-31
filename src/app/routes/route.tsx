@@ -1,25 +1,30 @@
 import { createBrowserRouter } from "react-router-dom";
 import { adminRoute } from "./adminRoute";
-import Layout from "../../pages/Layout";
 import { authRoute } from "./authRoute";
+
+import Layout from "../../pages/Layout";
+
 import Home from "../../pages/client/Home";
-import User from "../../pages/client/User";
-import Artist from "../../pages/client/Artist";
 import Playlist from "../../pages/client/Playlist";
 import Album from "../../pages/client/Album";
-import GoogleLogin from "../../pages/client/GoogleLogin";
-import RequireNoAuth from "../../pages/RequireNoAuth";
-import Info from "../../pages/Info";
+import Info from "../../pages/client/Info";
 import Comming from "../../pages/client/Comming";
-import ThemeMusic from "../../pages/client/ThemeMusic";
-import ArtistWrapper from "../../pages/client/ArtistWrapper";
-import ArtistContent from "../../pages/client/ArtistContent";
-import ArtistMusics from "../../pages/client/ArtistMusics";
 import Search from "../../pages/client/Search";
-import ArtistsAlbums from "../../pages/client/ArtistsAlbums";
-import UserWrapper from "../../pages/client/UserWrapper";
-import UserContent from "../../pages/client/UserContent";
-import UserFollowings from "../../pages/client/UserFollowings";
+
+import ThemeMusic from "../../pages/client/ThemeMusic";
+
+import ArtistWrapper from "../../pages/client/Artist/ArtistWrapper";
+import ArtistContent from "../../pages/client/Artist/ArtistContent";
+import ArtistMusics from "../../pages/client/Artist/ArtistMusics";
+import ArtistsAlbums from "../../pages/client/Artist/ArtistsAlbums";
+
+import UserWrapper from "../../pages/client/User/UserWrapper";
+import UserContent from "../../pages/client/User/UserContent";
+import UserFollowings from "../../pages/client/User/UserFollowings";
+
+import RequireNoAuth from "../../pages/RequireNoAuth";
+import GoogleLogin from "../../pages/client/GoogleLogin";
+import NotFound from "../../pages/client/NotFound";
 
 const router = createBrowserRouter([
   ...adminRoute,
@@ -113,6 +118,10 @@ const router = createBrowserRouter([
         <GoogleLogin />
       </RequireNoAuth>
     ),
+  },
+  {
+    path: "*",
+    element: <NotFound />,
   },
 ]);
 

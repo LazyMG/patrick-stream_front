@@ -15,7 +15,7 @@ const ListItemIcon = styled.svg`
   width: 30px;
 
   &:hover {
-    color: #f5a3a5;
+    color: ${(props) => props.theme.color.pink};
   }
 `;
 

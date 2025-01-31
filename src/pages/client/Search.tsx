@@ -7,9 +7,9 @@ import { APIArtist } from "../../shared/models/artist";
 import { useSetRecoilState } from "recoil";
 import { backgroundState } from "../../app/entities/global/atom";
 import ResultContainer from "../../widgets/client/ResultContainer";
-import ExactMusicResult from "../../widgets/client/ExactMusicResult";
-import ExactArtistResult from "../../widgets/client/ExactArtistResult";
-import ExactAlbumResult from "../../widgets/client/ExactAlbumResult";
+import ExactMusicResult from "../../widgets/client/ExactResult/ExactMusicResult";
+import ExactArtistResult from "../../widgets/client/ExactResult/ExactArtistResult";
+import ExactAlbumResult from "../../widgets/client/ExactResult/ExactAlbumResult";
 
 const Wrapper = styled.div`
   width: 100%;

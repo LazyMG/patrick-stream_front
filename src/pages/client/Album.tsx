@@ -10,7 +10,7 @@ import AlbumList from "../../widgets/client/AlbumList";
 import { userState } from "../../app/entities/user/atom";
 import { playingPlaylistState } from "../../app/entities/music/atom";
 import { usePlayMusic } from "../../shared/hooks/usePlayMusic";
-import NotFound from "./NotFound";
+import NotFoundComponent from "../../widgets/NotFoundComponent";
 import { followingAlbumsState } from "../../app/entities/album/atom";
 import { debounce } from "lodash";
 import { useToast } from "../../shared/hooks/useToast";
@@ -396,7 +396,7 @@ const Album = () => {
   };
 
   if (isNotFound) {
-    return <NotFound />;
+    return <NotFoundComponent />;
   }
 
   return (

@@ -1,16 +1,16 @@
 import styled from "styled-components";
-import FlexList from "../../widgets/client/FlexList";
+import FlexList from "../../widgets/client/FlexList/FlexList";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { backgroundState } from "../../app/entities/global/atom";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginUserDataState, userState } from "../../app/entities/user/atom";
 import { recentMusicsState } from "../../app/entities/music/atom";
-import TrendingMusics from "../../widgets/client/TrendingMusics";
-import FastSelectMusics from "../../widgets/client/FastSelectMusics";
-import PopularMusics from "../../widgets/client/PopularMusics";
-import FlexListSkeleton from "../../widgets/client/FlexListSkeleton";
-import NewMusics from "../../widgets/client/NewMusics";
+import TrendingMusics from "../../widgets/client/components/TrendingMusics";
+import FastSelectMusics from "../../widgets/client/components/FastSelectMusics";
+import PopularMusics from "../../widgets/client/components/PopularMusics";
+import FlexListSkeleton from "../../widgets/client/FlexList/FlexListSkeleton";
+import NewMusics from "../../widgets/client/components/NewMusics";
 
 const Wrapper = styled.div`
   width: 100%;

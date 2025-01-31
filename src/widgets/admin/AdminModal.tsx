@@ -1,8 +1,8 @@
 import React from "react";
 import styled from "styled-components";
-import { Music } from "../../shared/models/music";
-import { Album } from "../../shared/models/album";
-import { Artist } from "../../shared/models/artist";
+import { APIMusic } from "../../shared/models/music";
+import { APIAlbum } from "../../shared/models/album";
+import { APIArtist } from "../../shared/models/artist";
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -87,31 +87,27 @@ const ItemInfo = styled.span``;
 
 interface IAdminModal {
   closeModal: () => void;
-  dataList: Music[] | Album[] | Artist[] | string[];
-  dataType: "music" | "album" | "artist" | "test";
+  dataList: APIMusic[] | APIAlbum[] | APIArtist[];
+  dataType: "music" | "album" | "artist";
   modalFunc: (id: string, name?: string) => Promise<void>;
 }
 
-const isMusicList = (list: unknown[]): list is Music[] => {
+const isMusicList = (list: unknown[]): list is APIMusic[] => {
   return list.every(
     (item) => typeof item === "object" && item !== null && "ytId" in item
   );
 };
 
-const isAlbumList = (list: unknown[]): list is Album[] => {
+const isAlbumList = (list: unknown[]): list is APIAlbum[] => {
   return list.every(
     (item) => typeof item === "object" && item !== null && "category" in item
   );
 };
 
-const isArtistList = (list: unknown[]): list is Artist[] => {
+const isArtistList = (list: unknown[]): list is APIArtist[] => {
   return list.every(
     (item) => typeof item === "object" && item !== null && "artistname" in item
   );
-};
-
-const isTestList = (list: unknown[]): list is string[] => {
-  return true;
 };
 
 const AdminModal = ({
@@ -163,7 +159,7 @@ const AdminModal = ({
               >
                 <ItemTitle>{album.title}</ItemTitle>
                 <ItemInfo>
-                  {album.musics.length}/{album.length}
+                  {album.musics ? album.musics.length : 0}/{album.length}
                 </ItemInfo>
               </Item>
             ))}
@@ -175,15 +171,9 @@ const AdminModal = ({
                 onClick={() => handleItemClick(artist._id, artist.artistname)}
               >
                 <ItemTitle>{artist.artistname}</ItemTitle>
-                <ItemInfo>{artist.musics.length}</ItemInfo>
+                <ItemInfo>{artist.musics ? artist.musics.length : 0}</ItemInfo>
               </Item>
             ))}
-          {dataType === "test" &&
-            isTestList(dataList) &&
-            dataList.map((data) => <div>{data}</div>)}
-          {/* {Array.from({ length: 50 }).map((_, idx) => (
-            <Item key={idx}>Frank</Item>
-          ))} */}
         </ItemContainer>
       </ContentModal>
     </ModalOverlay>
