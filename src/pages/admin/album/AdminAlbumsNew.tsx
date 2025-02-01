@@ -18,7 +18,6 @@ const AdminAlbumsNew: React.FC = () => {
 
   const onSubmit: SubmitHandler<IAlbumFormInput> = async (event) => {
     // 데이터 보내기
-    console.log(event);
 
     const albumData: IAlbumFormInput = {
       title: event.title,
@@ -40,6 +39,12 @@ const AdminAlbumsNew: React.FC = () => {
 
     if (result.ok) {
       navigate("/admin/albums");
+    } else {
+      if (!result.error) {
+        if (result.type === "NO_ACCESS") alert("권한이 없습니다.");
+      } else {
+        alert("DB 에러입니다.");
+      }
     }
   };
 

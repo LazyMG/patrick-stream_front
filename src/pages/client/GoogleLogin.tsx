@@ -38,6 +38,9 @@ const GoogleLogin = () => {
 
     if (result.ok) {
       window.location.href = "/";
+    } else {
+      alert("오류가 발생했습니다.");
+      navigate("/login");
     }
   }, [accessToken, navigate]);
 

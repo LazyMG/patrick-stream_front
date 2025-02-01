@@ -92,24 +92,6 @@ interface IAdminModal {
   modalFunc: (id: string, name?: string) => Promise<void>;
 }
 
-const isMusicList = (list: unknown[]): list is APIMusic[] => {
-  return list.every(
-    (item) => typeof item === "object" && item !== null && "ytId" in item
-  );
-};
-
-const isAlbumList = (list: unknown[]): list is APIAlbum[] => {
-  return list.every(
-    (item) => typeof item === "object" && item !== null && "category" in item
-  );
-};
-
-const isArtistList = (list: unknown[]): list is APIArtist[] => {
-  return list.every(
-    (item) => typeof item === "object" && item !== null && "artistname" in item
-  );
-};
-
 const AdminModal = ({
   closeModal,
   dataList,
@@ -125,9 +107,6 @@ const AdminModal = ({
       modalFunc(id, name);
     }
   };
-
-  console.log("list", dataList, dataType);
-
   return (
     <ModalOverlay onClick={closeModal}>
       <ContentModal
@@ -140,8 +119,7 @@ const AdminModal = ({
         </ModalHeader>
         <ItemContainer>
           {dataType === "music" &&
-            isMusicList(dataList) &&
-            dataList.map((music) => (
+            (dataList as APIMusic[]).map((music) => (
               <Item
                 key={music._id}
                 onClick={() => handleItemClick(music._id, music.title)}
@@ -151,8 +129,7 @@ const AdminModal = ({
               </Item>
             ))}
           {dataType === "album" &&
-            isAlbumList(dataList) &&
-            dataList.map((album) => (
+            (dataList as APIAlbum[]).map((album) => (
               <Item
                 key={album._id}
                 onClick={() => handleItemClick(album._id, album.title)}
@@ -164,8 +141,7 @@ const AdminModal = ({
               </Item>
             ))}
           {dataType === "artist" &&
-            isArtistList(dataList) &&
-            dataList.map((artist) => (
+            (dataList as APIArtist[]).map((artist) => (
               <Item
                 key={artist._id}
                 onClick={() => handleItemClick(artist._id, artist.artistname)}

@@ -450,7 +450,7 @@ const Playlist = () => {
             </PlaylistPlayButton>
             {isMine ? (
               <>
-                <FollowButton $follow={false}>수정하기</FollowButton>
+                {/* <FollowButton $follow={false}>수정하기</FollowButton> */}
                 <FollowButton $follow={true} onClick={deletePlaylist}>
                   삭제하기
                 </FollowButton>

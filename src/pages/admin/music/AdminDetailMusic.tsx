@@ -21,9 +21,17 @@ const AdminDetailMusic: React.FC = () => {
           credentials: "include",
         }
       ).then((res) => res.json());
-      console.log(result);
       if (result.ok) {
         navigate("/admin/musics");
+      } else {
+        if (!result.error) {
+          if (result.type === "ERROR_ID") alert("잘못된 데이터입니다.");
+          else if (result.type === "NO_DATA")
+            alert("존재하지 않는 데이터입니다.");
+          else if (result.type === "NO_ACCESS") alert("접근 권한이 없습니다.");
+        } else {
+          alert("DB 에러입니다. 잠시 후 시도해주세요.");
+        }
       }
     } else {
       return;
@@ -31,7 +39,7 @@ const AdminDetailMusic: React.FC = () => {
   };
 
   const openAlbumModal = () => {
-    if (outletMusic?.music.album) {
+    if (outletMusic?.music?.album && outletMusic?.music?.album.length !== 0) {
       alert("이미 앨범에 포함된 음악입니다.");
       return;
     }
@@ -39,7 +47,7 @@ const AdminDetailMusic: React.FC = () => {
   };
 
   const openArtistModal = () => {
-    if (outletMusic?.music.artists) {
+    if (outletMusic?.music.artists.length !== 0) {
       alert("이미 아티스트에 포함된 음악입니다.");
       return;
     }
@@ -83,7 +91,10 @@ const AdminDetailMusic: React.FC = () => {
       "http://localhost:5000/album?filterByMusicsLength=true"
     ).then((res) => res.json());
     if (result.ok) return result.albums;
-    else return [];
+    else {
+      alert("DB 에러입니다.");
+      return [];
+    }
   };
 
   // 이미 포함된 아티스트 제외
@@ -93,7 +104,10 @@ const AdminDetailMusic: React.FC = () => {
     );
     if (result.ok) {
       return result.allArtists;
-    } else return [];
+    } else {
+      alert("DB 에러입니다.");
+      return [];
+    }
   };
 
   // 앨범에 음악 추가하는 코드 필요
@@ -117,6 +131,15 @@ const AdminDetailMusic: React.FC = () => {
         alert("추가되었습니다.");
         closeAlbumModal();
         navigate("/admin/musics");
+      } else {
+        if (!result.error) {
+          if (result.type === "ERROR_ID") alert("잘못된 데이터입니다.");
+          else if (result.type === "NO_DATA")
+            alert("존재하지 않는 데이터입니다.");
+        } else {
+          alert("DB 에러입니다.");
+        }
+        closeAlbumModal();
       }
     }
   };
@@ -143,7 +166,14 @@ const AdminDetailMusic: React.FC = () => {
         closeArtistModal();
         navigate("/admin/musics");
       } else {
-        console.log(result);
+        if (!result.error) {
+          if (result.type === "ERROR_ID") alert("잘못된 데이터입니다.");
+          else if (result.type === "NO_DATA")
+            alert("해당 데이터를 찾을 수 없습니다.");
+        } else {
+          alert("DB 에러입니다. 다시 시도해주세요.");
+        }
+        closeArtistModal();
       }
     }
   };

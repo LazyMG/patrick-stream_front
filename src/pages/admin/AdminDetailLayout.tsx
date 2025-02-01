@@ -45,7 +45,6 @@ const Info = styled.div`
 const Image = styled.img`
   width: 300px;
   height: 300px;
-  background-color: blue;
 `;
 
 // const CommentContainer = styled.div`
@@ -53,14 +52,12 @@ const Image = styled.img`
 //   display: flex;
 //   flex-direction: column;
 //   gap: 10px;
-//   background-color: blue;
 //   padding: 10px 15px;
 // `;
 
 // const Comment = styled.div`
 //   display: flex;
 //   height: 50px;
-//   background-color: white;
 //   border-radius: 15px;
 // `;
 
@@ -70,7 +67,6 @@ const YoutubeContainer = styled.iframe`
 `;
 
 const Introduction = styled.p`
-  background-color: yellow;
   width: 100%;
   padding: 10px 15px;
   height: 20px;

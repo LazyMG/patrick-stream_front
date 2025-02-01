@@ -3,6 +3,7 @@ import AdminPageLayout from "../AdminPageLayout";
 
 const AdminMusics: React.FC = () => {
   const [musics, setMusics] = useState([]);
+  const [isError, setIsError] = useState(false);
 
   const getMusics = async () => {
     const result = await fetch("http://localhost:5000/music").then((res) =>
@@ -10,6 +11,9 @@ const AdminMusics: React.FC = () => {
     );
     if (result.ok) {
       setMusics(result.allMusics);
+    } else {
+      setMusics([]);
+      setIsError(true);
     }
   };
 
@@ -17,7 +21,9 @@ const AdminMusics: React.FC = () => {
     getMusics();
   }, []);
 
-  return <AdminPageLayout dataType="music" dataList={musics} />;
+  return (
+    <AdminPageLayout dataType="music" dataList={musics} isError={isError} />
+  );
 };
 
 export default AdminMusics;

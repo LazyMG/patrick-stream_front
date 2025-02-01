@@ -18,7 +18,6 @@ const AdminArtistsNew: React.FC = () => {
 
   const onSubmit: SubmitHandler<IArtistFormInput> = async (event) => {
     // 데이터 보내기
-    console.log(event);
 
     const artistData: IArtistFormInput = {
       artistname: event.artistname,
@@ -39,6 +38,12 @@ const AdminArtistsNew: React.FC = () => {
 
     if (result.ok) {
       navigate("/admin/artists");
+    } else {
+      if (!result.error) {
+        if (result.type === "NO_ACCESS") alert("권한이 없습니다.");
+      } else {
+        alert("DB 에러입니다.");
+      }
     }
   };
 

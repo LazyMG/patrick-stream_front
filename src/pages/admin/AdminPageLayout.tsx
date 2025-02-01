@@ -40,9 +40,23 @@ const TabContent = styled.p`
   font-size: 15px;
 `;
 
+const Error = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #fff;
+  font-size: 48px;
+  font-weight: bold;
+
+  width: 100%;
+  height: 70vh;
+`;
+
 interface AdminPageLayoutProps {
   dataType: "music" | "album" | "artist";
   dataList: APIMusic[] | APIAlbum[] | APIArtist[];
+  isError?: boolean;
 }
 
 const isMusicList = (list: unknown[]): list is APIMusic[] => {
@@ -66,6 +80,7 @@ const isArtistList = (list: unknown[]): list is APIArtist[] => {
 const AdminPageLayout: React.FC<AdminPageLayoutProps> = ({
   dataType,
   dataList,
+  isError,
 }) => {
   const navigate = useNavigate();
 
@@ -80,55 +95,65 @@ const AdminPageLayout: React.FC<AdminPageLayoutProps> = ({
 
   return (
     <ContentContainer>
-      <ContentHeader>
-        <button onClick={(event) => gotoUploadPage(event, dataType)}>
-          등록하기
-        </button>
-      </ContentHeader>
-      <Content>
-        {dataType === "music" &&
-          isMusicList(dataList) &&
-          dataList.map((music) => (
-            <Link to={`./${music._id}`} key={music._id}>
-              <Tab>
-                <TabContent>제목: {music?.title}</TabContent>
-                <TabContent>
-                  가수:{" "}
-                  {(music.artists && music.artists[0]?.artistname) || "없음"}
-                </TabContent>
-                <TabContent>앨범: {music?.album?.title || "없음"}</TabContent>
-              </Tab>
-            </Link>
-          ))}
-        {dataType === "album" &&
-          isAlbumList(dataList) &&
-          dataList.map((album) => (
-            <Link to={`./${album._id}`} key={album._id}>
-              <Tab>
-                <TabContent>제목: {album.title}</TabContent>
-                <TabContent>
-                  가수:
-                  {(album.artists && album.artists[0]?.artistname) || "없음"}
-                </TabContent>
-                <TabContent>총 곡 수: {album.length}</TabContent>
-                <TabContent>현재 곡 수: {album.musics?.length}</TabContent>
-                <TabContent>{album.created_at}</TabContent>
-              </Tab>
-            </Link>
-          ))}
-        {dataType === "artist" &&
-          isArtistList(dataList) &&
-          dataList.map((artist) => (
-            <Link to={`./${artist._id}`} key={artist._id}>
-              <Tab>
-                <TabContent>이름: {artist.artistname}</TabContent>
-                <TabContent>앨범 수:{artist.albums?.length}</TabContent>
-                <TabContent>음악 수:{artist.musics?.length}</TabContent>
-                <TabContent>등록 일자:{artist.created_at}</TabContent>
-              </Tab>
-            </Link>
-          ))}
-      </Content>
+      {!isError ? (
+        <>
+          <ContentHeader>
+            <button onClick={(event) => gotoUploadPage(event, dataType)}>
+              등록하기
+            </button>
+          </ContentHeader>
+          <Content>
+            {dataType === "music" &&
+              isMusicList(dataList) &&
+              dataList.map((music) => (
+                <Link to={`./${music._id}`} key={music._id}>
+                  <Tab>
+                    <TabContent>제목: {music?.title}</TabContent>
+                    <TabContent>
+                      가수:{" "}
+                      {(music.artists && music.artists[0]?.artistname) ||
+                        "없음"}
+                    </TabContent>
+                    <TabContent>
+                      앨범: {music?.album?.title || "없음"}
+                    </TabContent>
+                  </Tab>
+                </Link>
+              ))}
+            {dataType === "album" &&
+              isAlbumList(dataList) &&
+              dataList.map((album) => (
+                <Link to={`./${album._id}`} key={album._id}>
+                  <Tab>
+                    <TabContent>제목: {album.title}</TabContent>
+                    <TabContent>
+                      가수:
+                      {(album.artists && album.artists[0]?.artistname) ||
+                        "없음"}
+                    </TabContent>
+                    <TabContent>총 곡 수: {album.length}</TabContent>
+                    <TabContent>현재 곡 수: {album.musics?.length}</TabContent>
+                    <TabContent>{album.created_at}</TabContent>
+                  </Tab>
+                </Link>
+              ))}
+            {dataType === "artist" &&
+              isArtistList(dataList) &&
+              dataList.map((artist) => (
+                <Link to={`./${artist._id}`} key={artist._id}>
+                  <Tab>
+                    <TabContent>이름: {artist.artistname}</TabContent>
+                    <TabContent>앨범 수:{artist.albums?.length}</TabContent>
+                    <TabContent>음악 수:{artist.musics?.length}</TabContent>
+                    <TabContent>등록 일자:{artist.created_at}</TabContent>
+                  </Tab>
+                </Link>
+              ))}
+          </Content>{" "}
+        </>
+      ) : (
+        <Error>에러가 발생했습니다.</Error>
+      )}
     </ContentContainer>
   );
 };

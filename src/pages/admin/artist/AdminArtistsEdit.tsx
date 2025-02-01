@@ -104,7 +104,12 @@ const AdminArtistsEdit: React.FC = () => {
         });
       }
     } else {
-      alert("Server Error");
+      if (!result.error) {
+        if (result.type === "ERROR_ID") alert("잘못된 데이터입니다.");
+        else if (result.type === "NO_DATA") alert("데이터를 찾을 수 없습니다.");
+      } else {
+        alert("DB 에러입니다.");
+      }
     }
     navigate(`/admin/artists/${outletAritst?.artist._id}`);
   };

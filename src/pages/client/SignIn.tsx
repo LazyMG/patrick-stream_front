@@ -74,7 +74,6 @@ const SignIn = () => {
         if (result.type === "email") {
           setError("email", { message: result.message });
         } else if (result.type === "password") {
-          console.log("password error");
           setError("password", { message: result.message });
         }
       } else {
@@ -109,6 +108,8 @@ const SignIn = () => {
         setIsEmailChecked({ email: value, state: true });
         clearErrors("email");
       }
+    } else {
+      alert("DB 에러입니다. 잠시 후에 시도해주세요.");
     }
   };
 

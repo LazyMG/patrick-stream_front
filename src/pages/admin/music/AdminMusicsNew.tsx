@@ -40,13 +40,17 @@ const AdminMusicsNew: React.FC = () => {
     if (result.ok) {
       navigate("/admin/musics");
     } else {
-      if (result.error) {
-        alert("Upload Failed");
-        navigate("/admin/musics");
+      if (!result.error) {
+        if (result.type === "EXIST_MUSIC") {
+          setError("ytId", { message: "이미 존재하는 아이디입니다." });
+          setFocus("ytId");
+        } else if (result.type === "NO_ACCESS") {
+          alert("접근 권한이 없습니다.");
+        }
       } else {
-        setError("ytId", { message: "이미 존재하는 아이디입니다." });
-        setFocus("ytId");
+        alert("DB 에러입니다. 잠시 후 시도해주세요.");
       }
+      // navigate("/admin/musics");
     }
   };
 

@@ -24,4 +24,5 @@ export interface APIUser {
   username: string;
   __v?: number;
   _id: string;
+  isSocial?: boolean;
 }

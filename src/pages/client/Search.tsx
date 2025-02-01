@@ -142,6 +142,12 @@ const CategoryContainerSkeleton = styled.div`
   animation: ${pulseKeyframes} 2.5s ease-in-out infinite;
 `;
 
+const NoData = styled.div`
+  margin-top: 10px;
+  font-size: 24px;
+  font-weight: bold;
+`;
+
 const Search = () => {
   const data = new URLSearchParams(useLocation().search);
   const keyword = data.get("q");
@@ -165,6 +171,7 @@ const Search = () => {
   );
 
   const [isLoading, setIsLoading] = useState(true);
+  const [isNoData, setIsNoData] = useState(false);
 
   const setBackground = useSetRecoilState(backgroundState);
 
@@ -188,6 +195,11 @@ const Search = () => {
       );
       await new Promise((resolve) => setTimeout(resolve, 100));
       setIsLoading(false);
+    } else {
+      if (result.type === "NO_DATA") {
+        setIsLoading(false);
+        setIsNoData(true);
+      }
     }
   };
 
@@ -206,6 +218,7 @@ const Search = () => {
 
   return (
     <Wrapper>
+      {isNoData && <NoData>검색 결과가 없습니다.</NoData>}
       {!isLoading ? (
         <CategoryContainer>
           {searchMusicData && searchMusicData.length !== 0 && (

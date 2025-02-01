@@ -8,6 +8,7 @@ export const theme: DefaultTheme = {
     purple: "#a988bd",
     black: "#000000",
     gray: "#000000",
+    white: "#ffffff",
   },
   text: {
     xs: "string",

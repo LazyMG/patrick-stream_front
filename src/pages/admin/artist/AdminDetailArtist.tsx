@@ -3,6 +3,8 @@ import { useNavigate, useOutletContext } from "react-router-dom";
 import { IOutletArtist } from "../../../shared/models/artist";
 import AdminDetailLayout from "../AdminDetailLayout";
 import AdminModalProvider from "../../../widgets/admin/AdminModalProvider";
+import { APIAlbum } from "../../../shared/models/album";
+import { APIMusic } from "../../../shared/models/music";
 
 const AdminDetailArtist: React.FC = () => {
   const outletArtist = useOutletContext<IOutletArtist | undefined>();
@@ -29,6 +31,14 @@ const AdminDetailArtist: React.FC = () => {
       ).then((res) => res.json());
       if (result.ok) {
         navigate("/admin/artists");
+      } else {
+        if (!result.error) {
+          if (result.type === "ERROR_ID") alert("잘못된 데이터입니다.");
+          else if (result.type === "NO_DATA")
+            alert("존재하지 않는 데이터입니다.");
+        } else {
+          alert("DB 에러입니다.");
+        }
       }
     } else {
       return;
@@ -66,21 +76,21 @@ const AdminDetailArtist: React.FC = () => {
   };
 
   // 자기 음악 fetch
-  const fetchThisAritstMusics = async () => {
-    const result = await fetch(
-      `http://localhost:5000/artist/${outletArtist?.artist._id}/musics`
-    ).then((res) => res.json());
-    if (result.ok) return result.musics;
-    else [];
+  const getThisAritstMusics = async () => {
+    if (outletArtist) {
+      return outletArtist.artist.musics as APIMusic[];
+    } else {
+      return [];
+    }
   };
 
   // 자기 앨범 fetch
-  const fetchThisAritstAlbum = async () => {
-    const result = await fetch(
-      `http://localhost:5000/artist/${outletArtist?.artist._id}/albums`
-    ).then((res) => res.json());
-    if (result.ok) return result.albums;
-    else [];
+  const getThisAritstAlbum = async () => {
+    if (outletArtist) {
+      return outletArtist.artist.albums as APIAlbum[];
+    } else {
+      return [];
+    }
   };
 
   // 자기 음악 리스트에서 음악 삭제
@@ -103,8 +113,18 @@ const AdminDetailArtist: React.FC = () => {
       ).then((res) => res.json());
       if (result.ok) {
         navigate(0);
+      } else {
+        if (!result.error) {
+          if (result.type === "ERROR_ID") {
+            alert("잘못된 데이터입니다.");
+          } else if (result.type === "NO_DATA") {
+            alert("해당 데이터를 찾을 수 없습니다.");
+          }
+        } else {
+          alert("DB 에러입니다. 다시 시도해주세요.");
+        }
+        closeThisArtistMusicModal();
       }
-      return;
     }
   };
 
@@ -128,8 +148,18 @@ const AdminDetailArtist: React.FC = () => {
       ).then((res) => res.json());
       if (result.ok) {
         navigate(0);
+      } else {
+        if (!result.error) {
+          if (result.type === "ERROR_ID") {
+            alert("잘못된 데이터입니다.");
+          } else if (result.type === "NO_DATA") {
+            alert("해당 데이터를 찾을 수 없습니다.");
+          }
+        } else {
+          alert("DB 에러입니다. 다시 시도해주세요.");
+        }
+        closeThisArtistMusicModal();
       }
-      return;
     }
   };
 
@@ -139,7 +169,7 @@ const AdminDetailArtist: React.FC = () => {
         <AdminModalProvider
           closeModal={closeThisArtistMusicModal}
           dataType="music"
-          fetchFunc={fetchThisAritstMusics}
+          fetchFunc={getThisAritstMusics}
           modalFunc={deleteMusicToArtist}
         />
       )}
@@ -147,7 +177,7 @@ const AdminDetailArtist: React.FC = () => {
         <AdminModalProvider
           closeModal={closeThisArtistAlbumModal}
           dataType="album"
-          fetchFunc={fetchThisAritstAlbum}
+          fetchFunc={getThisAritstAlbum}
           modalFunc={deleteAlbumToArtist}
         />
       )}

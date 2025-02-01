@@ -1,14 +1,17 @@
 import styled, { keyframes } from "styled-components";
+import { useOutletContext } from "react-router-dom";
+
 import FlexList from "../../../widgets/client/FlexList/FlexList";
 import RowList from "../../../widgets/client/RowList/RowList";
 import RowListSkeleton from "../../../widgets/client/RowList/RowListSkeleton";
-import { useOutletContext } from "react-router-dom";
 import { DefaultButton } from "../../../shared/ui/DefaultButton";
+
 import { APIUser } from "../../../shared/models/user";
 import { APIMusic } from "../../../shared/models/music";
 import { APIPlaylist } from "../../../shared/models/playlist";
 import { APIArtist } from "../../../shared/models/artist";
 import { APIAlbum } from "../../../shared/models/album";
+import UserEditModal from "../../../widgets/client/UserEditModal";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -165,6 +168,9 @@ interface IUserOutlet {
   followingAlbums: APIAlbum[] | null;
   moreButton: () => void;
   followingPage: () => void;
+  isEditModalOpen: boolean;
+  openEditModal: () => void;
+  closeEditModal: () => void;
 }
 
 const UserContent = () => {
@@ -183,6 +189,9 @@ const UserContent = () => {
     followingAlbums,
     moreButton,
     followingPage,
+    isEditModalOpen,
+    openEditModal,
+    closeEditModal,
   } = useOutletContext<IUserOutlet>();
   return (
     <Wrapper>
@@ -218,7 +227,11 @@ const UserContent = () => {
           <InfoButtons>
             {userData && isMyPage ? (
               <>
-                <Button $alter={false}>수정</Button>
+                {!userData.isSocial && (
+                  <Button $alter={false} onClick={openEditModal}>
+                    수정
+                  </Button>
+                )}
                 <Button onClick={logOut} $alter={true}>
                   로그아웃
                 </Button>
@@ -276,6 +289,7 @@ const UserContent = () => {
           buttonFunc={followingPage}
         />
       )}
+      {isEditModalOpen && <UserEditModal closeModal={closeEditModal} />}
     </Wrapper>
   );
 };

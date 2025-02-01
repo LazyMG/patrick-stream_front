@@ -3,6 +3,7 @@ import { useNavigate, useOutletContext } from "react-router-dom";
 import { IOutletAlbum } from "../../../shared/models/album";
 import AdminDetailLayout from "../AdminDetailLayout";
 import AdminModalProvider from "../../../widgets/admin/AdminModalProvider";
+import { APIMusic } from "../../../shared/models/music";
 
 const AdminDetailAlbum: React.FC = () => {
   const outletAlbum = useOutletContext<IOutletAlbum | undefined>();
@@ -24,8 +25,16 @@ const AdminDetailAlbum: React.FC = () => {
         }
       ).then((res) => res.json());
       if (result.ok) {
-        console.log(result);
         navigate("/admin/albums");
+      } else {
+        if (!result.error) {
+          if (result.type === "ERROR_ID") alert("잘못된 데이터입니다.");
+          else if (result.type === "NO_DATA")
+            alert("데이터를 찾을 수 없습니다.");
+          else if (result.type === "NO_ACCESS") alert("접근 권한이 없습니다.");
+        } else {
+          alert("DB 에러입니다.");
+        }
       }
     } else {
       return;
@@ -35,7 +44,7 @@ const AdminDetailAlbum: React.FC = () => {
   const openThisAlbumModal = () => setIsThisAlbumModalOpen(true);
 
   const openArtistModal = () => {
-    if (outletAlbum?.album.artists) {
+    if (outletAlbum?.album.artists?.length !== 0) {
       alert("이미 아티스트에 포함된 앨범입니다.");
       return;
     }
@@ -76,11 +85,11 @@ const AdminDetailAlbum: React.FC = () => {
 
   // 자기 음악 fetch 하는 코드 필요
   const fetchThisAlbumMusics = async () => {
-    const result = await fetch(
-      `http://localhost:5000/album/${outletAlbum?.album._id}/musics`
-    ).then((res) => res.json());
-    if (result.ok) return result.musics;
-    else return [];
+    if (outletAlbum) {
+      return outletAlbum.album.musics as APIMusic[];
+    } else {
+      return [];
+    }
   };
 
   // 아티스트 데이터 fetch 하는 코드 필요
@@ -90,7 +99,10 @@ const AdminDetailAlbum: React.FC = () => {
     );
     if (result.ok) {
       return result.allArtists;
-    } else return [];
+    } else {
+      alert("DB 에러입니다.");
+      return [];
+    }
   };
 
   // 자기 음악 삭제하는 코드 필요
@@ -113,8 +125,17 @@ const AdminDetailAlbum: React.FC = () => {
       ).then((res) => res.json());
       if (result.ok) {
         navigate(0);
+      } else {
+        if (!result.error) {
+          if (result.type === "ERROR_ID") alert("잘못된 데이터입니다.");
+          else if (result.type === "NO_DATA")
+            alert("존재하지 않는 데이터입니다.");
+          else if (result.type === "NO_ACCESS") alert("접근 권한이 없습니다.");
+        } else {
+          alert("DB 에러입니다.");
+        }
+        closeThisAlbumModal();
       }
-      return;
     }
   };
 
@@ -139,6 +160,15 @@ const AdminDetailAlbum: React.FC = () => {
         alert("추가되었습니다.");
         closeArtistModal();
         navigate("/admin/albums");
+      } else {
+        if (!result.error) {
+          if (result.type === "ERROR_ID") alert("잘못된 데이터입니다.");
+          else if (result.type === "NO_DATA")
+            alert("해당 데이터를 찾을 수 없습니다.");
+        } else {
+          alert("DB 에러입니다. 다시 시도해주세요.");
+        }
+        closeArtistModal();
       }
     }
   };

@@ -14,10 +14,8 @@ export const useAdmin = () => {
         //진행
         setIsLoading(false);
       } else {
-        ////돌려보내기
         navigate("/");
       }
-      console.log(result.isAdmin);
     } else {
       navigate("/");
     }

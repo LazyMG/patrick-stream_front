@@ -29,11 +29,13 @@ const UserWrapper = () => {
     null
   );
   const [isLoading, setIsLoading] = useState(true);
-  const setBackground = useSetRecoilState(backgroundState);
   const [follow, setFollow] = useState<boolean | null>(null);
   const [followers, setFollowers] = useState<number | null>(null);
   const [isNotFound, setIsNotFound] = useState(false);
   const [isError, setIsError] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+  const setBackground = useSetRecoilState(backgroundState);
 
   const likedMusics = useRecoilValue(likedMusicsState);
   const recentMusics = useRecoilValue(recentMusicsState);
@@ -166,6 +168,15 @@ const UserWrapper = () => {
   if (isNotFound) {
     return <NotFoundComponent />;
   }
+
+  const closeEditModal = () => {
+    setIsEditModalOpen(false);
+  };
+
+  const openEditModal = () => {
+    setIsEditModalOpen(true);
+  };
+
   return (
     <Outlet
       context={{
@@ -183,6 +194,9 @@ const UserWrapper = () => {
         followingAlbums,
         moreButton,
         followingPage,
+        isEditModalOpen,
+        openEditModal,
+        closeEditModal,
       }}
     />
   );
