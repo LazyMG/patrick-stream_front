@@ -102,8 +102,6 @@ const PlayListContainer = () => {
   const getCurrentUserPlaylist = useCallback(async () => {
     if (isError) return;
 
-    console.log("fetch");
-
     const result = await fetch(
       `http://localhost:5000/user/${user.userId}/allPlaylists`,
       {

@@ -1,7 +1,7 @@
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import NotFoundComponent from "../../../widgets/NotFoundComponent";
 import { userState } from "../../../app/entities/user/atom";
-import { Outlet, useParams } from "react-router-dom";
+import { Outlet, useNavigate, useParams } from "react-router-dom";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { APIArtist } from "../../../shared/models/artist";
 import { APIMusic } from "../../../shared/models/music";
@@ -34,6 +34,8 @@ const ArtistWrapper = () => {
   const { setGlobalToast } = useToast();
   const [isError, setIsError] = useState(false);
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     setFollowers((prev) => {
       if (prev === currentFollowers) return prev;
@@ -59,7 +61,6 @@ const ArtistWrapper = () => {
 
       if (result.ok) {
         setArtistData(result.artist);
-        console.log(result);
         setArtistMusics(result.artist.musics);
         setArtistAlbums(result.artist.albums);
         await new Promise((resolve) => setTimeout(resolve, 100));
@@ -68,10 +69,17 @@ const ArtistWrapper = () => {
       } else {
         setIsError(true);
         if (!result.error) {
+          if (result.type === "ERROR_ID") {
+            setGlobalToast("잘못된 아이디입니다.", "ARTIST_DATA_ID_ERROR");
+          } else if (result.type === "NO_DATA") {
+            setGlobalToast(
+              "데이터를 찾을 수 없습니다.",
+              "ARTIST_DATA_NO_DATA_ERROR"
+            );
+          }
           setIsNotFound(true);
         } else {
-          setGlobalToast("Artist Error", "ARTIST_DATA_FETCH_ERROR");
-          setIsLoading(false);
+          navigate("/not-found");
         }
       }
     },
@@ -90,16 +98,41 @@ const ArtistWrapper = () => {
 
   const patchArtistFollowers = useCallback(
     async (addList: boolean) => {
-      await fetch(`http://localhost:5000/artist/${artistId}/followers`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          activeUserId: user.userId,
-          addList,
-        }),
-      });
+      const result = await fetch(
+        `http://localhost:5000/artist/${artistId}/followers`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            activeUserId: user.userId,
+            addList,
+          }),
+        }
+      ).then((res) => res.json());
+      if (!result.ok) {
+        if (!result.error) {
+          if (result.type === "ERROR_ID") {
+            setGlobalToast(
+              "잘못된 데이터입니다.",
+              "ARTIST_FOLLOW_DATA_ID_ERROR"
+            );
+          } else if (result.type === "NO_DATA") {
+            setGlobalToast(
+              "데이터를 찾을 수 없습니다.",
+              "ARTIST_FOLLOW_NO_DATA_ERROR"
+            );
+          }
+        } else {
+          setGlobalToast("DB 오류가 발생했습니다.", "ARTIST_FOLLOW_DB_ERROR");
+        }
+        setFollow(!addList);
+        setFollowers((prev) => {
+          if (prev === null) return prev;
+          return addList ? Math.max(prev - 1, 0) : prev + 1;
+        });
+      }
     },
     [artistId, user.userId]
   );
