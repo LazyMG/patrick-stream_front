@@ -11,6 +11,7 @@ import {
 import { APIMusic } from "../models/music";
 import { useRecentMusics } from "./useRecentMusics";
 import { updateMusicView } from "../lib/updateMusicView";
+import { useToast } from "./useToast";
 
 export const usePlayMusic = () => {
   const setIsPlayerOn = useSetRecoilState(isPlayerOnState);
@@ -19,6 +20,7 @@ export const usePlayMusic = () => {
   const setSelectedMusic = useSetRecoilState(selectedMusicState);
   const setPlayingPlaylist = useSetRecoilState(playingPlaylistState);
   const { addUserRecentMusics } = useRecentMusics();
+  const { setGlobalToast } = useToast();
 
   const playMusic = async (music: APIMusic, noSame = false) => {
     let isSameMusic = false;
@@ -62,7 +64,10 @@ export const usePlayMusic = () => {
     });
 
     addUserRecentMusics(music);
-    await updateMusicView(music);
+    const updateResult = await updateMusicView(music);
+    if (updateResult.error) {
+      setGlobalToast("Music Error", updateResult.text);
+    }
   };
 
   return playMusic;

@@ -112,6 +112,7 @@ const UserEditModal = ({ closeModal }: { closeModal: () => void }) => {
     setError("");
   };
 
+  // 디바운스 필요
   const sumbitPassword = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -158,6 +159,7 @@ const UserEditModal = ({ closeModal }: { closeModal: () => void }) => {
     setError("");
   };
 
+  // 디바운스 필요
   const submitUsername = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -203,7 +205,7 @@ const UserEditModal = ({ closeModal }: { closeModal: () => void }) => {
       >
         <Content>
           {!isValid ? (
-            <EditForm onSubmit={sumbitPassword}>
+            <EditForm onSubmit={sumbitPassword} autoComplete="off">
               <Label>비밀번호를 입력해주세요.</Label>
               <InputDiv>
                 <Input
@@ -218,7 +220,7 @@ const UserEditModal = ({ closeModal }: { closeModal: () => void }) => {
               </ButtonDiv>
             </EditForm>
           ) : (
-            <EditForm onSubmit={submitUsername}>
+            <EditForm onSubmit={submitUsername} autoComplete="off">
               <Label>변경할 이름을 입력해주세요.</Label>
               <InputDiv>
                 <Input value={username} onChange={changeUsername} type="text" />

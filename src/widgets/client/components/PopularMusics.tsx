@@ -3,30 +3,38 @@ import { APIMusic } from "../../../shared/models/music";
 import FlexList from "./../FlexList/FlexList";
 import FlexListSkeleton from "../FlexList/FlexListSkeleton";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "../../../shared/hooks/useToast";
 
 const PopularMusics = () => {
   const [popularMusicsData, setPopularMusicsData] = useState<APIMusic[] | null>(
     null
   );
   const [isPopularMusicLoading, setIsPopularLoading] = useState(true);
+  const { setGlobalToast } = useToast();
+  const [isError, setIsError] = useState(false);
   const navigate = useNavigate();
 
   const getPopularMusics = async () => {
+    if (isError) return;
     const result = await fetch(
       `http://localhost:5000/music/popular`
     ).then((res) => res.json());
     if (result.ok) {
       setPopularMusicsData(result.musics);
-      setIsPopularLoading(false);
+    } else {
+      setGlobalToast("Music Error", "POPULAR_MUSIC_FETCH_ERROR");
+      setIsError(true);
     }
+    setIsPopularLoading(false);
   };
 
   useEffect(() => {
     getPopularMusics();
   }, []);
+
   return (
     <>
-      {isPopularMusicLoading || popularMusicsData === null ? (
+      {isError ? null : isPopularMusicLoading || popularMusicsData === null ? (
         <FlexListSkeleton />
       ) : (
         <FlexList

@@ -38,6 +38,7 @@ const SignIn = () => {
     state: boolean;
   }>({ email: "", state: false });
 
+  // 디바운스 필요
   const onValid: SubmitHandler<LoginFormValues> = async (data) => {
     //validate
     if (data.password !== data.passwordConfirm) {
@@ -87,6 +88,7 @@ const SignIn = () => {
     window.location.href = googleLoginUrl;
   };
 
+  // 디바운스 필요
   const emailValidate = async () => {
     const value = getValues("email");
 
@@ -115,7 +117,7 @@ const SignIn = () => {
 
   return (
     <FormContainer formType="signIn">
-      <Form onSubmit={handleSubmit(onValid)}>
+      <Form onSubmit={handleSubmit(onValid)} autoComplete="off">
         <InputRow
           id="email"
           name="이메일"

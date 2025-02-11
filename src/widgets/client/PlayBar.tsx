@@ -482,6 +482,7 @@ const PlayBar = ({ player }: IPlayBar) => {
     }
   };
 
+  // 디바운스 필요
   const onClickLikeButton = async () => {
     if (!selectedMusic || user.userId === "") return;
 

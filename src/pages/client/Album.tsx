@@ -371,16 +371,16 @@ const Album = () => {
           if (result.type === "ERROR_ID") {
             setGlobalToast(
               "잘못된 데이터입니다.",
-              "ARTIST_FOLLOW_DATA_ID_ERROR"
+              "ALBUM_FOLLOW_DATA_ID_ERROR"
             );
           } else if (result.type === "NO_DATA") {
             setGlobalToast(
               "데이터를 찾을 수 없습니다.",
-              "ARTIST_FOLLOW_NO_DATA_ERROR"
+              "ALBUM_FOLLOW_NO_DATA_ERROR"
             );
           }
         } else {
-          setGlobalToast("DB 오류가 발생했습니다.", "ARTIST_FOLLOW_DB_ERROR");
+          setGlobalToast("DB 오류가 발생했습니다.", "ALBUM_FOLLOW_DB_ERROR");
         }
         setFollow(!addList);
         setFollowers((prev) => {

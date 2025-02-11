@@ -32,6 +32,7 @@ const Login = () => {
   const navigate = useNavigate();
   const setUser = useSetRecoilState(userState);
 
+  // 디바운스 필요
   const onValid: SubmitHandler<LoginFormValues> = async (data) => {
     //fetch
     const result = await fetch(`http://localhost:5000/auth/login`, {
@@ -69,7 +70,7 @@ const Login = () => {
 
   return (
     <FormContainer formType="login">
-      <Form onSubmit={handleSubmit(onValid)}>
+      <Form onSubmit={handleSubmit(onValid)} autoComplete="off">
         <InputRow
           register={register("email", {
             required: "이메일을 입력해주세요.",

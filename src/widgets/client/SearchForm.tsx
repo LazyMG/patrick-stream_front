@@ -79,7 +79,13 @@ const SearchForm = () => {
 
   return (
     <Wrapper onSubmit={handleSubmit}>
-      <SearchInput value={keyword} type="text" onChange={onChange} name="q" />
+      <SearchInput
+        value={keyword}
+        type="text"
+        onChange={onChange}
+        name="q"
+        autoComplete="off"
+      />
       <SearchButton>
         <svg
           fill="currentColor"

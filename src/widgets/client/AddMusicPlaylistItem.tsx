@@ -3,6 +3,7 @@ import { APIPlaylist } from "../../shared/models/playlist";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { selectedMusicState } from "../../app/entities/music/atom";
 import { currentUserPlaylistState } from "../../app/entities/playlist/atom";
+import { useToast } from "../../shared/hooks/useToast";
 
 const ListItem = styled.div`
   width: 100%;
@@ -60,15 +61,16 @@ const AddMusicPlaylistItem = ({
 }) => {
   const selectedMusic = useRecoilValue(selectedMusicState);
   const setCurrentUserPlaylist = useSetRecoilState(currentUserPlaylistState);
+  const { setGlobalToast } = useToast();
 
   const clickAddMusic = async () => {
     if (!selectedMusic) return;
 
     let isAlreadyExistMusic = false;
-
+    let temp: APIPlaylist[] = [];
     setCurrentUserPlaylist((prev) => {
       if (!prev) return prev;
-
+      temp = prev;
       return prev.map((p) => {
         if (p._id !== playlist._id) {
           return p;
@@ -94,6 +96,8 @@ const AddMusicPlaylistItem = ({
       return;
     }
 
+    closeModal();
+
     const result = await fetch(
       `http://localhost:5000/playlist/${playlist._id}`,
       {
@@ -108,8 +112,25 @@ const AddMusicPlaylistItem = ({
         credentials: "include",
       }
     ).then((res) => res.json());
-    if (result.ok) {
-      closeModal();
+    if (!result.ok) {
+      if (!result.error) {
+        if (result.type === "ERROR_ID") {
+          setGlobalToast("잘못된 데이터입니다.", "PLAYLIST_MUSIC_ADD_ERROR_ID");
+        } else if (result.type === "NO_DATA") {
+          setGlobalToast(
+            "데이터가 존재하지 않습니다.",
+            "PLAYLIST_MUSIC_ADD_NO_DATA"
+          );
+        } else if (result.type === "NO_ACCESS") {
+          setGlobalToast(
+            "접근 권한이 없습니다.",
+            "PLAYLIST_MUSIC_ADD_NO_ACCESS"
+          );
+        }
+      } else {
+        setGlobalToast("DB Error", "PLAYLIST_MUSIC_ADD_DB_ERROR");
+      }
+      setCurrentUserPlaylist(temp);
     }
   };
 

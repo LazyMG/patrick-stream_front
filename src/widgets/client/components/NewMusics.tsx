@@ -19,11 +19,11 @@ const NewMusics = () => {
     ).then((res) => res.json());
     if (result.ok) {
       setNewMusicsData(result.musics);
-      setIsNewMusicLoading(false);
     } else {
-      setGlobalToast("Music Error", "New_MUSIC_FETCH_ERROR");
+      setGlobalToast("Music Error", "NEW_MUSIC_FETCH_ERROR");
       setIsError(true);
     }
+    setIsNewMusicLoading(false);
   }, [setGlobalToast, isError]);
 
   useEffect(() => {
@@ -32,7 +32,7 @@ const NewMusics = () => {
 
   return (
     <>
-      {isNewMusicLoading || newMusicsData === null ? (
+      {isError ? null : isNewMusicLoading || newMusicsData === null ? (
         <FlexListSkeleton />
       ) : (
         <FlexList

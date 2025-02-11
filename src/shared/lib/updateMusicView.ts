@@ -8,7 +8,20 @@ export const updateMusicView = async (music: APIMusic) => {
     },
     body: JSON.stringify({ isIncrease: true }),
   }).then((res) => res.json());
-  if (result.ok) {
-    // console.log("view increase!");
+  if (!result.ok) {
+    if (result.error) {
+      // DB Error
+      return { error: true, text: "DB_ERROR" };
+    } else {
+      if (result.type === "NO_DATA") {
+        // NO_DATA
+        return { error: true, text: "NO_DATA" };
+      } else {
+        // ERROR_ID
+        return { error: true, text: "ERROR_ID" };
+      }
+    }
+  } else {
+    return { error: false, text: "" };
   }
 };

@@ -3,22 +3,29 @@ import { APIMusic } from "../../../shared/models/music";
 import FlexListSkeleton from "../FlexList/FlexListSkeleton";
 import FlexList from "../FlexList/FlexList";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "../../../shared/hooks/useToast";
 
 const TrendingMusics = () => {
   const [trendingMusicsData, setTrendingMusicsData] = useState<
     APIMusic[] | null
   >(null);
   const [isTrendingMusicLoading, setIsTrendingMusicLoading] = useState(true);
+  const { setGlobalToast } = useToast();
+  const [isError, setIsError] = useState(false);
   const navigate = useNavigate();
 
   const getTrendingMusics = async () => {
+    if (isError) return;
     const result = await fetch(
       `http://localhost:5000/music/trending`
     ).then((res) => res.json());
     if (result.ok) {
       setTrendingMusicsData(result.musics);
-      setIsTrendingMusicLoading(false);
+    } else {
+      setGlobalToast("Music Error", "TRENDING_MUSIC_FETCH_ERROR");
+      setIsError(true);
     }
+    setIsTrendingMusicLoading(false);
   };
 
   useEffect(() => {
@@ -27,7 +34,8 @@ const TrendingMusics = () => {
 
   return (
     <>
-      {isTrendingMusicLoading || trendingMusicsData === null ? (
+      {isError ? null : isTrendingMusicLoading ||
+        trendingMusicsData === null ? (
         <FlexListSkeleton />
       ) : (
         <FlexList

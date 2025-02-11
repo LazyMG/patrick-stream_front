@@ -5,6 +5,8 @@ import {
   playlistMusicsState,
 } from "../../app/entities/playlist/atom";
 import { isPlaylistToastOpenState } from "../../app/entities/global/atom";
+import { APIPlaylist } from "../models/playlist";
+import { useToast } from "./useToast";
 
 export const useDeletePlaylistMusic = () => {
   const user = useRecoilValue(userState);
@@ -12,6 +14,7 @@ export const useDeletePlaylistMusic = () => {
   const setPlaylistMusics = useSetRecoilState(playlistMusicsState);
   const setIsPlaylistToastOpen = useSetRecoilState(isPlaylistToastOpenState);
   const setcurrentUserPlaylist = useSetRecoilState(currentUserPlaylistState);
+  const { setGlobalToast } = useToast();
 
   const deletePlaylistMusic = async (playlistId: string) => {
     if (user?.userId === "" || !loginUserData) return;
@@ -32,9 +35,12 @@ export const useDeletePlaylistMusic = () => {
 
     if (targetMusics.length === 0) return;
 
+    let temp: APIPlaylist[] = [];
+
     setcurrentUserPlaylist((prev) => {
       if (!prev) return prev;
 
+      temp = prev;
       const index = [...prev].findIndex(
         (playlist) => playlist._id === playlistId
       );
@@ -57,7 +63,7 @@ export const useDeletePlaylistMusic = () => {
       return updated;
     });
 
-    await fetch(`http://localhost:5000/playlist/${playlistId}`, {
+    const result = await fetch(`http://localhost:5000/playlist/${playlistId}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -68,6 +74,29 @@ export const useDeletePlaylistMusic = () => {
       }),
       credentials: "include",
     }).then((res) => res.json());
+    if (!result.ok) {
+      setcurrentUserPlaylist(temp);
+      if (!result.error) {
+        if (result.type === "ERROR_ID") {
+          setGlobalToast(
+            "잘못된 데이터입니다.",
+            "PLAYLIST_UPDATE_DATA_ID_ERROR"
+          );
+        } else if (result.type === "NO_DATA") {
+          setGlobalToast(
+            "데이터를 찾을 수 없습니다.",
+            "PLAYLIST_UPDATE_NO_DATA_ERROR"
+          );
+        } else if (result.type === "NO_ACCESS") {
+          setGlobalToast(
+            "접근 권한이 없습니다.",
+            "PLAYLIST_UPDATE_NO_ACCESS_ERROR"
+          );
+        }
+      } else {
+        setGlobalToast("DB 오류가 발생했습니다.", "ALBUM_FOLLOW_DB_ERROR");
+      }
+    }
   };
 
   return deletePlaylistMusic;

@@ -198,7 +198,7 @@ const CreatePlaylistModal = ({ closeModal }: ICreatePlaylistModal) => {
       >
         <Content>
           <Title>새 재생목록</Title>
-          <ModalForm onSubmit={handleSubmit(createPlaylist)}>
+          <ModalForm onSubmit={handleSubmit(createPlaylist)} autoComplete="off">
             <InputDiv>
               <input
                 placeholder="제목"
