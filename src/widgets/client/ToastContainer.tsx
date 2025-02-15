@@ -38,7 +38,6 @@ const ToastContainer = ({
   text: string;
 }) => {
   const isPlayerOn = useRecoilValue(isPlayerOnState);
-  console.log("isPlayerOn", isPlayerOn);
 
   return (
     <Wrapper $isPlayerOn={isPlayerOn}>

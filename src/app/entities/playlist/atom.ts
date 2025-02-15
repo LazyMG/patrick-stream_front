@@ -2,9 +2,9 @@ import { atom } from "recoil";
 import { APIPlaylist } from "../../../shared/models/playlist";
 import { APIMusic } from "../../../shared/models/music";
 
-export const currentUserPlaylistState = atom<APIPlaylist[]>({
+export const currentUserPlaylistState = atom<APIPlaylist[] | null>({
   key: "currentUserPlaylistState",
-  default: [],
+  default: null,
 });
 
 interface IPlaylistMusic {

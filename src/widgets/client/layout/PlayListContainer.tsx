@@ -110,13 +110,27 @@ const PlayListContainer = () => {
     ).then((res) => res.json());
     if (result.ok) {
       setCurrentUserPlaylist(result.playlists as APIPlaylist[]);
-      setIsLoading(false);
     } else {
+      if (!result.error) {
+        if (result.type === "ERROR_ID") {
+          setGlobalToast(
+            "잘못된 데이터입니다.",
+            "USER_PLAYLIST_ERROR_ID_ERROR"
+          );
+        } else if (result.type === "NO_DATA") {
+          setGlobalToast(
+            "존재하지 않는 데이터입니다.",
+            "USER_PLAYLIST_NO_DATA_ERROR"
+          );
+        }
+      } else {
+        setGlobalToast("일시적인 오류입니다.", "USER_PLAYLIST_DB_ERROR");
+      }
+      setCurrentUserPlaylist([]);
       setIsError(true);
-      setGlobalToast("Playlist Error", "USER_PLAYLIST_FETCH_ERROR");
-      setIsLoading(false);
     }
-  }, [user.userId, setCurrentUserPlaylist, setGlobalToast, isError]);
+    setIsLoading(false);
+  }, [user.userId, setCurrentUserPlaylist, isError]);
 
   useEffect(() => {
     if (user.userId !== "") {
@@ -149,9 +163,17 @@ const PlayListContainer = () => {
         </CreateButton>
         <PlaylistView>
           {!isLoading ? (
-            currentUserPlaylist.map((item) => (
-              <PlaylistItem playlist={item} key={item._id} />
-            ))
+            currentUserPlaylist ? (
+              currentUserPlaylist.map((item) => (
+                <PlaylistItem playlist={item} key={item._id} />
+              ))
+            ) : (
+              <>
+                <PlaylistSkeleton />
+                <PlaylistSkeleton />
+                <PlaylistSkeleton />
+              </>
+            )
           ) : (
             <>
               <PlaylistSkeleton />

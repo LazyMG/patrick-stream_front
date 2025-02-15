@@ -79,12 +79,17 @@ const UserWrapper = () => {
         setIsLoading(false);
       } else {
         if (!result.error) {
-          setIsNotFound(true);
+          if (result.type === "ERROR_ID") {
+            setGlobalToast("잘못된 데이터입니다.", "USER_ERROR_ID_ERROR");
+          } else if (result.type === "NO_DATA") {
+            setGlobalToast("데이터가 존재하지 않습니다.", "USER_NO_DATA_ERROR");
+          }
         } else {
-          setGlobalToast("User Error", "USER_DATA_FETCH_ERROR");
-          setIsError(true);
-          setIsLoading(false);
+          setGlobalToast("일시적인 오류입니다.", "USER_DB_ERROR");
+          // setIsError(true);
+          // setIsLoading(false);
         }
+        setIsNotFound(true);
       }
     },
     [setGlobalToast, isError]
@@ -127,14 +132,36 @@ const UserWrapper = () => {
 
   const patchUserFollowers = useCallback(
     async (addList: boolean) => {
-      await fetch(`http://localhost:5000/user/${userId}/followers`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          activeUserId: user.userId,
-          addList,
-        }),
-      });
+      const result = await fetch(
+        `http://localhost:5000/user/${userId}/followers`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            activeUserId: user.userId,
+            addList,
+          }),
+        }
+      ).then((res) => res.json());
+      if (!result.ok) {
+        if (!result.error) {
+          if (result.type === "ERROR_ID") {
+            setGlobalToast("잘못된 데이터입니다.", "USER_FOLLOW_DATA_ID_ERROR");
+          } else if (result.type === "NO_DATA") {
+            setGlobalToast(
+              "데이터를 찾을 수 없습니다.",
+              "USER_FOLLOW_NO_DATA_ERROR"
+            );
+          }
+        } else {
+          setGlobalToast("일시적인 오류입니다.", "USER_FOLLOW_DB_ERROR");
+        }
+        setFollow(!addList);
+        setFollowers((prev) => {
+          if (prev === null) return prev;
+          return addList ? Math.max(prev - 1, 0) : prev + 1;
+        });
+      }
     },
     [userId, user.userId]
   );

@@ -5,13 +5,14 @@ import { loginUserDataState, userState } from "../../app/entities/user/atom";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { currentUserPlaylistState } from "../../app/entities/playlist/atom";
 import { useEffect } from "react";
+import { useToast } from "../../shared/hooks/useToast";
 
 const ModalOverlay = styled.div`
   position: fixed;
   width: 100vw;
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.8);
-  z-index: 99;
+  z-index: 10;
   top: 0;
   left: 0;
   display: flex;
@@ -124,6 +125,7 @@ const CreatePlaylistModal = ({ closeModal }: ICreatePlaylistModal) => {
   } = useForm<PlaylistFormValues>();
   const setCurrentUserPlaylist = useSetRecoilState(currentUserPlaylistState);
   const loginUserData = useRecoilValue(loginUserDataState);
+  const { setGlobalToast } = useToast();
 
   const createPlaylist: SubmitHandler<PlaylistFormValues> = async (data) => {
     //validate
@@ -141,32 +143,46 @@ const CreatePlaylistModal = ({ closeModal }: ICreatePlaylistModal) => {
         }
       ).then((res) => res.json());
       if (result.ok) {
-        setCurrentUserPlaylist((prev) => [
-          {
-            _id: result.id,
-            title: data.title,
-            duration: 0,
-            introduction: data.info,
-            user: {
-              username: loginUserData.username,
-              _id: user.userId,
+        setCurrentUserPlaylist((prev) => {
+          if (!prev) return prev;
+
+          return [
+            {
+              _id: result.id,
+              title: data.title,
+              duration: 0,
+              introduction: data.info,
+              user: {
+                username: loginUserData.username,
+                _id: user.userId,
+              },
             },
-          },
-          ...prev,
-        ]);
+            ...prev,
+          ];
+        });
         closeModal();
       } else {
         if (!result.error) {
-          if (result.message.includes("Input")) {
+          if (result.type === "NO_INPUT") {
             setError("title", { message: "제목을 입력해주세요." });
-          } else {
-            // setIsLocalToastOpen({
-            //   state: true,
-            //   text: "로그인을 확인해주세요.",
-            // });
+          } else if (result.type === "NO_ACCESS") {
+            setGlobalToast(
+              "잘못된 접근입니다.",
+              "CREATE_PLAYLIST_NO_ACCESS_ERROR"
+            );
+          } else if (result.type === "NO_DATA") {
+            setGlobalToast(
+              "존재하지 않는 데이터입니다.",
+              "CREATE_PLAYLIST_NO_DATA_ERROR"
+            );
+          } else if (result.type === "ERROR_ID") {
+            setGlobalToast(
+              "잘못된 데이터입니다.",
+              "CREATE_PLAYLIST_ERROR_ID_ERROR"
+            );
           }
         } else {
-          //setIsLocalToastOpen({ state: true, text: "오류가 발생했습니다." });
+          setGlobalToast("일시적인 오류입니다.", "CREATE_PLAYLIST_DB_ERROR");
         }
       }
     }

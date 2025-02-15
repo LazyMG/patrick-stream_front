@@ -13,6 +13,7 @@ import { loginUserDataState, userState } from "../../../app/entities/user/atom";
 import { useLocation } from "react-router-dom";
 import ToastContainer from "./../ToastContainer";
 import { useLoginUser } from "../../../shared/hooks/useLoginUser";
+import { useToast } from "../../../shared/hooks/useToast";
 
 const Wrapper = styled.div<{ $backImg?: string | null }>`
   margin-left: 250.5px;
@@ -168,6 +169,7 @@ const MainContainer = ({ children, onScroll }: IMainContainer) => {
   const setLoginUserData = useSetRecoilState(loginUserDataState);
   const { initiateLoginUserData } = useLoginUser();
   const globalToastConfig = useRecoilValue(globalToastConfigState);
+  const { setGlobalToast } = useToast();
 
   const location = useLocation();
 
@@ -179,6 +181,22 @@ const MainContainer = ({ children, onScroll }: IMainContainer) => {
       if (result.ok) {
         setLoginUserData(result.user);
         initiateLoginUserData(result.user);
+      } else {
+        if (!result.error) {
+          if (result.type === "ERROR_ID") {
+            setGlobalToast(
+              "잘못된 데이터입니다.",
+              "CURRENT_USER_ERROR_ID_ERROR"
+            );
+          } else if (result.type === "NO_DATA") {
+            setGlobalToast(
+              "존재하지 않는 데이터입니다.",
+              "CURRENT_USER_NO_DATA_ERROR"
+            );
+          }
+        } else {
+          setGlobalToast("일시적인 오류입니다.", "CURRENT_USER_DB_ERROR");
+        }
       }
     },
     [setLoginUserData, initiateLoginUserData]

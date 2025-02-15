@@ -3,13 +3,14 @@ import { createPortal } from "react-dom";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import { loginUserDataState } from "../../app/entities/user/atom";
+import { useToast } from "../../shared/hooks/useToast";
 
 const ModalOverlay = styled.div`
   position: fixed;
   width: 100vw;
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.8);
-  z-index: 99;
+  z-index: 11;
   top: 0;
   left: 0;
   display: flex;
@@ -29,7 +30,6 @@ const ContentModal = styled.div`
 const Content = styled.div`
   width: 100%;
   height: 100%;
-  /* background-color: red; */
 `;
 
 const EditForm = styled.form`
@@ -106,6 +106,7 @@ const UserEditModal = ({ closeModal }: { closeModal: () => void }) => {
   const [username, setUsername] = useState(
     loginUserData ? loginUserData.username : ""
   );
+  const { setGlobalToast } = useToast();
 
   const changePassword = (event: ChangeEvent<HTMLInputElement>) => {
     setPassword(event.currentTarget.value);
@@ -140,14 +141,29 @@ const UserEditModal = ({ closeModal }: { closeModal: () => void }) => {
         if (result.type === "USER") {
           setError("비밀번호가 일치하지 않습니다.");
         } else if (result.type === "NO_ACCESS") {
-          alert("접근 권한이 없습니다.");
+          setGlobalToast(
+            "접근 권한이 없습니다.",
+            "EDIT_PROFILE_PASSWORD_NO_ACCESS_ERROR"
+          );
           closeModal();
         } else if (result.type === "NO_DATA") {
-          alert("데이터를 찾을 수 없습니다.");
+          setGlobalToast(
+            "존재하지 않는 데이터입니다.",
+            "EDIT_PROFILE_PASSWORD_NO_DATA_ERROR"
+          );
+          closeModal();
+        } else if (result.type === "ERROR_ID") {
+          setGlobalToast(
+            "잘못된 데이터입니다.",
+            "EDIT_PROFILE_PASSWORD_ERROR_ID_ERROR"
+          );
           closeModal();
         }
       } else {
-        alert("DB 에러입니다. 잠시 후 시도해주세요.");
+        setGlobalToast(
+          "일시적인 오류입니다.",
+          "EDIT_PROFILE_PASSWORD_DB_ERROR"
+        );
         closeModal();
       }
       setIsValid(false);
@@ -192,7 +208,26 @@ const UserEditModal = ({ closeModal }: { closeModal: () => void }) => {
       });
       closeModal();
     } else {
-      setError("이미 사용 중인 이름입니다.");
+      if (!result.error) {
+        if (result.type === "INVALID_ERROR") {
+          setError("이미 사용 중인 이름입니다.");
+        } else if (result.type === "NO_ACCESS") {
+          setGlobalToast(
+            "잘못된 데이터입니다.",
+            "EDIT_PROFILE_NO_ACCESS_ERROR"
+          );
+          closeModal();
+        } else if (result.type === "NO_DATA") {
+          setGlobalToast(
+            "존재하지 않는 데이터입니다.",
+            "EDIT_PROFILE_NO_DATA_ERROR"
+          );
+          closeModal();
+        }
+      } else {
+        setGlobalToast("일시적인 오류입니다.", "EDIT_PROFILE_ERROR_ID_ERROR");
+        closeModal();
+      }
     }
   };
 
