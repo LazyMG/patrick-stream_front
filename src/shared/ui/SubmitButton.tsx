@@ -11,7 +11,8 @@ const Wrapper = styled.button`
   font-weight: bold;
   height: 45px;
 
-  cursor: pointer;
+  cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
+  pointer-events: ${(props) => (props.disabled ? "none" : "auto")};
 
   &:hover {
     background-color: ${(props) => props.theme.color.sub_pink};
@@ -20,10 +21,11 @@ const Wrapper = styled.button`
 
 interface ISubmitButton {
   text: string;
+  disabled: boolean;
 }
 
-const SubmitButton = ({ text }: ISubmitButton) => {
-  return <Wrapper>{text}</Wrapper>;
+const SubmitButton = ({ text, disabled }: ISubmitButton) => {
+  return <Wrapper disabled={disabled}>{text}</Wrapper>;
 };
 
 export default SubmitButton;

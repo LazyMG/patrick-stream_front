@@ -7,7 +7,8 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import InputRow from "../../shared/ui/InputRow";
 import { useNavigate } from "react-router-dom";
 import { googleLoginUrl } from "../../shared/lib/constant";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { debounce } from "lodash";
 
 const Form = styled.form`
   display: flex;
@@ -37,23 +38,30 @@ const SignIn = () => {
     email: string;
     state: boolean;
   }>({ email: "", state: false });
+  const [isLoading, setIsLoading] = useState(false);
 
   // 디바운스 필요
   const onValid: SubmitHandler<LoginFormValues> = async (data) => {
+    if (isLoading) return;
     //validate
     if (data.password !== data.passwordConfirm) {
       setError("password", { message: "비밀번호가 일치하지 않습니다." });
       setFocus("password");
+      return;
     }
 
     if (!isEmailChecked.state || isEmailChecked.email === "") {
       setError("email", { message: "이메일 중복 확인이 필요합니다." });
+      return;
     }
 
     if (data.email !== isEmailChecked.email) {
       setError("email", { message: "이메일 중복 확인이 필요합니다." });
       setIsEmailChecked({ email: "", state: false });
+      return;
     }
+
+    setIsLoading(true);
 
     // fetch
     const result = await fetch(`http://localhost:5000/auth/signIn`, {
@@ -70,7 +78,6 @@ const SignIn = () => {
       // 에러 처리
       // 1. 비밀번호 불일치
       // 2. 이미 존재하는 아이디
-      // 3. 이미 존재하는 사용자 이름
       if (!result.error) {
         if (result.type === "email") {
           setError("email", { message: result.message });
@@ -78,17 +85,19 @@ const SignIn = () => {
           setError("password", { message: result.message });
         }
       } else {
-        // 4. DB 에러
+        // 3. DB 에러
         alert("Server Error");
       }
     }
+    setIsLoading(false);
   };
+
+  const debouncedSignIn = debounce(onValid, 800);
 
   const gotoSocialLogin = () => {
     window.location.href = googleLoginUrl;
   };
 
-  // 디바운스 필요
   const emailValidate = async () => {
     const value = getValues("email");
 
@@ -115,6 +124,8 @@ const SignIn = () => {
     }
   };
 
+  const debouncedEmailValidate = debounce(emailValidate, 200);
+
   return (
     <FormContainer formType="signIn">
       <Form onSubmit={handleSubmit(onValid)} autoComplete="off">
@@ -125,7 +136,7 @@ const SignIn = () => {
           type="email"
           errorMsg={errors.email ? errors.email.message : ""}
           isCustom={true}
-          validateFunc={emailValidate}
+          validateFunc={debouncedEmailValidate}
           register={register("email", {
             required: "이메일을 입력해주세요.",
             pattern: {
@@ -172,7 +183,10 @@ const SignIn = () => {
             },
           })}
         />
-        <SubmitButton text="회원가입" />
+        <SubmitButton
+          text={isLoading ? "진행 중" : "회원가입"}
+          disabled={isLoading}
+        />
         <Divider />
         <SocialButton onClickFunc={gotoSocialLogin} />
       </Form>

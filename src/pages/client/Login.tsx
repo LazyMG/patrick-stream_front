@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
 import { userState } from "../../app/entities/user/atom";
 import { googleLoginUrl } from "../../shared/lib/constant";
+import { useState } from "react";
 
 const Form = styled.form`
   display: flex;
@@ -31,10 +32,12 @@ const Login = () => {
   } = useForm<LoginFormValues>();
   const navigate = useNavigate();
   const setUser = useSetRecoilState(userState);
+  const [isLoading, setIsLoading] = useState(false);
 
   // 디바운스 필요
   const onValid: SubmitHandler<LoginFormValues> = async (data) => {
     //fetch
+    setIsLoading(true);
     const result = await fetch(`http://localhost:5000/auth/login`, {
       method: "POST",
       headers: {
@@ -48,6 +51,7 @@ const Login = () => {
         userId: result.userId,
         loading: false,
       });
+      setIsLoading(false);
       navigate("/");
     } else {
       // 에러 처리
@@ -103,7 +107,7 @@ const Login = () => {
           placeHolder="Password"
           type="password"
         />
-        <SubmitButton text="로그인" />
+        <SubmitButton text="로그인" disabled={isLoading} />
         <Divider />
         <SocialButton onClickFunc={gotoSocialLogin} />
       </Form>

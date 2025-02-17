@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import Input from "./Input";
 import { UseFormRegisterReturn } from "react-hook-form";
+import { DebouncedFunc } from "lodash";
 
 const Wrapper = styled.div`
   display: flex;
@@ -50,7 +51,7 @@ interface IInputRow {
   register: UseFormRegisterReturn;
   errorMsg?: string;
   isCustom?: boolean;
-  validateFunc?: () => Promise<void>;
+  validateFunc?: DebouncedFunc<() => Promise<void>>;
 }
 
 const InputRow = ({
