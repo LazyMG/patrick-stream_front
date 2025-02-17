@@ -7,7 +7,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import InputRow from "../../shared/ui/InputRow";
 import { useNavigate } from "react-router-dom";
 import { googleLoginUrl } from "../../shared/lib/constant";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { debounce } from "lodash";
 
 const Form = styled.form`
@@ -91,8 +91,6 @@ const SignIn = () => {
     }
     setIsLoading(false);
   };
-
-  const debouncedSignIn = debounce(onValid, 800);
 
   const gotoSocialLogin = () => {
     window.location.href = googleLoginUrl;
