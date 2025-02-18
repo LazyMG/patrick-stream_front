@@ -23,7 +23,7 @@ const Wrapper = styled.div<{ $isPlayerOn: boolean }>`
   animation: ${slideUp} 0.5s ease-out forwards;
 
   width: 100vw;
-  z-index: 11;
+  z-index: 99;
 `;
 
 const ToastContainer = ({

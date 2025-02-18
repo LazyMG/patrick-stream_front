@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
@@ -10,7 +10,7 @@ const ModalOverlay = styled.div`
   width: 100vw;
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.8);
-  z-index: 11;
+  z-index: 50;
   top: 0;
   left: 0;
   display: flex;
@@ -81,41 +81,63 @@ const Input = styled.input`
 const ButtonDiv = styled.div`
   display: flex;
   justify-content: flex-end;
+`;
 
-  button {
-    border: none;
-    background: none;
+const Button = styled.button`
+  border: none;
+  background: none;
 
-    border: 1px solid ${(props) => props.theme.color.purple};
+  border: 1px solid ${(props) => props.theme.color.purple};
 
-    color: ${(props) => props.theme.color.white};
-    font-size: 15px;
-    border-radius: 15px;
+  color: ${(props) => props.theme.color.white};
+  font-size: 15px;
+  border-radius: 15px;
 
-    padding: 5px 15px;
+  padding: 5px 15px;
 
-    cursor: pointer;
-  }
+  cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
+  pointer-events: ${(props) => (props.disabled ? "none" : "auto")};
 `;
 
 const UserEditModal = ({ closeModal }: { closeModal: () => void }) => {
   const [loginUserData, setLoginUserData] = useRecoilState(loginUserDataState);
   const [password, setPassword] = useState("");
+  const [isPasswordLoading, setIsPasswordLoading] = useState(false);
   const [error, setError] = useState("");
   const [isValid, setIsValid] = useState<boolean | null>(null);
   const [username, setUsername] = useState(
     loginUserData ? loginUserData.username : ""
   );
+  const [isNameLoading, setIsNameLoading] = useState(false);
   const { setGlobalToast } = useToast();
+
+  const handlePopState = () => {
+    // 뒤로 가기가 발생하면 모달을 닫음
+    closeModal();
+  };
+
+  useEffect(() => {
+    // 모달이 열릴 때 현재 상태를 push
+    window.history.pushState({ modalOpen: true }, "");
+
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+      if (window.history.state?.modalOpen) {
+        window.history.back();
+      }
+    };
+  }, []);
 
   const changePassword = (event: ChangeEvent<HTMLInputElement>) => {
     setPassword(event.currentTarget.value);
     setError("");
   };
 
-  // 디바운스 필요
   const sumbitPassword = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (isPasswordLoading) return;
 
     if (!loginUserData) return;
 
@@ -123,7 +145,7 @@ const UserEditModal = ({ closeModal }: { closeModal: () => void }) => {
       setError("비밀번호를 입력해주세요.");
       return;
     }
-
+    setIsPasswordLoading(true);
     const result = await fetch(`http://localhost:5000/auth/password`, {
       method: "POST",
       credentials: "include",
@@ -168,6 +190,7 @@ const UserEditModal = ({ closeModal }: { closeModal: () => void }) => {
       }
       setIsValid(false);
     }
+    setIsPasswordLoading(false);
   };
 
   const changeUsername = (event: ChangeEvent<HTMLInputElement>) => {
@@ -175,9 +198,10 @@ const UserEditModal = ({ closeModal }: { closeModal: () => void }) => {
     setError("");
   };
 
-  // 디바운스 필요
   const submitUsername = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    if (isNameLoading) return;
 
     if (!loginUserData) return;
 
@@ -185,6 +209,8 @@ const UserEditModal = ({ closeModal }: { closeModal: () => void }) => {
       setError("변경되지 않았습니다.");
       return;
     }
+
+    setIsNameLoading(true);
 
     const result = await fetch(
       `http://localhost:5000/user/${loginUserData._id}`,
@@ -229,6 +255,7 @@ const UserEditModal = ({ closeModal }: { closeModal: () => void }) => {
         closeModal();
       }
     }
+    setIsNameLoading(false);
   };
 
   return createPortal(
@@ -251,7 +278,9 @@ const UserEditModal = ({ closeModal }: { closeModal: () => void }) => {
                 {error && <span>{error}</span>}
               </InputDiv>
               <ButtonDiv>
-                <button>확인</button>
+                <Button disabled={isPasswordLoading}>
+                  {isPasswordLoading ? "확인 중" : "확인"}
+                </Button>
               </ButtonDiv>
             </EditForm>
           ) : (
@@ -262,7 +291,9 @@ const UserEditModal = ({ closeModal }: { closeModal: () => void }) => {
                 {error && <span>{error}</span>}
               </InputDiv>
               <ButtonDiv>
-                <button>확인</button>
+                <Button disabled={isNameLoading}>
+                  {isNameLoading ? "확인 중" : "확인"}
+                </Button>
               </ButtonDiv>
             </EditForm>
           )}

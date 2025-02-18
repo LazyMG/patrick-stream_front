@@ -10,7 +10,7 @@ const ModalOverlay = styled.div`
   width: 100vw;
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.8);
-  z-index: 99;
+  z-index: 50;
   top: 0;
   left: 0;
   display: flex;
@@ -89,7 +89,9 @@ const AddMusicPlaylistModal = ({ closeModal }: IAddMusicPlaylistModal) => {
 
     return () => {
       window.removeEventListener("popstate", handlePopState);
-      window.history.back(); // 모달이 닫힐 때 상태를 되돌림
+      if (window.history.state?.modalOpen) {
+        window.history.back();
+      }
     };
   }, []);
 

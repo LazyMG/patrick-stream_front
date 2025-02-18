@@ -34,8 +34,9 @@ const Login = () => {
   const setUser = useSetRecoilState(userState);
   const [isLoading, setIsLoading] = useState(false);
 
-  // 디바운스 필요
   const onValid: SubmitHandler<LoginFormValues> = async (data) => {
+    if (isLoading) return;
+
     //fetch
     setIsLoading(true);
     const result = await fetch(`http://localhost:5000/auth/login`, {
@@ -51,7 +52,6 @@ const Login = () => {
         userId: result.userId,
         loading: false,
       });
-      setIsLoading(false);
       navigate("/");
     } else {
       // 에러 처리
@@ -66,6 +66,7 @@ const Login = () => {
         alert("Server Error");
       }
     }
+    setIsLoading(false);
   };
 
   const gotoSocialLogin = () => {
@@ -107,7 +108,10 @@ const Login = () => {
           placeHolder="Password"
           type="password"
         />
-        <SubmitButton text="로그인" disabled={isLoading} />
+        <SubmitButton
+          text={isLoading ? "진행 중" : "로그인"}
+          disabled={isLoading}
+        />
         <Divider />
         <SocialButton onClickFunc={gotoSocialLogin} />
       </Form>

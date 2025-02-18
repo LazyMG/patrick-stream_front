@@ -76,6 +76,9 @@ const Button = styled(DefaultButton)<{ $alter: boolean }>`
 
   border: 1px solid #fff;
 
+  cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
+  pointer-events: ${(props) => (props.disabled ? "none" : "auto")};
+
   &:hover {
     background-color: ${(props) => (props.$alter ? "#282828" : " #c7c7c7")};
   }
@@ -171,6 +174,7 @@ interface IUserOutlet {
   isEditModalOpen: boolean;
   openEditModal: () => void;
   closeEditModal: () => void;
+  isLogoutLoading: boolean;
 }
 
 const UserContent = () => {
@@ -192,6 +196,7 @@ const UserContent = () => {
     isEditModalOpen,
     openEditModal,
     closeEditModal,
+    isLogoutLoading,
   } = useOutletContext<IUserOutlet>();
   return (
     <Wrapper>
@@ -232,8 +237,12 @@ const UserContent = () => {
                     수정
                   </Button>
                 )}
-                <Button onClick={logOut} $alter={true}>
-                  로그아웃
+                <Button
+                  onClick={logOut}
+                  $alter={true}
+                  disabled={isLogoutLoading}
+                >
+                  {isLogoutLoading ? "진행 중" : "로그아웃"}
                 </Button>
               </>
             ) : follow !== null ? (

@@ -34,6 +34,7 @@ const UserWrapper = () => {
   const [isNotFound, setIsNotFound] = useState(false);
   const [isError, setIsError] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isLogoutLoading, setIsLogoutLoading] = useState(false);
 
   const setBackground = useSetRecoilState(backgroundState);
 
@@ -120,6 +121,7 @@ const UserWrapper = () => {
   }, [isMyPage, loginUserData, setBackground, userData, userId, user.loading]);
 
   const logOut = async () => {
+    setIsLogoutLoading(true);
     const result = await fetch("http://localhost:5000/auth/logout", {
       method: "POST",
       credentials: "include",
@@ -128,6 +130,7 @@ const UserWrapper = () => {
       cleanUserInfo();
       navigate("/");
     }
+    setIsLogoutLoading(false);
   };
 
   const patchUserFollowers = useCallback(
@@ -224,6 +227,7 @@ const UserWrapper = () => {
         isEditModalOpen,
         openEditModal,
         closeEditModal,
+        isLogoutLoading,
       }}
     />
   );

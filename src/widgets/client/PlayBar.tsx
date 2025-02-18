@@ -1,4 +1,11 @@
-import { ChangeEvent, useEffect, useRef, useState } from "react";
+import {
+  ChangeEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import styled from "styled-components";
 import {
@@ -19,6 +26,7 @@ import { usePlayMusic } from "../../shared/hooks/usePlayMusic";
 import AddMusicPlaylistModal from "./AddMusicPlaylistModal";
 import CurrentPlaylistModal from "./CurrentPlaylistModal";
 import PlayBarTimeline from "../../shared/ui/PlayBarTimeline";
+import { debounce } from "lodash";
 
 const Wrapper = styled.div`
   position: fixed;
@@ -303,11 +311,13 @@ const PlayBar = ({ player }: IPlayBar) => {
 
   const playMusic = usePlayMusic();
 
-  //노래 재생될 때
-
+  // 노래 재생될 때
+  // 재생 상태 1 이거나 일시 정지 상태 2 일 때 음악이 바뀌면 타임라인 초기화
   useEffect(() => {
-    if (player && player.getPlayerState() === 1) {
-      // console.log("playbar", player);
+    if (
+      player &&
+      (player.getPlayerState() === 1 || player.getPlayerState() === 2)
+    ) {
       player.stopVideo();
       setTime("00:00");
       setTimeline(0);
@@ -407,6 +417,7 @@ const PlayBar = ({ player }: IPlayBar) => {
   const togglePlaying = () => {
     if (player && currentPlayer.isPlaying) {
       player.pauseVideo();
+      console.log("pause", player.getPlayerState());
       setYtPlayer(2);
       setCurrentPlayer((prev) => ({
         ...prev,
@@ -415,6 +426,7 @@ const PlayBar = ({ player }: IPlayBar) => {
       }));
     } else if (player && currentPlayer.isPaused) {
       player.playVideo();
+      console.log("play", player.getPlayerState());
       setYtPlayer(1);
       setCurrentPlayer((prev) => ({
         ...prev,
@@ -482,6 +494,28 @@ const PlayBar = ({ player }: IPlayBar) => {
     }
   };
 
+  const patchUserLikeMusic = useCallback(
+    async (isLiked: boolean) => {
+      // 서버에 좋아요 추가 또는 삭제 요청
+      await fetch(`http://localhost:5000/user/${user.userId}/likedMusics`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          addMusic: !isLiked, // 현재 상태와 반대로 처리
+          musicId: selectedMusic!._id,
+        }),
+      });
+    },
+    [selectedMusic, user.userId]
+  );
+
+  const debouncedLikeMusic = useMemo(
+    () => debounce((isLiked) => patchUserLikeMusic(isLiked), 200),
+    [patchUserLikeMusic]
+  );
+
   // 디바운스 필요
   const onClickLikeButton = async () => {
     if (!selectedMusic || user.userId === "") return;
@@ -503,17 +537,7 @@ const PlayBar = ({ player }: IPlayBar) => {
       }
     });
 
-    // 서버에 좋아요 추가 또는 삭제 요청
-    await fetch(`http://localhost:5000/user/${user.userId}/likedMusics`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        addMusic: !isLiked, // 현재 상태와 반대로 처리
-        musicId: selectedMusic._id,
-      }),
-    });
+    debouncedLikeMusic(isLiked);
 
     setIsLike(!isLiked); // 좋아요 상태를 반대로 설정
   };

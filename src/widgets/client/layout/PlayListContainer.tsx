@@ -135,10 +135,12 @@ const PlayListContainer = () => {
   useEffect(() => {
     if (user.userId !== "") {
       getCurrentUserPlaylist();
-    } else {
+    }
+    if (!user.loading && user.userId === "") {
+      setCurrentUserPlaylist([]);
       setIsLoading(false);
     }
-  }, [user.userId]);
+  }, [user.userId, user.loading]);
 
   return (
     <>

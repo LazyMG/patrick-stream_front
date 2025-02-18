@@ -12,7 +12,7 @@ const ModalOverlay = styled.div`
   width: 100vw;
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.8);
-  z-index: 10;
+  z-index: 50;
   top: 0;
   left: 0;
   display: flex;
@@ -196,12 +196,14 @@ const CreatePlaylistModal = ({ closeModal }: ICreatePlaylistModal) => {
   useEffect(() => {
     // 모달이 열릴 때 현재 상태를 push
     window.history.pushState({ modalOpen: true }, "");
-
     window.addEventListener("popstate", handlePopState);
 
     return () => {
       window.removeEventListener("popstate", handlePopState);
-      window.history.back(); // 모달이 닫힐 때 상태를 되돌림
+      //window.history.back(); // 모달이 닫힐 때 상태를 되돌림
+      if (window.history.state?.modalOpen) {
+        window.history.back();
+      }
     };
   }, []);
 
