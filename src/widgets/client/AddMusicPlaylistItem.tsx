@@ -52,6 +52,12 @@ const ListItemLength = styled.span`
   color: #fff;
 `;
 
+interface ICurrentUserPlaylist {
+  isLoading: boolean;
+  isError: boolean;
+  playlist: APIPlaylist;
+}
+
 const AddMusicPlaylistItem = ({
   playlist,
   closeModal,
@@ -67,25 +73,37 @@ const AddMusicPlaylistItem = ({
     if (!selectedMusic) return;
 
     let isAlreadyExistMusic = false;
-    let temp: APIPlaylist[] = [];
+    let temp: ICurrentUserPlaylist[] = [];
     setCurrentUserPlaylist((prev) => {
       if (!prev) return prev;
       temp = prev;
-      return prev.map((p) => {
-        if (p._id !== playlist._id) {
-          return p;
+      return prev.map((item) => {
+        if (item.playlist._id !== playlist._id) {
+          return {
+            ...item,
+          };
         }
 
-        if (!p.musics) {
-          return p;
+        if (!item.playlist.musics) {
+          return {
+            ...item,
+          };
         }
 
-        isAlreadyExistMusic = p.musics.some((m) => m._id === selectedMusic._id);
-        if (isAlreadyExistMusic) return p;
+        isAlreadyExistMusic = item.playlist.musics.some(
+          (music) => music._id === selectedMusic._id
+        );
+        if (isAlreadyExistMusic)
+          return {
+            ...item,
+          };
 
         return {
-          ...p,
-          musics: [...p.musics, selectedMusic],
+          ...item,
+          playlist: {
+            musics: [...item.playlist.musics, selectedMusic],
+            ...playlist,
+          },
         };
       });
     });

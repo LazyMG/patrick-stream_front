@@ -2,7 +2,13 @@ import { atom } from "recoil";
 import { APIPlaylist } from "../../../shared/models/playlist";
 import { APIMusic } from "../../../shared/models/music";
 
-export const currentUserPlaylistState = atom<APIPlaylist[] | null>({
+interface ICurrentUserPlaylist {
+  isLoading: boolean;
+  isError: boolean;
+  playlist: APIPlaylist;
+}
+
+export const currentUserPlaylistState = atom<ICurrentUserPlaylist[] | null>({
   key: "currentUserPlaylistState",
   default: null,
 });

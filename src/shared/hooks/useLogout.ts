@@ -29,7 +29,7 @@ export const useLogout = () => {
     setFollowingPlaylists(null);
     setUser({ userId: "", loading: false });
     setLoginUserData(null);
-    setCurrentUserPlaylist([]);
+    setCurrentUserPlaylist(null);
   };
 
   return { cleanUserInfo };

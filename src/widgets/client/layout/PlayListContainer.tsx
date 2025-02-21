@@ -8,6 +8,7 @@ import PlaylistItem from "../../../shared/ui/PlaylistItem";
 import { APIPlaylist } from "../../../shared/models/playlist";
 import { isPlayerOnState } from "../../../app/entities/player/atom";
 import { useToast } from "../../../shared/hooks/useToast";
+import PlaylistErrorItem from "../../../shared/ui/PlaylistErrorItem";
 
 const Wrapper = styled.div<{ $isPlayerOn: boolean }>`
   display: flex;
@@ -109,7 +110,17 @@ const PlayListContainer = () => {
       }
     ).then((res) => res.json());
     if (result.ok) {
-      setCurrentUserPlaylist(result.playlists as APIPlaylist[]);
+      const playlists = result.playlists as APIPlaylist[];
+      setCurrentUserPlaylist(
+        playlists.map((playlist) => {
+          return {
+            playlist,
+            isError: false,
+            isLoading: false,
+          };
+        })
+      );
+      // setCurrentUserPlaylist(result.playlists as APIPlaylist[]);
     } else {
       if (!result.error) {
         if (result.type === "ERROR_ID") {
@@ -166,9 +177,25 @@ const PlayListContainer = () => {
         <PlaylistView>
           {!isLoading ? (
             currentUserPlaylist ? (
-              currentUserPlaylist.map((item) => (
-                <PlaylistItem playlist={item} key={item._id} />
-              ))
+              currentUserPlaylist.map((item) => {
+                if (item.isLoading) {
+                  return <PlaylistSkeleton key={item.playlist._id} />;
+                } else if (item.isError) {
+                  return (
+                    <PlaylistErrorItem
+                      playlist={item.playlist}
+                      key={item.playlist._id}
+                    />
+                  );
+                } else {
+                  return (
+                    <PlaylistItem
+                      playlist={item.playlist}
+                      key={item.playlist._id}
+                    />
+                  );
+                }
+              })
             ) : (
               <>
                 <PlaylistSkeleton />

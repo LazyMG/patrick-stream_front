@@ -288,22 +288,22 @@ const Playlist = () => {
 
     if (user.userId !== "" && currentUserPlaylist && playlistId) {
       const thisPlaylist = currentUserPlaylist.find(
-        (item) => item._id === playlistId
+        (item) => item.playlist._id === playlistId
       );
       if (thisPlaylist) {
         setIsMine(true);
-        setPlaylistData(thisPlaylist);
-        if (thisPlaylist.musics)
+        setPlaylistData(thisPlaylist.playlist);
+        if (thisPlaylist.playlist.musics)
           setPlaylistMusics((prev) => {
-            if (!thisPlaylist.musics) return prev;
-            const playlistMusicStatesList = [...thisPlaylist.musics].map(
-              (music) => {
-                return {
-                  music,
-                  state: false,
-                };
-              }
-            );
+            if (!thisPlaylist.playlist.musics) return prev;
+            const playlistMusicStatesList = [
+              ...thisPlaylist.playlist.musics,
+            ].map((music) => {
+              return {
+                music,
+                state: false,
+              };
+            });
             return playlistMusicStatesList;
           });
 
@@ -415,7 +415,7 @@ const Playlist = () => {
       // 현재 사용자 플레이리스트에서 삭제
       setCurrentUserPlaylist((prev) => {
         if (!prev) return prev;
-        return [...prev].filter((playlist) => playlist._id !== playlistId);
+        return [...prev].filter((item) => item.playlist._id !== playlistId);
       });
       navigate("/");
       return;

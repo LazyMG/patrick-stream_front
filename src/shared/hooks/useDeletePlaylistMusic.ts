@@ -8,6 +8,12 @@ import { isPlaylistToastOpenState } from "../../app/entities/global/atom";
 import { APIPlaylist } from "../models/playlist";
 import { useToast } from "./useToast";
 
+interface ICurrentUserPlaylist {
+  isLoading: boolean;
+  isError: boolean;
+  playlist: APIPlaylist;
+}
+
 export const useDeletePlaylistMusic = () => {
   const user = useRecoilValue(userState);
   const loginUserData = useRecoilValue(loginUserDataState);
@@ -35,21 +41,21 @@ export const useDeletePlaylistMusic = () => {
 
     if (targetMusics.length === 0) return;
 
-    let temp: APIPlaylist[] = [];
+    let temp: ICurrentUserPlaylist[] = [];
 
     setcurrentUserPlaylist((prev) => {
       if (!prev) return prev;
 
       temp = prev;
       const index = [...prev].findIndex(
-        (playlist) => playlist._id === playlistId
+        (item) => item.playlist._id === playlistId
       );
       if (index === -1) return prev;
 
       const targetPlaylist = prev[index];
-      if (!targetPlaylist?.musics) return prev;
+      if (!targetPlaylist?.playlist.musics) return prev;
 
-      const targetPlaylistMusics = targetPlaylist.musics.filter(
+      const targetPlaylistMusics = targetPlaylist.playlist.musics.filter(
         (music) => !targetMusics.includes(music._id)
       );
 
@@ -57,7 +63,10 @@ export const useDeletePlaylistMusic = () => {
 
       updated[index] = {
         ...targetPlaylist,
-        musics: targetPlaylistMusics,
+        playlist: {
+          musics: targetPlaylistMusics,
+          ...updated[index].playlist,
+        },
       };
 
       return updated;

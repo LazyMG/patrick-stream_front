@@ -108,7 +108,9 @@ const UserWrapper = () => {
     if (isMyPage) {
       if (loginUserData) {
         setUserData(loginUserData);
-        setUserPlaylists(currentPlaylist);
+        setUserPlaylists(
+          currentPlaylist ? currentPlaylist.map((item) => item.playlist) : []
+        );
       }
       setIsLoading(false);
       return;

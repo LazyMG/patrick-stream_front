@@ -106,10 +106,10 @@ const AddMusicPlaylistModal = ({ closeModal }: IAddMusicPlaylistModal) => {
           <Title>재생목록에 저장</Title>
           <ListContainer>
             <ListTitle>모든 재생 목록</ListTitle>
-            {currentUserPlaylist?.map((playlist) => (
+            {currentUserPlaylist?.map((item) => (
               <AddMusicPlaylistItem
-                key={playlist._id}
-                playlist={playlist}
+                key={item.playlist._id}
+                playlist={item.playlist}
                 closeModal={closeModal}
               />
             ))}

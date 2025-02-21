@@ -128,9 +128,31 @@ const CreatePlaylistModal = ({ closeModal }: ICreatePlaylistModal) => {
   const { setGlobalToast } = useToast();
 
   const createPlaylist: SubmitHandler<PlaylistFormValues> = async (data) => {
-    //validate
-
     if (user.userId !== "" && loginUserData) {
+      const timeStamp = Date.now().toString();
+
+      //optimize
+      setCurrentUserPlaylist((prev) => {
+        if (!prev) return prev;
+        return [
+          {
+            playlist: {
+              _id: timeStamp,
+              title: data.title,
+              duration: 0,
+              introduction: data.info,
+              user: {
+                username: loginUserData.username,
+                _id: user.userId,
+              },
+            },
+            isLoading: true,
+            isError: false,
+          },
+          ...prev,
+        ];
+      });
+      closeModal();
       const result = await fetch(
         `http://localhost:5000/user/${user.userId}/playlist`,
         {
@@ -145,22 +167,31 @@ const CreatePlaylistModal = ({ closeModal }: ICreatePlaylistModal) => {
       if (result.ok) {
         setCurrentUserPlaylist((prev) => {
           if (!prev) return prev;
-
+          const index = prev.findIndex(
+            (item) => item.playlist._id === timeStamp
+          );
+          if (index === -1) return prev;
+          const before = prev.slice(0, index);
+          const after = prev.slice(index + 1);
           return [
+            ...before,
             {
-              _id: result.id,
-              title: data.title,
-              duration: 0,
-              introduction: data.info,
-              user: {
-                username: loginUserData.username,
-                _id: user.userId,
+              playlist: {
+                _id: result.id,
+                title: data.title,
+                duration: 0,
+                introduction: data.info,
+                user: {
+                  username: loginUserData.username,
+                  _id: user.userId,
+                },
               },
+              isLoading: false,
+              isError: false,
             },
-            ...prev,
+            ...after,
           ];
         });
-        closeModal();
       } else {
         if (!result.error) {
           if (result.type === "NO_INPUT") {
@@ -184,6 +215,33 @@ const CreatePlaylistModal = ({ closeModal }: ICreatePlaylistModal) => {
         } else {
           setGlobalToast("일시적인 오류입니다.", "CREATE_PLAYLIST_DB_ERROR");
         }
+        setCurrentUserPlaylist((prev) => {
+          if (!prev) return prev;
+          const index = prev.findIndex(
+            (item) => item.playlist._id === timeStamp
+          );
+          if (index === -1) return prev;
+          const before = prev.slice(0, index);
+          const after = prev.slice(index + 1);
+          return [
+            ...before,
+            {
+              playlist: {
+                _id: result.id,
+                title: data.title,
+                duration: 0,
+                introduction: data.info,
+                user: {
+                  username: loginUserData.username,
+                  _id: user.userId,
+                },
+              },
+              isLoading: false,
+              isError: true,
+            },
+            ...after,
+          ];
+        });
       }
     }
   };
