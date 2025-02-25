@@ -119,7 +119,7 @@ const RowListMusicItem = ({
   isMine?: boolean;
 }) => {
   const playMusic = usePlayMusic();
-  const [views, setViews] = useState<number>(music?.counts.views || 0);
+  const [views, setViews] = useState<number>(music?.counts?.views || 0);
   const checkboxInput = useRef<HTMLInputElement>(null);
   const [isPlaylistToastOpen, setIsPlaylistToastOpen] = useRecoilState(
     isPlaylistToastOpenState

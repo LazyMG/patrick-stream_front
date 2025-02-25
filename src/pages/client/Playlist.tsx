@@ -2,7 +2,7 @@ import styled, { keyframes } from "styled-components";
 import { DefaultButton } from "../../shared/ui/DefaultButton";
 import RowList from "../../widgets/client/RowList/RowList";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { APIPlaylist } from "../../shared/models/playlist";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { userState } from "../../app/entities/user/atom";
@@ -209,6 +209,7 @@ const Playlist = () => {
   const [isNotFound, setIsNotFound] = useState(false);
   const [isError, setIsError] = useState(false);
   const [isPending, setIsPending] = useState(false);
+  const isDeleteRef = useRef<boolean>(false);
 
   const currentFollowers = playlistData?.followers?.length ?? 0;
 
@@ -252,6 +253,10 @@ const Playlist = () => {
   const getPlaylistData = useCallback(
     async (id: string) => {
       if (isError) return;
+      if (isDeleteRef) {
+        isDeleteRef.current = false;
+        return;
+      }
       const result = await fetch(
         `http://localhost:5000/playlist/${id}`
       ).then((res) => res.json());
@@ -321,6 +326,7 @@ const Playlist = () => {
     setBackground,
     setPlaylistMusics,
     setIsPlaylistToastOpen,
+    currentUserPlaylist,
   ]);
 
   const patchPlaylistFollowers = useCallback(
@@ -417,6 +423,7 @@ const Playlist = () => {
         if (!prev) return prev;
         return [...prev].filter((item) => item.playlist._id !== playlistId);
       });
+      isDeleteRef.current = true;
       navigate("/");
       return;
     } else {
@@ -520,7 +527,7 @@ const Playlist = () => {
             )}
           </InfoButtons>
         ) : (
-          <InfoButtonsSkeleton />
+          isLoading && <InfoButtonsSkeleton />
         )}
       </InfoContainer>
       {isLoading && <RowListSkeleton />}

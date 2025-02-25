@@ -173,40 +173,34 @@ const MainContainer = ({ children, onScroll }: IMainContainer) => {
 
   const location = useLocation();
 
-  const getUserProfile = useCallback(
-    async (id: string) => {
-      const result = await fetch(`http://localhost:5000/user/${id}`, {
-        credentials: "include",
-      }).then((res) => res.json());
-      if (result.ok) {
-        setLoginUserData(result.user);
-        initiateLoginUserData(result.user);
-      } else {
-        if (!result.error) {
-          if (result.type === "ERROR_ID") {
-            setGlobalToast(
-              "잘못된 데이터입니다.",
-              "CURRENT_USER_ERROR_ID_ERROR"
-            );
-          } else if (result.type === "NO_DATA") {
-            setGlobalToast(
-              "존재하지 않는 데이터입니다.",
-              "CURRENT_USER_NO_DATA_ERROR"
-            );
-          }
-        } else {
-          setGlobalToast("일시적인 오류입니다.", "CURRENT_USER_DB_ERROR");
+  const getUserProfile = async (id: string) => {
+    const result = await fetch(`http://localhost:5000/user/${id}`, {
+      credentials: "include",
+    }).then((res) => res.json());
+    if (result.ok) {
+      setLoginUserData(result.user);
+      initiateLoginUserData(result.user);
+    } else {
+      if (!result.error) {
+        if (result.type === "ERROR_ID") {
+          setGlobalToast("잘못된 데이터입니다.", "CURRENT_USER_ERROR_ID_ERROR");
+        } else if (result.type === "NO_DATA") {
+          setGlobalToast(
+            "존재하지 않는 데이터입니다.",
+            "CURRENT_USER_NO_DATA_ERROR"
+          );
         }
+      } else {
+        setGlobalToast("일시적인 오류입니다.", "CURRENT_USER_DB_ERROR");
       }
-    },
-    [setLoginUserData, initiateLoginUserData]
-  );
+    }
+  };
 
   useEffect(() => {
     if (user.userId !== "") {
       getUserProfile(user.userId);
     }
-  }, [user.userId, getUserProfile]);
+  }, [user.userId]);
 
   const setPlayingPlaylist = useSetRecoilState(playingPlaylistState);
 

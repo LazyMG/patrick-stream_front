@@ -79,6 +79,7 @@ const RowList = ({
   noLimit = false,
 }: IRowList) => {
   const isActive = list && list.length >= 5 ? true : false;
+
   return (
     <Wrapper>
       <ListHeader>

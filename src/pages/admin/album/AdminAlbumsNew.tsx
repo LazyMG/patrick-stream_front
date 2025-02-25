@@ -41,7 +41,10 @@ const AdminAlbumsNew: React.FC = () => {
       navigate("/admin/albums");
     } else {
       if (!result.error) {
-        if (result.type === "NO_ACCESS") alert("권한이 없습니다.");
+        if (result.type === "NO_ACCESS") {
+          alert("권한이 없습니다.");
+          window.location.href = "/";
+        }
       } else {
         alert("DB 에러입니다.");
       }

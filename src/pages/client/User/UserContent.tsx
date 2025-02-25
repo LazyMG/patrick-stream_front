@@ -245,12 +245,12 @@ const UserContent = () => {
                   {isLogoutLoading ? "진행 중" : "로그아웃"}
                 </Button>
               </>
-            ) : follow !== null ? (
-              <FollowButton $follow={follow} onClick={followUser}>
-                {follow ? "언팔로우" : "팔로우"}
-              </FollowButton>
             ) : (
-              <InfoButtonsSkeleton />
+              follow !== null && (
+                <FollowButton $follow={follow} onClick={followUser}>
+                  {follow ? "언팔로우" : "팔로우"}
+                </FollowButton>
+              )
             )}
           </InfoButtons>
         ) : (

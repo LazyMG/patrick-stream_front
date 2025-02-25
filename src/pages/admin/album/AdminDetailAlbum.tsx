@@ -31,7 +31,10 @@ const AdminDetailAlbum: React.FC = () => {
           if (result.type === "ERROR_ID") alert("잘못된 데이터입니다.");
           else if (result.type === "NO_DATA")
             alert("데이터를 찾을 수 없습니다.");
-          else if (result.type === "NO_ACCESS") alert("접근 권한이 없습니다.");
+          else if (result.type === "NO_ACCESS") {
+            alert("접근 권한이 없습니다.");
+            window.location.href = "/";
+          }
         } else {
           alert("DB 에러입니다.");
         }
@@ -130,7 +133,10 @@ const AdminDetailAlbum: React.FC = () => {
           if (result.type === "ERROR_ID") alert("잘못된 데이터입니다.");
           else if (result.type === "NO_DATA")
             alert("존재하지 않는 데이터입니다.");
-          else if (result.type === "NO_ACCESS") alert("접근 권한이 없습니다.");
+          else if (result.type === "NO_ACCESS") {
+            alert("접근 권한이 없습니다.");
+            window.location.href = "/";
+          }
         } else {
           alert("DB 에러입니다.");
         }
@@ -153,6 +159,7 @@ const AdminDetailAlbum: React.FC = () => {
           headers: {
             "Content-Type": "application/json",
           },
+          credentials: "include",
           body: JSON.stringify({ albumId: outletAlbum?.album._id }),
         }
       ).then((res) => res.json());
@@ -165,6 +172,10 @@ const AdminDetailAlbum: React.FC = () => {
           if (result.type === "ERROR_ID") alert("잘못된 데이터입니다.");
           else if (result.type === "NO_DATA")
             alert("해당 데이터를 찾을 수 없습니다.");
+          else if (result.type === "NO_ACCESS") {
+            alert("접근 권한이 없습니다.");
+            window.location.href = "/";
+          }
         } else {
           alert("DB 에러입니다. 다시 시도해주세요.");
         }

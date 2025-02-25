@@ -1,8 +1,6 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 export const useAdmin = () => {
-  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
 
   const getAdmin = async () => {
@@ -14,10 +12,10 @@ export const useAdmin = () => {
         //진행
         setIsLoading(false);
       } else {
-        navigate("/");
+        window.location.href = "/";
       }
     } else {
-      navigate("/");
+      window.location.href = "/";
     }
   };
 

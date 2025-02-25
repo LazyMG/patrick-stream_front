@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useMatch } from "react-router-dom";
+import { Link, useMatch, useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import {
   likedMusicsState,
@@ -8,6 +8,7 @@ import {
 import { APIMusic } from "../../shared/models/music";
 import styled, { keyframes } from "styled-components";
 import { usePlayMusic } from "../../shared/hooks/usePlayMusic";
+import { userState } from "../../app/entities/user/atom";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -166,6 +167,7 @@ const ThemeMusic = () => {
   const recentMusicMatch = useMatch("/listen_again");
   const likedMusicMatch = useMatch("/liked");
 
+  const user = useRecoilValue(userState);
   const recentMusics = useRecoilValue(recentMusicsState);
   const likedMusics = useRecoilValue(likedMusicsState);
 
@@ -173,6 +175,8 @@ const ThemeMusic = () => {
 
   const [listsData, setListsData] = useState<APIMusic[] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  const navigate = useNavigate();
 
   const getMusicData = async () => {
     let url;
@@ -195,16 +199,26 @@ const ThemeMusic = () => {
   };
 
   useEffect(() => {
-    if (recentMusicMatch && recentMusics) {
-      setListsData(recentMusics.length !== 0 ? recentMusics : []);
-      setIsLoading(false);
-    } else if (likedMusicMatch && likedMusics) {
-      setListsData(likedMusics.length !== 0 ? likedMusics : []);
-      setIsLoading(false);
+    if (recentMusicMatch) {
+      if (user.loading) return;
+      if (recentMusics) {
+        setListsData(recentMusics.length !== 0 ? recentMusics : []);
+        setIsLoading(false);
+      } else if (user.userId === "") {
+        navigate("/");
+      }
+    } else if (likedMusicMatch) {
+      if (user.loading) return;
+      if (likedMusics) {
+        setListsData(likedMusics.length !== 0 ? likedMusics : []);
+        setIsLoading(false);
+      } else if (user.userId === "") {
+        navigate("/");
+      }
     } else {
       getMusicData();
     }
-  }, [recentMusicMatch, recentMusics, likedMusicMatch, likedMusics]);
+  }, [recentMusicMatch, recentMusics, likedMusicMatch, likedMusics, user]);
 
   return (
     <Wrapper>

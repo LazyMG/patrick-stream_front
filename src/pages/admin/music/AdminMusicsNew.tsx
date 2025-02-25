@@ -46,6 +46,7 @@ const AdminMusicsNew: React.FC = () => {
           setFocus("ytId");
         } else if (result.type === "NO_ACCESS") {
           alert("접근 권한이 없습니다.");
+          window.location.href = "/";
         }
       } else {
         alert("DB 에러입니다. 잠시 후 시도해주세요.");
