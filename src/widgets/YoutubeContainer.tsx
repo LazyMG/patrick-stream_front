@@ -18,6 +18,13 @@ function YoutubeContainer({ player, setPlayer }: IYoutubeContainer) {
     setPlayer(event.target);
     // console.dir(event.target);
     // console.log("play!", player?.getPlayerState());
+    console.log("ready");
+    console.log("currentPlayer", currentPlayer.isPaused);
+
+    if (currentPlayer.isRedirectPaused) {
+      console.log("true");
+      event.target.pauseVideo();
+    }
 
     if (player) {
       event.target.setVolume(currentPlayer.volume);
@@ -32,6 +39,13 @@ function YoutubeContainer({ player, setPlayer }: IYoutubeContainer) {
 
   const onStateChange: YouTubeProps["onStateChange"] = (event) => {
     setytPlayer(event.target.getPlayerState());
+
+    if (currentPlayer.isRedirectPaused) {
+      console.log("true");
+      setytPlayer(2);
+    }
+
+    console.log(event.target.getPlayerState());
   };
 
   const opts: YouTubeProps["opts"] = {

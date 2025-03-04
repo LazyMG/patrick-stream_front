@@ -109,7 +109,7 @@ const AddMusicPlaylistModal = ({ closeModal }: IAddMusicPlaylistModal) => {
             {currentUserPlaylist?.map((item) => (
               <AddMusicPlaylistItem
                 key={item.playlist._id}
-                playlist={item.playlist}
+                currentPlaylist={item.playlist}
                 closeModal={closeModal}
               />
             ))}

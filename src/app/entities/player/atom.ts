@@ -11,6 +11,7 @@ interface Player {
   isPaused: boolean;
   isEnd: boolean;
   isMuted: boolean;
+  isRedirectPaused: boolean;
   volume: number;
 }
 
@@ -22,6 +23,7 @@ export const currentPlayerState = atom<Player>({
     isPaused: false,
     isLoading: true,
     isMuted: false,
+    isRedirectPaused: false,
     volume: 50,
   },
 });

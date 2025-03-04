@@ -68,6 +68,7 @@ const PlaylistErrorItem = ({ playlist }: { playlist: APIPlaylist }) => {
                 username: loginUserData.username,
                 _id: user.userId,
               },
+              musics: [],
             },
             isLoading: true,
             isError: false,
@@ -101,24 +102,6 @@ const PlaylistErrorItem = ({ playlist }: { playlist: APIPlaylist }) => {
           if (index === -1) return prev;
           const before = prev.slice(0, index);
           const after = prev.slice(index + 1);
-          console.log([
-            ...before,
-            {
-              playlist: {
-                _id: result.id,
-                title: playlist.title,
-                duration: 0,
-                introduction: playlist.introduction,
-                user: {
-                  username: loginUserData.username,
-                  _id: user.userId,
-                },
-              },
-              isLoading: false,
-              isError: false,
-            },
-            ...after,
-          ]);
           return [
             ...before,
             {
@@ -131,6 +114,7 @@ const PlaylistErrorItem = ({ playlist }: { playlist: APIPlaylist }) => {
                   username: loginUserData.username,
                   _id: user.userId,
                 },
+                musics: [],
               },
               isLoading: false,
               isError: false,
@@ -180,6 +164,7 @@ const PlaylistErrorItem = ({ playlist }: { playlist: APIPlaylist }) => {
                   username: loginUserData.username,
                   _id: user.userId,
                 },
+                musics: [],
               },
               isLoading: false,
               isError: true,

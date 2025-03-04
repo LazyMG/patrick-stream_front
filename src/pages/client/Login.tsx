@@ -9,7 +9,8 @@ import { useNavigate } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
 import { userState } from "../../app/entities/user/atom";
 import { googleLoginUrl } from "../../shared/lib/constant";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { currentPlayerState } from "../../app/entities/player/atom";
 
 const Form = styled.form`
   display: flex;
@@ -33,6 +34,19 @@ const Login = () => {
   const navigate = useNavigate();
   const setUser = useSetRecoilState(userState);
   const [isLoading, setIsLoading] = useState(false);
+  const setCurrentPlayer = useSetRecoilState(currentPlayerState);
+
+  useEffect(() => {
+    setCurrentPlayer((prev) => {
+      if (!prev) return prev;
+      if (prev.isPaused) {
+        return {
+          ...prev,
+          isRedirectPaused: true,
+        };
+      } else return prev;
+    });
+  });
 
   const onValid: SubmitHandler<LoginFormValues> = async (data) => {
     if (isLoading) return;

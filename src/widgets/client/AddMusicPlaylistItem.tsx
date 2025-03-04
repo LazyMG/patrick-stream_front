@@ -59,10 +59,10 @@ interface ICurrentUserPlaylist {
 }
 
 const AddMusicPlaylistItem = ({
-  playlist,
+  currentPlaylist,
   closeModal,
 }: {
-  playlist: APIPlaylist;
+  currentPlaylist: APIPlaylist;
   closeModal: () => void;
 }) => {
   const selectedMusic = useRecoilValue(selectedMusicState);
@@ -78,7 +78,7 @@ const AddMusicPlaylistItem = ({
       if (!prev) return prev;
       temp = prev;
       return prev.map((item) => {
-        if (item.playlist._id !== playlist._id) {
+        if (item.playlist._id !== currentPlaylist._id) {
           return {
             ...item,
           };
@@ -101,8 +101,8 @@ const AddMusicPlaylistItem = ({
         return {
           ...item,
           playlist: {
+            ...currentPlaylist,
             musics: [...item.playlist.musics, selectedMusic],
-            ...playlist,
           },
         };
       });
@@ -117,7 +117,7 @@ const AddMusicPlaylistItem = ({
     closeModal();
 
     const result = await fetch(
-      `http://localhost:5000/playlist/${playlist._id}`,
+      `http://localhost:5000/playlist/${currentPlaylist._id}`,
       {
         method: "PATCH",
         headers: {
@@ -166,8 +166,10 @@ const AddMusicPlaylistItem = ({
           </svg>
         </ListItemImg>
         <ListItemInfo>
-          <ListItemTitle>{playlist.title}</ListItemTitle>
-          <ListItemLength>{playlist.musics?.length ?? 0}개</ListItemLength>
+          <ListItemTitle>{currentPlaylist.title}</ListItemTitle>
+          <ListItemLength>
+            {currentPlaylist.musics?.length ?? 0}개
+          </ListItemLength>
         </ListItemInfo>
       </ListItemContent>
     </ListItem>

@@ -64,8 +64,8 @@ export const useDeletePlaylistMusic = () => {
       updated[index] = {
         ...targetPlaylist,
         playlist: {
-          musics: targetPlaylistMusics,
           ...updated[index].playlist,
+          musics: targetPlaylistMusics,
         },
       };
 

@@ -7,8 +7,10 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import InputRow from "../../shared/ui/InputRow";
 import { useNavigate } from "react-router-dom";
 import { googleLoginUrl } from "../../shared/lib/constant";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { debounce } from "lodash";
+import { useSetRecoilState } from "recoil";
+import { currentPlayerState } from "../../app/entities/player/atom";
 
 const Form = styled.form`
   display: flex;
@@ -39,6 +41,19 @@ const SignIn = () => {
     state: boolean;
   }>({ email: "", state: false });
   const [isLoading, setIsLoading] = useState(false);
+  const setCurrentPlayer = useSetRecoilState(currentPlayerState);
+
+  useEffect(() => {
+    setCurrentPlayer((prev) => {
+      if (!prev) return prev;
+      if (prev.isPaused) {
+        return {
+          ...prev,
+          isRedirectPaused: true,
+        };
+      } else return prev;
+    });
+  });
 
   // 디바운스 필요
   const onValid: SubmitHandler<LoginFormValues> = async (data) => {

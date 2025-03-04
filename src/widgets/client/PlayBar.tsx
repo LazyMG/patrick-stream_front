@@ -417,7 +417,6 @@ const PlayBar = ({ player }: IPlayBar) => {
   const togglePlaying = () => {
     if (player && currentPlayer.isPlaying) {
       player.pauseVideo();
-      console.log("pause", player.getPlayerState());
       setYtPlayer(2);
       setCurrentPlayer((prev) => ({
         ...prev,
@@ -426,12 +425,12 @@ const PlayBar = ({ player }: IPlayBar) => {
       }));
     } else if (player && currentPlayer.isPaused) {
       player.playVideo();
-      console.log("play", player.getPlayerState());
       setYtPlayer(1);
       setCurrentPlayer((prev) => ({
         ...prev,
         isPlaying: true,
         isPaused: false,
+        isRedirectPaused: false,
       }));
     } else {
       if (playingPlaylist && playingPlaylist.length !== 0) {
