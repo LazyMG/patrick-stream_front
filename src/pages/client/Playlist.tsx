@@ -115,10 +115,8 @@ const PlaylistPlayButton = styled.button`
   }
 
   &:hover {
+    background-color: #b97b7c;
     transform: scale(1.1);
-    svg {
-      transform: scale(1.1);
-    }
   }
 `;
 
@@ -130,7 +128,7 @@ const FollowButton = styled(DefaultButton)<{ $follow: boolean }>`
 
   padding: 5px 30px;
 
-  border: 1px solid #fff;
+  border: 1.5px solid #fff;
 
   transition: transform 0.1s ease-in-out, color 0.2s ease-in-out,
     background-color 0.2s ease-in-out;

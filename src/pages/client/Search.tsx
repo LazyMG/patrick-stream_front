@@ -180,6 +180,7 @@ const Search = () => {
       `http://localhost:5000/search?keyword=${keyword}`
     ).then((res) => res.json());
     if (result.ok) {
+      if (isNoData) setIsNoData(false);
       setSearchMusicData(result.musics);
       setSearchAlbumData(result.albums);
       setSearchArtistData(result.artists);

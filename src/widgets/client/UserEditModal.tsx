@@ -20,7 +20,7 @@ const ModalOverlay = styled.div`
 
 const ContentModal = styled.div`
   width: 40%;
-  height: 15%;
+  height: 10%;
   background-color: #212121;
   border: 0.1px solid #414141;
   border-radius: 10px;
@@ -38,10 +38,25 @@ const EditForm = styled.form`
   gap: 15px;
 `;
 
+const Header = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
 const Label = styled.span`
   font-weight: bold;
   font-size: 24px;
   color: #9c9c9c;
+`;
+
+const CloseButton = styled.div`
+  svg {
+    width: 30px;
+    color: #9c9c9c;
+    cursor: pointer;
+  }
 `;
 
 const InputDiv = styled.div`
@@ -87,16 +102,18 @@ const Button = styled.button`
   border: none;
   background: none;
 
-  border: 1px solid ${(props) => props.theme.color.purple};
-
   color: ${(props) => props.theme.color.white};
-  font-size: 15px;
+  font-size: 16px;
   border-radius: 15px;
 
-  padding: 5px 15px;
+  padding: 7px 15px;
 
   cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
   pointer-events: ${(props) => (props.disabled ? "none" : "auto")};
+
+  &:hover {
+    background-color: ${(props) => props.theme.border.gray};
+  }
 `;
 
 const UserEditModal = ({ closeModal }: { closeModal: () => void }) => {
@@ -268,7 +285,23 @@ const UserEditModal = ({ closeModal }: { closeModal: () => void }) => {
         <Content>
           {!isValid ? (
             <EditForm onSubmit={sumbitPassword} autoComplete="off">
-              <Label>비밀번호를 입력해주세요.</Label>
+              <Header>
+                <Label>비밀번호를 입력해주세요.</Label>
+                <CloseButton onClick={closeModal}>
+                  <svg
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                  >
+                    <path
+                      clipRule="evenodd"
+                      fillRule="evenodd"
+                      d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z"
+                    />
+                  </svg>
+                </CloseButton>
+              </Header>
               <InputDiv>
                 <Input
                   value={password}
@@ -285,7 +318,24 @@ const UserEditModal = ({ closeModal }: { closeModal: () => void }) => {
             </EditForm>
           ) : (
             <EditForm onSubmit={submitUsername} autoComplete="off">
-              <Label>변경할 이름을 입력해주세요.</Label>
+              <Header>
+                <Label>변경할 이름을 입력해주세요.</Label>
+                <CloseButton onClick={closeModal}>
+                  <svg
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                  >
+                    <path
+                      clipRule="evenodd"
+                      fillRule="evenodd"
+                      d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z"
+                    />
+                  </svg>
+                </CloseButton>
+              </Header>
+
               <InputDiv>
                 <Input value={username} onChange={changeUsername} type="text" />
                 {error && <span>{error}</span>}

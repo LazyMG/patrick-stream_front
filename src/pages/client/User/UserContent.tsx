@@ -74,13 +74,15 @@ const Button = styled(DefaultButton)<{ $alter: boolean }>`
 
   padding: 5px 30px;
 
-  border: 1px solid #fff;
+  border: 1.5px solid #fff;
 
   cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
   pointer-events: ${(props) => (props.disabled ? "none" : "auto")};
+  transition: transform 0.2s ease-in-out;
 
   &:hover {
     background-color: ${(props) => (props.$alter ? "#282828" : " #c7c7c7")};
+    transform: scale(1.1);
   }
 `;
 
@@ -93,7 +95,7 @@ const FollowButton = styled(DefaultButton)<{ $follow: boolean }>`
 
   padding: 5px 30px;
 
-  border: 1px solid ${(props) => props.theme.color.purple};
+  border: 1.5px solid ${(props) => props.theme.color.purple};
 
   transition: transform 0.1s ease-in-out, color 0.2s ease-in-out,
     background-color 0.2s ease-in-out;

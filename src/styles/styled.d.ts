@@ -10,8 +10,10 @@ declare module "styled-components" {
       black: string;
       gray: string;
       white: string;
+      active_white: string;
+      deactive_white: string;
     };
-    text: {
+    textSize: {
       xs: string;
       sm: string;
       md: string;
@@ -22,6 +24,15 @@ declare module "styled-components" {
       purple: string;
       white: string;
       black: string;
+      gray: string;
+    };
+    bgColor: {
+      black: string;
+      gray: string;
+    };
+    textColor: {
+      black: string;
+      white: string;
     };
   }
 }

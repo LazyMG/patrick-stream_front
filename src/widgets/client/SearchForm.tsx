@@ -17,15 +17,16 @@ const SearchInput = styled.input`
   color: #fff;
 
   background-color: rgba(163, 163, 163, 0.402);
+  border: 1.5px solid transparent;
+
+  box-sizing: border-box;
 
   &:focus {
-    border: 0.1px solid ${(props) => props.theme.color.pink};
-    outline: none;
+    border: 1.5px solid ${(props) => props.theme.color.pink};
     background-color: #000000;
   }
 
   &:active {
-    border: none;
     outline: none;
   }
 `;

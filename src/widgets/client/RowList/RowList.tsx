@@ -45,8 +45,8 @@ const MoreButton = styled(DefaultButton)<{ $isActive: boolean }>`
   background-color: black;
   ${(props) =>
     props.$isActive
-      ? `border: 1px solid ${props.theme.color.purple};;`
-      : "border: 1px solid #515151;"}
+      ? `border: 1.5px solid ${props.theme.color.purple};;`
+      : "border: 1.5px solid #515151;"}
 
   ${(props) => (props.$isActive ? `color: #fefefe;` : "color:  #515151;")}
 

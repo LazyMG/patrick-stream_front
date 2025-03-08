@@ -89,21 +89,28 @@ const ButtonRow = styled.div`
   justify-content: flex-end;
   align-items: flex-end;
   gap: 20px;
-
-  button {
-    background: none;
-    border: none;
-
-    color: #fff;
-    font-size: 16px;
-
-    cursor: pointer;
-  }
 `;
 
 const ErrorMessage = styled.span`
   font-size: 13px;
   color: red;
+`;
+
+const Button = styled.button`
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 16px;
+
+  padding: 7px 15px;
+
+  border-radius: 15px;
+
+  &:hover {
+    background-color: ${(props) => props.theme.border.gray};
+  }
+
+  cursor: pointer;
 `;
 
 interface ICreatePlaylistModal {
@@ -296,10 +303,10 @@ const CreatePlaylistModal = ({ closeModal }: ICreatePlaylistModal) => {
             </InputDiv>
             <input placeholder="설명" type="text" {...register("info")} />
             <ButtonRow>
-              <button onClick={closeModal} type="button">
+              <Button onClick={closeModal} type="button">
                 취소
-              </button>
-              <button type="submit">만들기</button>
+              </Button>
+              <Button type="submit">만들기</Button>
             </ButtonRow>
           </ModalForm>
         </Content>

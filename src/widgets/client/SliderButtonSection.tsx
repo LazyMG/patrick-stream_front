@@ -9,16 +9,19 @@ const ButtonSection = styled.div`
 const MoreButton = styled(DefaultButton)<{ $isActive: boolean }>`
   display: flex;
   align-items: center;
-  background-color: black;
+  background-color: ${(props) => props.theme.color.black};
 
-  border: 1px solid #2c2c2c;
+  border: 1.5px solid ${(props) => props.theme.border.gray};
 
-  color: ${(props) => (props.$isActive ? `#fefefe` : "#515151")};
+  color: ${(props) =>
+    props.$isActive
+      ? props.theme.color.active_white
+      : props.theme.color.deactive_white};
 
   ${(props) =>
     props.$isActive &&
     `&:hover {
-    background-color: #2c2c2c;
+    background-color: ${props.theme.border.gray};
   }`}
 
   cursor:${(props) => (props.$isActive ? `pointer` : `auto`)};
@@ -35,7 +38,7 @@ const MoveButton = styled.button<{ $isAbled: boolean }>`
   display: flex;
   border-radius: 50%;
 
-  background-color: black;
+  background-color: ${(props) => props.theme.color.black};
 
   &:focus {
     outline: none;
@@ -47,21 +50,30 @@ const MoveButton = styled.button<{ $isAbled: boolean }>`
   align-items: center;
   justify-content: center;
 
-  border: 1px solid ${(props) => (props.$isAbled ? `#2c2c2c` : "#515151")};
+  border: 1.5px solid ${(props) =>
+    props.$isAbled
+      ? props.theme.border.gray
+      : props.theme.color.deactive_white};
 
-  color: ${(props) => (props.$isAbled ? ` #fefefe` : "#515151")};
+  color: ${(props) =>
+    props.$isAbled
+      ? props.theme.color.active_white
+      : props.theme.color.deactive_white};
 
   ${(props) =>
     !props.$isAbled &&
     `&:hover {
-    background-color: #2c2c2c;
+    background-color: ${props.theme.border.gray};
   }`}
 
   cursor:${(props) => (props.$isAbled ? `default` : "pointer")};
 
   svg {
-    color: #fff;
-    fill: ${(props) => (!props.$isAbled ? ` #fefefe` : "#515151")};
+    color: ${(props) => props.theme.color.white};
+    fill: ${(props) =>
+      !props.$isAbled
+        ? props.theme.color.active_white
+        : props.theme.color.deactive_white};
     width: 18px;
     height: 18px;
     display: block;

@@ -153,7 +153,7 @@ const PlayBarContentMainUtil = styled.div`
   gap: 15px;
 `;
 
-const PlayBarContentMainButton = styled.div`
+const PlayBarContentMainButton = styled.div<{ $isLike: boolean }>`
   width: 25px;
   padding: 5px;
   box-sizing: content-box;
@@ -162,10 +162,14 @@ const PlayBarContentMainButton = styled.div`
   cursor: pointer;
 
   &:hover {
-    background-color: ${(props) => props.theme.color.purple};
+    background-color: ${(props) =>
+      props.$isLike
+        ? props.theme.color.deactive_white
+        : props.theme.color.purple};
   }
 
   svg {
+    color: ${(props) => (props.$isLike ? props.theme.color.purple : "white")};
   }
 `;
 
@@ -706,7 +710,10 @@ const PlayBar = ({ player }: IPlayBar) => {
               </PlayBarContentMainInfoOverview>
             </PlayBarContentMainInfo>
             <PlayBarContentMainUtil>
-              <PlayBarContentMainButton onClick={onClickLikeButton}>
+              <PlayBarContentMainButton
+                onClick={onClickLikeButton}
+                $isLike={!!isLike}
+              >
                 {isLike ? (
                   <svg
                     fill="currentColor"

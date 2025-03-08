@@ -35,14 +35,30 @@ const Content = styled.div`
   gap: 10px;
 `;
 
+const Header = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 25px;
+  box-sizing: border-box;
+`;
+
 const Title = styled.h1`
   color: #fff;
   font-size: 22px;
   font-weight: bold;
   padding-bottom: 10px;
-  padding-left: 25px;
 
   background-color: #212121;
+`;
+
+const CloseButton = styled.div`
+  svg {
+    width: 30px;
+    color: white;
+    cursor: pointer;
+  }
 `;
 
 const ListContainer = styled.div`
@@ -103,7 +119,24 @@ const AddMusicPlaylistModal = ({ closeModal }: IAddMusicPlaylistModal) => {
         }
       >
         <Content>
-          <Title>재생목록에 저장</Title>
+          <Header>
+            <Title>재생목록에 저장</Title>
+            <CloseButton onClick={closeModal}>
+              <svg
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+              >
+                <path
+                  clipRule="evenodd"
+                  fillRule="evenodd"
+                  d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z"
+                />
+              </svg>
+            </CloseButton>
+          </Header>
+
           <ListContainer>
             <ListTitle>모든 재생 목록</ListTitle>
             {currentUserPlaylist?.map((item) => (

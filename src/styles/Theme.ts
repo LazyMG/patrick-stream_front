@@ -9,8 +9,10 @@ export const theme: DefaultTheme = {
     black: "#000000",
     gray: "#000000",
     white: "#ffffff",
+    active_white: "#fefefe",
+    deactive_white: "#515151",
   },
-  text: {
+  textSize: {
     xs: "string",
     sm: "string",
     md: "string",
@@ -21,5 +23,14 @@ export const theme: DefaultTheme = {
     purple: "string",
     white: "string",
     black: "string",
+    gray: "#2c2c2c",
+  },
+  bgColor: {
+    black: "",
+    gray: "",
+  },
+  textColor: {
+    black: "",
+    white: "",
   },
 };

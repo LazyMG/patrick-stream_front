@@ -102,8 +102,8 @@ const AlbumController = styled.div`
 const AlbumPlayButton = styled.button`
   border: none;
   background: none;
-  width: 50px;
-  height: 50px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
   background-color: #f5a3a5;
   color: #000;
@@ -114,12 +114,13 @@ const AlbumPlayButton = styled.button`
   cursor: pointer;
 
   svg {
-    width: 20px;
+    width: 25px;
   }
 
   transition: transform 0.1s ease-in-out;
 
   &:hover {
+    background-color: #b97b7c;
     transform: scale(1.1);
   }
 `;
@@ -132,7 +133,7 @@ const AlbumFollowButton = styled(DefaultButton)<{ $follow: boolean }>`
 
   padding: 5px 30px;
 
-  border: 1px solid #fff;
+  border: 1.5px solid #fff;
 
   transition: transform 0.1s ease-in-out, color 0.2s ease-in-out,
     background-color 0.2s ease-in-out;
@@ -234,8 +235,8 @@ const AlbumControllerSkeleton = styled.div`
 const AlbumPlayButtonSkeleton = styled.div`
   border: none;
   background: none;
-  width: 50px;
-  height: 50px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
 
   background-color: #2e2e2e;
