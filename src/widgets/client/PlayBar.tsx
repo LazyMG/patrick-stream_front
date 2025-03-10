@@ -342,7 +342,8 @@ const PlayBar = ({ player }: IPlayBar) => {
   }, [selectedMusic, user.userId, likedMusics, isLike]);
 
   useEffect(() => {
-    let updateTimer: number;
+    // let updateTimer: number;
+    let updateTimer: ReturnType<typeof setInterval>;
 
     if (player) {
       if (player.getPlayerState() === 1) {

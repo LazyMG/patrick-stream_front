@@ -178,7 +178,6 @@ const MainContainer = ({ children, onScroll }: IMainContainer) => {
       credentials: "include",
     }).then((res) => res.json());
     if (result.ok) {
-      console.log("main", result);
       setLoginUserData(result.user);
       initiateLoginUserData(result.user);
     } else {
