@@ -9,7 +9,7 @@ export const useAuth = () => {
     const result = await fetch("http://localhost:5000/auth/session", {
       credentials: "include",
     }).then((res) => res.json());
-
+    console.log("useAuth", result);
     if (result.ok && result.userId) {
       setUser({
         userId: result.userId,
