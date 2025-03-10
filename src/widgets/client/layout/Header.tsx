@@ -1,8 +1,10 @@
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { userState } from "../../../app/entities/user/atom";
 import { useRecoilValue } from "recoil";
 import SearchForm from "./../SearchForm";
+
+import LogoComponent from "../../../assets/logo.svg?react";
 
 const Wrapper = styled.header<{ $navShow: boolean }>`
   position: fixed;
@@ -35,6 +37,13 @@ const IconContainer = styled.div<{ $navShow: boolean }>`
   img {
     width: 65px;
   }
+
+  svg {
+    position: absolute;
+    width: 40px;
+    left: 25px;
+    cursor: pointer;
+  }
 `;
 
 const InfoButton = styled.div`
@@ -54,9 +63,7 @@ const InfoButton = styled.div`
 
   cursor: pointer;
 
-  a {
-    color: #fff;
-  }
+  color: #fff;
 `;
 
 const SearchContainer = styled.div`
@@ -131,10 +138,9 @@ const Header = ({ $navShow }: IHeader) => {
   return (
     <Wrapper $navShow={$navShow}>
       <IconContainer $navShow={$navShow}>
+        <LogoComponent onClick={() => navigate("/")} />
         Patrick Stream
-        <InfoButton>
-          <Link to={"/info"}>i</Link>
-        </InfoButton>
+        <InfoButton onClick={() => navigate("/info")}>i</InfoButton>
       </IconContainer>
       <SearchContainer>
         <SearchForm />
