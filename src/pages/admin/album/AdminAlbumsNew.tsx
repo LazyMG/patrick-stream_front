@@ -28,14 +28,21 @@ const AdminAlbumsNew: React.FC = () => {
       released_at: event.released_at,
     };
 
-    const result = await fetch(`http://localhost:5000/album`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ albumData }),
-      credentials: "include",
-    }).then((result) => result.json());
+    const result = await fetch(
+      `${
+        import.meta.env.DEV
+          ? import.meta.env.VITE_DEV_API_URL
+          : import.meta.env.VITE_PROD_API_URL
+      }/album`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ albumData }),
+        credentials: "include",
+      }
+    ).then((result) => result.json());
 
     if (result.ok) {
       navigate("/admin/albums");

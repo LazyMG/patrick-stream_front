@@ -23,7 +23,11 @@ const FastSelectMusics = () => {
   const getNewMusics = async () => {
     if (isError) return;
     const result = await fetch(
-      `http://localhost:5000/music/recently-updated`
+      `${
+        import.meta.env.DEV
+          ? import.meta.env.VITE_DEV_API_URL
+          : import.meta.env.VITE_PROD_API_URL
+      }/music/recently-updated`
     ).then((res) => res.json());
     if (result.ok) {
       setFastSelectMusicData(result.musics);

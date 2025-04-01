@@ -117,7 +117,11 @@ const AddMusicPlaylistItem = ({
     closeModal();
 
     const result = await fetch(
-      `http://localhost:5000/playlist/${currentPlaylist._id}`,
+      `${
+        import.meta.env.DEV
+          ? import.meta.env.VITE_DEV_API_URL
+          : import.meta.env.VITE_PROD_API_URL
+      }/playlist/${currentPlaylist._id}`,
       {
         method: "PATCH",
         headers: {

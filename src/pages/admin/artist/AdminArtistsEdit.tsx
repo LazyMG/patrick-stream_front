@@ -47,7 +47,11 @@ const AdminArtistsEdit: React.FC = () => {
     }
 
     const result = await fetch(
-      `http://localhost:5000/artist/${outletAritst?.artist._id}`,
+      `${
+        import.meta.env.DEV
+          ? import.meta.env.VITE_DEV_API_URL
+          : import.meta.env.VITE_PROD_API_URL
+      }/artist/${outletAritst?.artist._id}`,
       {
         method: "PATCH",
         headers: {

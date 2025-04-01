@@ -53,14 +53,21 @@ const Login = () => {
 
     //fetch
     setIsLoading(true);
-    const result = await fetch(`http://localhost:5000/auth/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ data }),
-      credentials: "include",
-    }).then((res) => res.json());
+    const result = await fetch(
+      `${
+        import.meta.env.DEV
+          ? import.meta.env.VITE_DEV_API_URL
+          : import.meta.env.VITE_PROD_API_URL
+      }/auth/login`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ data }),
+        credentials: "include",
+      }
+    ).then((res) => res.json());
     if (result.ok) {
       setUser({
         userId: result.userId,
@@ -85,6 +92,7 @@ const Login = () => {
 
   const gotoSocialLogin = () => {
     window.location.href = googleLoginUrl;
+    // window.location.href = googleDevLoginUrl;
   };
 
   return (

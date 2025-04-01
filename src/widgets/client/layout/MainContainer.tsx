@@ -174,9 +174,16 @@ const MainContainer = ({ children, onScroll }: IMainContainer) => {
   const location = useLocation();
 
   const getUserProfile = async (id: string) => {
-    const result = await fetch(`http://localhost:5000/user/${id}`, {
-      credentials: "include",
-    }).then((res) => res.json());
+    const result = await fetch(
+      `${
+        import.meta.env.DEV
+          ? import.meta.env.VITE_DEV_API_URL
+          : import.meta.env.VITE_PROD_API_URL
+      }/user/${id}`,
+      {
+        credentials: "include",
+      }
+    ).then((res) => res.json());
     if (result.ok) {
       setLoginUserData(result.user);
       initiateLoginUserData(result.user);
@@ -206,7 +213,11 @@ const MainContainer = ({ children, onScroll }: IMainContainer) => {
 
   const getMusics = useCallback(async () => {
     const result = await fetch(
-      `http://localhost:5000/music/recently-updated`
+      `${
+        import.meta.env.DEV
+          ? import.meta.env.VITE_DEV_API_URL
+          : import.meta.env.VITE_PROD_API_URL
+      }/music/recently-updated`
     ).then((res) => res.json());
     if (result.ok) {
       setPlayingPlaylist(result.musics);

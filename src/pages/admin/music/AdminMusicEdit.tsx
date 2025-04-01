@@ -73,7 +73,11 @@ const AdminMusicEdit: React.FC = () => {
     }
 
     const result = await fetch(
-      `http://localhost:5000/music/${outletMusic?.music._id}`,
+      `${
+        import.meta.env.DEV
+          ? import.meta.env.VITE_DEV_API_URL
+          : import.meta.env.VITE_PROD_API_URL
+      }/music/${outletMusic?.music._id}`,
       {
         method: "PATCH",
         headers: {

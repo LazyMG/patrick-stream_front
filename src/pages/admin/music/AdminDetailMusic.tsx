@@ -15,7 +15,11 @@ const AdminDetailMusic: React.FC = () => {
     if (confirm(`[${outletMusic?.music.title}]을(를) 삭제하시겠습니까?`)) {
       //삭제 로직
       const result = await fetch(
-        `http://localhost:5000/music/${outletMusic?.music._id}`,
+        `${
+          import.meta.env.DEV
+            ? import.meta.env.VITE_DEV_API_URL
+            : import.meta.env.VITE_PROD_API_URL
+        }/music/${outletMusic?.music._id}`,
         {
           method: "DELETE",
           credentials: "include",
@@ -91,7 +95,11 @@ const AdminDetailMusic: React.FC = () => {
 
   const fetchFilteredAlbums = async () => {
     const result = await fetch(
-      "http://localhost:5000/album?filterByMusicsLength=true"
+      `${
+        import.meta.env.DEV
+          ? import.meta.env.VITE_DEV_API_URL
+          : import.meta.env.VITE_PROD_API_URL
+      }/album?filterByMusicsLength=true`
     ).then((res) => res.json());
     if (result.ok) return result.albums;
     else {
@@ -102,9 +110,13 @@ const AdminDetailMusic: React.FC = () => {
 
   // 이미 포함된 아티스트 제외
   const fetchArtists = async () => {
-    const result = await fetch("http://localhost:5000/artist").then((res) =>
-      res.json()
-    );
+    const result = await fetch(
+      `${
+        import.meta.env.DEV
+          ? import.meta.env.VITE_DEV_API_URL
+          : import.meta.env.VITE_PROD_API_URL
+      }/artist`
+    ).then((res) => res.json());
     if (result.ok) {
       return result.allArtists;
     } else {
@@ -121,7 +133,11 @@ const AdminDetailMusic: React.FC = () => {
       )
     ) {
       const result = await fetch(
-        `http://localhost:5000/album/${albumId}/music`,
+        `${
+          import.meta.env.DEV
+            ? import.meta.env.VITE_DEV_API_URL
+            : import.meta.env.VITE_PROD_API_URL
+        }/album/${albumId}/music`,
         {
           method: "POST",
           headers: {
@@ -160,7 +176,11 @@ const AdminDetailMusic: React.FC = () => {
       )
     ) {
       const result = await fetch(
-        `http://localhost:5000/artist/${artistId}/music`,
+        `${
+          import.meta.env.DEV
+            ? import.meta.env.VITE_DEV_API_URL
+            : import.meta.env.VITE_PROD_API_URL
+        }/artist/${artistId}/music`,
         {
           method: "POST",
           headers: {

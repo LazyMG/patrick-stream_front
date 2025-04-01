@@ -24,7 +24,11 @@ const AdminArtistsDetailContainer: React.FC = () => {
 
   const getArtist = async (id = "") => {
     const result = await fetch(
-      `http://localhost:5000/artist/${id}?filter=all`
+      `${
+        import.meta.env.DEV
+          ? import.meta.env.VITE_DEV_API_URL
+          : import.meta.env.VITE_PROD_API_URL
+      }/artist/${id}?filter=all`
     ).then((res) => res.json());
     if (result.ok) {
       setArtistData(result.artist);

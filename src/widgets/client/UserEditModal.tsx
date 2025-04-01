@@ -20,7 +20,7 @@ const ModalOverlay = styled.div`
 
 const ContentModal = styled.div`
   width: 40%;
-  height: 10%;
+  height: 15%;
   background-color: #212121;
   border: 0.1px solid #414141;
   border-radius: 10px;
@@ -163,14 +163,21 @@ const UserEditModal = ({ closeModal }: { closeModal: () => void }) => {
       return;
     }
     setIsPasswordLoading(true);
-    const result = await fetch(`http://localhost:5000/auth/password`, {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ password }),
-    }).then((res) => res.json());
+    const result = await fetch(
+      `${
+        import.meta.env.DEV
+          ? import.meta.env.VITE_DEV_API_URL
+          : import.meta.env.VITE_PROD_API_URL
+      }/auth/password`,
+      {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ password }),
+      }
+    ).then((res) => res.json());
 
     if (result.ok) {
       setIsValid(true);
@@ -230,7 +237,11 @@ const UserEditModal = ({ closeModal }: { closeModal: () => void }) => {
     setIsNameLoading(true);
 
     const result = await fetch(
-      `http://localhost:5000/user/${loginUserData._id}`,
+      `${
+        import.meta.env.DEV
+          ? import.meta.env.VITE_DEV_API_URL
+          : import.meta.env.VITE_PROD_API_URL
+      }/user/${loginUserData._id}`,
       {
         method: "PATCH",
         credentials: "include",

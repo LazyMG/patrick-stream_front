@@ -28,14 +28,21 @@ const AdminMusicsNew: React.FC = () => {
       index: event.index,
     };
 
-    const result = await fetch(`http://localhost:5000/music`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ musicData }),
-      credentials: "include",
-    }).then((result) => result.json());
+    const result = await fetch(
+      `${
+        import.meta.env.DEV
+          ? import.meta.env.VITE_DEV_API_URL
+          : import.meta.env.VITE_PROD_API_URL
+      }/music`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ musicData }),
+        credentials: "include",
+      }
+    ).then((result) => result.json());
 
     if (result.ok) {
       navigate("/admin/musics");

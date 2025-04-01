@@ -77,7 +77,11 @@ const PlaylistErrorItem = ({ playlist }: { playlist: APIPlaylist }) => {
         ];
       });
       const result = await fetch(
-        `http://localhost:5000/user/${user.userId}/playlist`,
+        `${
+          import.meta.env.DEV
+            ? import.meta.env.VITE_DEV_API_URL
+            : import.meta.env.VITE_PROD_API_URL
+        }/user/${user.userId}/playlist`,
         {
           method: "POST",
           headers: {

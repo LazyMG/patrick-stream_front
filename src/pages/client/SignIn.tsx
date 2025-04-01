@@ -55,7 +55,6 @@ const SignIn = () => {
     });
   });
 
-  // 디바운스 필요
   const onValid: SubmitHandler<LoginFormValues> = async (data) => {
     if (isLoading) return;
     //validate
@@ -75,17 +74,23 @@ const SignIn = () => {
       setIsEmailChecked({ email: "", state: false });
       return;
     }
-
     setIsLoading(true);
 
     // fetch
-    const result = await fetch(`http://localhost:5000/auth/signIn`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ data }),
-    }).then((res) => res.json());
+    const result = await fetch(
+      `${
+        import.meta.env.DEV
+          ? import.meta.env.VITE_DEV_API_URL
+          : import.meta.env.VITE_PROD_API_URL
+      }/auth/signIn`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ data }),
+      }
+    ).then((res) => res.json());
 
     if (result.ok) {
       navigate("/login");
@@ -107,6 +112,71 @@ const SignIn = () => {
     setIsLoading(false);
   };
 
+  const onValidTest: SubmitHandler<LoginFormValues> = async (data) => {
+    // if (isLoading) return;
+    //validate
+    if (data.password !== data.passwordConfirm) {
+      setError("password", { message: "비밀번호가 일치하지 않습니다." });
+      setFocus("password");
+      return;
+    }
+
+    if (!isEmailChecked.state || isEmailChecked.email === "") {
+      setError("email", { message: "이메일 중복 확인이 필요합니다." });
+      return;
+    }
+
+    if (data.email !== isEmailChecked.email) {
+      setError("email", { message: "이메일 중복 확인이 필요합니다." });
+      setIsEmailChecked({ email: "", state: false });
+      return;
+    }
+
+    setIsLoading(true);
+
+    // fetch
+    const result = await fetch(
+      `${
+        import.meta.env.DEV
+          ? import.meta.env.VITE_DEV_API_URL
+          : import.meta.env.VITE_PROD_API_URL
+      }/auth/signIn`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ data }),
+      }
+    ).then((res) => res.json());
+
+    if (result.ok) {
+      navigate("/login");
+    } else {
+      // 에러 처리
+      // 1. 비밀번호 불일치
+      // 2. 이미 존재하는 아이디
+      if (!result.error) {
+        if (result.type === "email") {
+          setError("email", { message: result.message });
+        } else if (result.type === "password") {
+          setError("password", { message: result.message });
+        }
+      } else {
+        // 3. DB 에러
+        alert("Server Error");
+      }
+    }
+    setIsLoading(false);
+  };
+
+  const debounceSubmit = debounce((data: LoginFormValues) => {
+    if (isLoading) return;
+
+    // 실제 제출 로직 수행
+    onValidTest(data);
+  }, 300);
+
   const gotoSocialLogin = () => {
     window.location.href = googleLoginUrl;
   };
@@ -114,13 +184,20 @@ const SignIn = () => {
   const emailValidate = async () => {
     const value = getValues("email");
 
-    const result = await fetch(`http://localhost:5000/auth/email`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ value }),
-    }).then((res) => res.json());
+    const result = await fetch(
+      `${
+        import.meta.env.DEV
+          ? import.meta.env.VITE_DEV_API_URL
+          : import.meta.env.VITE_PROD_API_URL
+      }/auth/email`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ value }),
+      }
+    ).then((res) => res.json());
     // validate
     if (result.ok) {
       if (result.flag) {

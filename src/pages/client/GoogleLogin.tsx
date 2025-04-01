@@ -22,14 +22,21 @@ const GoogleLogin = () => {
   const fetchLoginData = useCallback(async () => {
     if (!accessToken) return;
 
-    const result = await fetch(`http://localhost:5000/auth/google-login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ accessToken }),
-      credentials: "include",
-    })
+    const result = await fetch(
+      `${
+        import.meta.env.DEV
+          ? import.meta.env.VITE_DEV_API_URL
+          : import.meta.env.VITE_PROD_API_URL
+      }/auth/google-login`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ accessToken }),
+        credentials: "include",
+      }
+    )
       .then((res) => res.json())
       .catch((error) => {
         console.error("Error:", error);

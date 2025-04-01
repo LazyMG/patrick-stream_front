@@ -18,7 +18,11 @@ const AdminDetailAlbum: React.FC = () => {
     if (confirm(`[${outletAlbum?.album.title}]을(를) 삭제하시겠습니까?`)) {
       //삭제 로직
       const result = await fetch(
-        `http://localhost:5000/album/${outletAlbum?.album._id}`,
+        `${
+          import.meta.env.DEV
+            ? import.meta.env.VITE_DEV_API_URL
+            : import.meta.env.VITE_PROD_API_URL
+        }/album/${outletAlbum?.album._id}`,
         {
           method: "DELETE",
           credentials: "include",
@@ -97,9 +101,13 @@ const AdminDetailAlbum: React.FC = () => {
 
   // 아티스트 데이터 fetch 하는 코드 필요
   const fetchArtists = async () => {
-    const result = await fetch("http://localhost:5000/artist").then((res) =>
-      res.json()
-    );
+    const result = await fetch(
+      `${
+        import.meta.env.DEV
+          ? import.meta.env.VITE_DEV_API_URL
+          : import.meta.env.VITE_PROD_API_URL
+      }/artist`
+    ).then((res) => res.json());
     if (result.ok) {
       return result.allArtists;
     } else {
@@ -116,7 +124,11 @@ const AdminDetailAlbum: React.FC = () => {
       )
     ) {
       const result = await fetch(
-        `http://localhost:5000/album/${outletAlbum?.album._id}/music`,
+        `${
+          import.meta.env.DEV
+            ? import.meta.env.VITE_DEV_API_URL
+            : import.meta.env.VITE_PROD_API_URL
+        }/album/${outletAlbum?.album._id}/music`,
         {
           method: "DELETE",
           headers: {
@@ -153,7 +165,11 @@ const AdminDetailAlbum: React.FC = () => {
       )
     ) {
       const result = await fetch(
-        `http://localhost:5000/artist/${artistId}/album`,
+        `${
+          import.meta.env.DEV
+            ? import.meta.env.VITE_DEV_API_URL
+            : import.meta.env.VITE_PROD_API_URL
+        }/artist/${artistId}/album`,
         {
           method: "POST",
           headers: {

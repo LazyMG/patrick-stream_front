@@ -24,7 +24,11 @@ const AdminMusicsDetailContainer: React.FC = () => {
 
   const getMusic = async (id = "") => {
     const result = await fetch(
-      `http://localhost:5000/music/${id}`
+      `${
+        import.meta.env.DEV
+          ? import.meta.env.VITE_DEV_API_URL
+          : import.meta.env.VITE_PROD_API_URL
+      }/music/${id}`
     ).then((res) => res.json());
 
     if (result.ok) {

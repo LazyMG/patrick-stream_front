@@ -501,16 +501,23 @@ const PlayBar = ({ player }: IPlayBar) => {
   const patchUserLikeMusic = useCallback(
     async (isLiked: boolean) => {
       // 서버에 좋아요 추가 또는 삭제 요청
-      await fetch(`http://localhost:5000/user/${user.userId}/likedMusics`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          addMusic: !isLiked, // 현재 상태와 반대로 처리
-          musicId: selectedMusic!._id,
-        }),
-      });
+      await fetch(
+        `${
+          import.meta.env.DEV
+            ? import.meta.env.VITE_DEV_API_URL
+            : import.meta.env.VITE_PROD_API_URL
+        }/user/${user.userId}/likedMusics`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            addMusic: !isLiked, // 현재 상태와 반대로 처리
+            musicId: selectedMusic!._id,
+          }),
+        }
+      );
     },
     [selectedMusic, user.userId]
   );

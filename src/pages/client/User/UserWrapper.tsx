@@ -69,9 +69,16 @@ const UserWrapper = () => {
   const getUser = useCallback(
     async (targetId: string) => {
       if (isError) return;
-      const result = await fetch(`http://localhost:5000/user/${targetId}`, {
-        credentials: "include",
-      }).then((res) => res.json());
+      const result = await fetch(
+        `${
+          import.meta.env.DEV
+            ? import.meta.env.VITE_DEV_API_URL
+            : import.meta.env.VITE_PROD_API_URL
+        }/user/${targetId}`,
+        {
+          credentials: "include",
+        }
+      ).then((res) => res.json());
 
       if (result.ok) {
         await new Promise((resolve) => setTimeout(resolve, 3000));
@@ -124,10 +131,17 @@ const UserWrapper = () => {
 
   const logOut = async () => {
     setIsLogoutLoading(true);
-    const result = await fetch("http://localhost:5000/auth/logout", {
-      method: "POST",
-      credentials: "include",
-    }).then((res) => res.json());
+    const result = await fetch(
+      `${
+        import.meta.env.DEV
+          ? import.meta.env.VITE_DEV_API_URL
+          : import.meta.env.VITE_PROD_API_URL
+      }/auth/logout`,
+      {
+        method: "POST",
+        credentials: "include",
+      }
+    ).then((res) => res.json());
     if (result.ok) {
       cleanUserInfo();
       navigate("/");
@@ -138,7 +152,11 @@ const UserWrapper = () => {
   const patchUserFollowers = useCallback(
     async (addList: boolean) => {
       const result = await fetch(
-        `http://localhost:5000/user/${userId}/followers`,
+        `${
+          import.meta.env.DEV
+            ? import.meta.env.VITE_DEV_API_URL
+            : import.meta.env.VITE_PROD_API_URL
+        }/user/${userId}/followers`,
         {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },

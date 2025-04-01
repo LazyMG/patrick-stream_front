@@ -104,7 +104,11 @@ const PlayListContainer = () => {
     if (isError) return;
 
     const result = await fetch(
-      `http://localhost:5000/user/${user.userId}/allPlaylists`,
+      `${
+        import.meta.env.DEV
+          ? import.meta.env.VITE_DEV_API_URL
+          : import.meta.env.VITE_PROD_API_URL
+      }/user/${user.userId}/allPlaylists`,
       {
         credentials: "include",
       }

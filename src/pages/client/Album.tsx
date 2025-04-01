@@ -313,7 +313,11 @@ const Album = () => {
     async (id: string) => {
       if (isError) return;
       const result = await fetch(
-        `http://localhost:5000/album/${id}`
+        `${
+          import.meta.env.DEV
+            ? import.meta.env.VITE_DEV_API_URL
+            : import.meta.env.VITE_PROD_API_URL
+        }/album/${id}`
       ).then((res) => res.json());
 
       if (result.ok) {
@@ -355,7 +359,11 @@ const Album = () => {
   const patchAlbumFollowers = useCallback(
     async (addList: boolean) => {
       const result = await fetch(
-        `http://localhost:5000/album/${albumId}/followers`,
+        `${
+          import.meta.env.DEV
+            ? import.meta.env.VITE_DEV_API_URL
+            : import.meta.env.VITE_PROD_API_URL
+        }/album/${albumId}/followers`,
         {
           method: "PATCH",
           headers: {

@@ -23,7 +23,11 @@ const AdminDetailArtist: React.FC = () => {
     ) {
       //삭제 로직
       const result = await fetch(
-        `http://localhost:5000/artist/${outletArtist?.artist._id}`,
+        `${
+          import.meta.env.DEV
+            ? import.meta.env.VITE_DEV_API_URL
+            : import.meta.env.VITE_PROD_API_URL
+        }/artist/${outletArtist?.artist._id}`,
         {
           method: "DELETE",
           credentials: "include",
@@ -105,7 +109,11 @@ const AdminDetailArtist: React.FC = () => {
       )
     ) {
       const result = await fetch(
-        `http://localhost:5000/artist/${outletArtist?.artist._id}/music`,
+        `${
+          import.meta.env.DEV
+            ? import.meta.env.VITE_DEV_API_URL
+            : import.meta.env.VITE_PROD_API_URL
+        }/artist/${outletArtist?.artist._id}/music`,
         {
           method: "DELETE",
           headers: {
@@ -143,7 +151,11 @@ const AdminDetailArtist: React.FC = () => {
       )
     ) {
       const result = await fetch(
-        `http://localhost:5000/artist/${outletArtist?.artist._id}/album`,
+        `${
+          import.meta.env.DEV
+            ? import.meta.env.VITE_DEV_API_URL
+            : import.meta.env.VITE_PROD_API_URL
+        }/artist/${outletArtist?.artist._id}/album`,
         {
           method: "DELETE",
           headers: {

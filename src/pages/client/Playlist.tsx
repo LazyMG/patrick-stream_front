@@ -256,7 +256,11 @@ const Playlist = () => {
         return;
       }
       const result = await fetch(
-        `http://localhost:5000/playlist/${id}`
+        `${
+          import.meta.env.DEV
+            ? import.meta.env.VITE_DEV_API_URL
+            : import.meta.env.VITE_PROD_API_URL
+        }/playlist/${id}`
       ).then((res) => res.json());
       if (result.ok) {
         setPlaylistData(result.playlist as APIPlaylist);
@@ -330,7 +334,11 @@ const Playlist = () => {
   const patchPlaylistFollowers = useCallback(
     async (addList: boolean) => {
       const result = await fetch(
-        `http://localhost:5000/playlist/${playlistId}/followers`,
+        `${
+          import.meta.env.DEV
+            ? import.meta.env.VITE_DEV_API_URL
+            : import.meta.env.VITE_PROD_API_URL
+        }/playlist/${playlistId}/followers`,
         {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
@@ -410,10 +418,17 @@ const Playlist = () => {
     setIsPending(true);
 
     // DB에서 삭제
-    const result = await fetch(`http://localhost:5000/playlist/${playlistId}`, {
-      method: "DELETE",
-      credentials: "include",
-    }).then((res) => res.json());
+    const result = await fetch(
+      `${
+        import.meta.env.DEV
+          ? import.meta.env.VITE_DEV_API_URL
+          : import.meta.env.VITE_PROD_API_URL
+      }/playlist/${playlistId}`,
+      {
+        method: "DELETE",
+        credentials: "include",
+      }
+    ).then((res) => res.json());
 
     if (result.ok) {
       // 현재 사용자 플레이리스트에서 삭제

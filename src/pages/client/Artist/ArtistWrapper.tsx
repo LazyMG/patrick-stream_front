@@ -56,7 +56,11 @@ const ArtistWrapper = () => {
     async (id: string) => {
       if (isError) return;
       const result = await fetch(
-        `http://localhost:5000/artist/${id}`
+        `${
+          import.meta.env.DEV
+            ? import.meta.env.VITE_DEV_API_URL
+            : import.meta.env.VITE_PROD_API_URL
+        }/artist/${id}`
       ).then((res) => res.json());
 
       if (result.ok) {
@@ -99,7 +103,11 @@ const ArtistWrapper = () => {
   const patchArtistFollowers = useCallback(
     async (addList: boolean) => {
       const result = await fetch(
-        `http://localhost:5000/artist/${artistId}/followers`,
+        `${
+          import.meta.env.DEV
+            ? import.meta.env.VITE_DEV_API_URL
+            : import.meta.env.VITE_PROD_API_URL
+        }/artist/${artistId}/followers`,
         {
           method: "PATCH",
           headers: {

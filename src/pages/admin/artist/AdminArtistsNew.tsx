@@ -27,14 +27,21 @@ const AdminArtistsNew: React.FC = () => {
       introduction: event.introduction,
     };
 
-    const result = await fetch(`http://localhost:5000/artist`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ artistData }),
-      credentials: "include",
-    }).then((result) => result.json());
+    const result = await fetch(
+      `${
+        import.meta.env.DEV
+          ? import.meta.env.VITE_DEV_API_URL
+          : import.meta.env.VITE_PROD_API_URL
+      }/artist`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ artistData }),
+        credentials: "include",
+      }
+    ).then((result) => result.json());
 
     if (result.ok) {
       navigate("/admin/artists");

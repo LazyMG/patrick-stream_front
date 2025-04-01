@@ -179,14 +179,18 @@ const ThemeMusic = () => {
   const navigate = useNavigate();
 
   const getMusicData = async () => {
-    let url;
+    let url = `${
+      import.meta.env.DEV
+        ? import.meta.env.VITE_DEV_API_URL
+        : import.meta.env.VITE_PROD_API_URL
+    }`;
 
     if (newMusicMatch) {
-      url = `http://localhost:5000/music/recently-updated`;
+      url = url + `/music/recently-updated`;
     } else if (trendingMusicMatch) {
-      url = `http://localhost:5000/music/trending`;
+      url = `/music/trending`;
     } else if (popularMusicMatch) {
-      url = `http://localhost:5000/music/popular`;
+      url = `/music/popular`;
     } else {
       return;
     }

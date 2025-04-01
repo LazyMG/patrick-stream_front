@@ -37,7 +37,11 @@ const AdminMain: React.FC = () => {
 
   const getMusicCounts = async () => {
     const result = await fetch(
-      `http://localhost:5000/music/count`
+      `${
+        import.meta.env.DEV
+          ? import.meta.env.VITE_DEV_API_URL
+          : import.meta.env.VITE_PROD_API_URL
+      }/music/count`
     ).then((res) => res.json());
 
     if (result.ok) {
@@ -47,7 +51,11 @@ const AdminMain: React.FC = () => {
 
   const getAlbumCounts = async () => {
     const result = await fetch(
-      `http://localhost:5000/album/count`
+      `${
+        import.meta.env.DEV
+          ? import.meta.env.VITE_DEV_API_URL
+          : import.meta.env.VITE_PROD_API_URL
+      }/album/count`
     ).then((res) => res.json());
 
     if (result.ok) {
@@ -57,7 +65,11 @@ const AdminMain: React.FC = () => {
 
   const getArtistCounts = async () => {
     const result = await fetch(
-      `http://localhost:5000/artist/count`
+      `${
+        import.meta.env.DEV
+          ? import.meta.env.VITE_DEV_API_URL
+          : import.meta.env.VITE_PROD_API_URL
+      }/artist/count`
     ).then((res) => res.json());
 
     if (result.ok) {
