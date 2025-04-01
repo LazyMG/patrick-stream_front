@@ -204,6 +204,10 @@ const MainContainer = ({ children, onScroll }: IMainContainer) => {
   };
 
   useEffect(() => {
+    console.log("DEV?", import.meta.env.DEV);
+    console.log("PROD?", import.meta.env.PROD);
+    console.log("env?", import.meta.env);
+
     if (user.userId !== "") {
       getUserProfile(user.userId);
     }
