@@ -56,6 +56,7 @@ export interface Test {
 export type AlbumIDs =
   | "title"
   | "length"
+  | "total_duration"
   | "category"
   | "coverImg"
   | "introduction"

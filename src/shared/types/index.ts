@@ -15,6 +15,7 @@ export interface IAlbumFormInput {
   released_at: string;
   category: string;
   coverImg: string;
+  total_duration: number;
 }
 
 export interface IArtistFormInput {

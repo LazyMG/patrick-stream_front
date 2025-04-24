@@ -322,8 +322,7 @@ const Album = () => {
 
       if (result.ok) {
         setAlbumData(result.album as APIAlbum);
-        setBackground({ src: result.album.coverImg, type: "blur" });
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        // setBackground({ src: result.album.coverImg, type: "blur" });
 
         setIsLoading(false);
       } else {
@@ -343,8 +342,17 @@ const Album = () => {
         }
       }
     },
-    [setBackground, setGlobalToast, isError]
+    [setGlobalToast, isError]
   );
+
+  useEffect(() => {
+    setBackground((prev) => {
+      if (prev?.src === (albumData ? albumData?.coverImg : "")) {
+        return prev;
+      }
+      return { src: albumData ? albumData?.coverImg : "", type: "blur" };
+    });
+  }, [albumData, setBackground]);
 
   useEffect(() => {
     setIsNotFound(false);

@@ -67,7 +67,6 @@ const ArtistWrapper = () => {
         setArtistData(result.artist);
         setArtistMusics(result.artist.musics);
         setArtistAlbums(result.artist.albums);
-        await new Promise((resolve) => setTimeout(resolve, 100));
 
         setIsLoading(false);
       } else {

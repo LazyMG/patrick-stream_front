@@ -53,7 +53,7 @@ const AlbumList = ({ music, index }: { music: APIMusic; index: number }) => {
 
   const clickMusic = () => {
     playMusic(music);
-    setViews((prev) => prev + 1);
+    // setViews((prev) => prev + 1);
   };
 
   return (

@@ -20,26 +20,26 @@ const FastSelectMusics = () => {
   const setPlayingPlaylist = useSetRecoilState(playingPlaylistState);
   const playMusic = usePlayMusic();
 
-  const getNewMusics = async () => {
+  const getTrendingMusics = async () => {
     if (isError) return;
     const result = await fetch(
       `${
         import.meta.env.DEV
           ? import.meta.env.VITE_DEV_API_URL
           : import.meta.env.VITE_PROD_API_URL
-      }/music/recently-updated`
+      }/music/trending`
     ).then((res) => res.json());
     if (result.ok) {
       setFastSelectMusicData(result.musics);
     } else {
-      setGlobalToast("Music Error", "NEW_MUSIC_FETCH_ERROR");
+      setGlobalToast("Music Error", "TRENDING_MUSIC_FETCH_ERROR");
       setIsError(true);
     }
     setIsFastSelectMusicLoading(false);
   };
 
   useEffect(() => {
-    getNewMusics();
+    getTrendingMusics();
   }, []);
 
   const fastPlayMusic = () => {

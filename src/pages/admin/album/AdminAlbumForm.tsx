@@ -51,6 +51,17 @@ const AdminAlbumForm = ({
         errorMsg={errors.length ? errors.length.message : ""}
       />
       <AdminInputRow
+        id="total_duration"
+        name="Total_Duration"
+        placeHolder="Total Duration"
+        type="number"
+        register={register("total_duration", {
+          required: "앨범의 재생 시간을을 입력해주세요.",
+        })}
+        handleChange={handleChange}
+        errorMsg={errors.total_duration ? errors.total_duration.message : ""}
+      />
+      <AdminInputRow
         id="introduction"
         name="Introduction"
         placeHolder="Introduction"
