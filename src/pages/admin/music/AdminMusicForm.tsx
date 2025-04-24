@@ -52,7 +52,7 @@ const AdminMusicForm = ({
         placeHolder="Index"
         type="number"
         register={register("index", {
-          required: "음악 번호를 입력해주세요요.",
+          required: "음악 번호를 입력해주세요.",
         })}
         handleChange={handleChange}
         errorMsg={errors.index ? errors.index.message : ""}
@@ -65,7 +65,7 @@ const AdminMusicForm = ({
         register={register("ytId", {
           required: "유튜브 아이디를 입력해주세요.",
           pattern: {
-            value: /^[a-zA-Z0-9]+$/,
+            value: /^[a-zA-Z0-9_]+$/,
             message: "아이디는 영어와 숫자로 구성해주세요.",
           },
         })}

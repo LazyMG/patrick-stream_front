@@ -4,7 +4,7 @@ import { userState } from "../../../app/entities/user/atom";
 import { useRecoilValue } from "recoil";
 import SearchForm from "./../SearchForm";
 
-import LogoComponent from "../../../assets/logo.svg?react";
+import LogoComponent from "../../../assets/new-logo.svg?react";
 
 const Wrapper = styled.header<{ $navShow: boolean }>`
   position: fixed;
@@ -43,6 +43,15 @@ const IconContainer = styled.div<{ $navShow: boolean }>`
     width: 40px;
     left: 25px;
     cursor: pointer;
+    height: fit-content;
+  }
+
+  span {
+    margin-left: 24px;
+    font-size: 20px;
+    font-weight: bold;
+    letter-spacing: -1px;
+    word-spacing: -2px;
   }
 `;
 
@@ -139,7 +148,7 @@ const Header = ({ $navShow }: IHeader) => {
     <Wrapper $navShow={$navShow}>
       <IconContainer $navShow={$navShow}>
         <LogoComponent onClick={() => navigate("/")} />
-        Patrick Stream
+        <span>Patrick Stream</span>
         <InfoButton onClick={() => navigate("/info")}>i</InfoButton>
       </IconContainer>
       <SearchContainer>

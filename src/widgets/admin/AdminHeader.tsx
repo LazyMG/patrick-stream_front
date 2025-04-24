@@ -13,9 +13,7 @@ const Title = styled.h1``;
 
 const AdminHeader: React.FC = () => {
   return (
-    <HeaderContainer>
-      <Title>Patrick Stream</Title>
-    </HeaderContainer>
+    <HeaderContainer>{/* <Title>Patrick Stream</Title> */}</HeaderContainer>
   );
 };
 
