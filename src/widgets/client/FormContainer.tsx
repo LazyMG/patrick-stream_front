@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import LogoComponent from "../../assets/new-logo.svg?react";
 
 const Wrapper = styled.div`
   display: flex;
@@ -8,8 +9,23 @@ const Wrapper = styled.div`
   align-items: center;
   gap: 40px;
   width: 30%;
+`;
 
-  /* background-color: blue; */
+const FormHeader = styled.div`
+  position: relative;
+  width: 80%;
+  display: flex;
+  justify-content: center;
+
+  svg {
+    position: absolute;
+    width: 45px;
+    height: fit-content;
+    top: 5px;
+    left: 0;
+
+    cursor: pointer;
+  }
 `;
 
 const Title = styled.h1`
@@ -38,7 +54,14 @@ interface IFormContainer {
 const FormContainer = ({ children, formType }: IFormContainer) => {
   return (
     <Wrapper>
-      <Title>{formType === "signIn" ? "SignIn" : "Login"}</Title>
+      <FormHeader>
+        <Link to={"/"}>
+          <LogoComponent />
+        </Link>
+
+        <Title>{formType === "signIn" ? "SignIn" : "Login"}</Title>
+      </FormHeader>
+
       {children}
       <Message>
         {formType === "signIn" ? (
