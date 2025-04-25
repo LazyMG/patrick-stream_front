@@ -263,7 +263,7 @@ const UserEditModal = ({ closeModal }: { closeModal: () => void }) => {
       closeModal();
     } else {
       if (!result.error) {
-        if (result.type === "INVALID_ERROR") {
+        if (result.type === "INVALID_NAME") {
           setError("이미 사용 중인 이름입니다.");
         } else if (result.type === "NO_ACCESS") {
           setGlobalToast(
