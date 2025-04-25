@@ -251,10 +251,14 @@ const Playlist = () => {
   const getPlaylistData = useCallback(
     async (id: string) => {
       if (isError) return;
-      if (isDeleteRef) {
+      console.log("IN");
+      console.log("isDeleteRef", isDeleteRef);
+      if (isDeleteRef.current) {
+        console.log("return");
         isDeleteRef.current = false;
         return;
       }
+      console.log("FETCH");
       const result = await fetch(
         `${
           import.meta.env.DEV
@@ -265,7 +269,9 @@ const Playlist = () => {
       if (result.ok) {
         setPlaylistData(result.playlist as APIPlaylist);
         setIsLoading(false);
+        console.log("success");
       } else {
+        console.log("fail");
         setIsError(true);
         if (!result.error) {
           if (result.type === "ERROR_ID") {
@@ -318,8 +324,8 @@ const Playlist = () => {
         return;
       }
     }
-
     if (playlistId) {
+      console.log("fetch");
       getPlaylistData(playlistId);
     }
   }, [
