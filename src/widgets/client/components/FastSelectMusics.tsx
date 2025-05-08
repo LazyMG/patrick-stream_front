@@ -2,10 +2,14 @@ import { useEffect, useState } from "react";
 import { APIMusic } from "../../../shared/models/music";
 import GridList from "../GridList/GridList";
 import GridListSkeleton from "../GridList/GridListSkeleton";
-import { useSetRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { playingPlaylistState } from "../../../app/entities/music/atom";
 import { usePlayMusic } from "../../../shared/hooks/usePlayMusic";
 import { useToast } from "../../../shared/hooks/useToast";
+import {
+  isInitialFetchLoadingSelector,
+  isInitialFetchLoadingState,
+} from "../../../app/entities/global/atom";
 
 const FastSelectMusics = () => {
   const [fastSelectMusicData, setFastSelectMusicData] = useState<
@@ -19,6 +23,11 @@ const FastSelectMusics = () => {
 
   const setPlayingPlaylist = useSetRecoilState(playingPlaylistState);
   const playMusic = usePlayMusic();
+
+  const setIsInitialFetchLoading = useSetRecoilState(
+    isInitialFetchLoadingState
+  );
+  const isInitialLoading = useRecoilValue(isInitialFetchLoadingSelector);
 
   const getTrendingMusics = async () => {
     if (isError) return;
@@ -36,6 +45,9 @@ const FastSelectMusics = () => {
       setIsError(true);
     }
     setIsFastSelectMusicLoading(false);
+    setIsInitialFetchLoading((prev) => {
+      return { ...prev, isFastSelectMusicsLoading: false };
+    });
   };
 
   useEffect(() => {
@@ -50,8 +62,7 @@ const FastSelectMusics = () => {
 
   return (
     <>
-      {isError ? null : isFastSelectMusicLoading ||
-        fastSelectMusicData === null ? (
+      {isError ? null : isInitialLoading || fastSelectMusicData === null ? (
         <GridListSkeleton />
       ) : (
         <GridList

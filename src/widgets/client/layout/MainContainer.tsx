@@ -7,6 +7,7 @@ import { isPlayerOnState } from "../../../app/entities/player/atom";
 import {
   backgroundState,
   globalToastConfigState,
+  isInitialFetchLoadingState,
 } from "../../../app/entities/global/atom";
 import { playingPlaylistState } from "../../../app/entities/music/atom";
 import { loginUserDataState, userState } from "../../../app/entities/user/atom";
@@ -170,6 +171,9 @@ const MainContainer = ({ children, onScroll }: IMainContainer) => {
   const { initiateLoginUserData } = useLoginUser();
   const globalToastConfig = useRecoilValue(globalToastConfigState);
   const { setGlobalToast } = useToast();
+  const setIsInitialFetchLoading = useSetRecoilState(
+    isInitialFetchLoadingState
+  );
 
   const location = useLocation();
 
@@ -206,6 +210,13 @@ const MainContainer = ({ children, onScroll }: IMainContainer) => {
   useEffect(() => {
     if (user.userId !== "") {
       getUserProfile(user.userId);
+    } else {
+      // setIsInitialFetchLoading((prev) => {
+      //   return {
+      //     ...prev,
+      //     isRecentMusicsLoading: false,
+      //   };
+      // });
     }
   }, [user.userId]);
 
