@@ -211,12 +211,12 @@ const MainContainer = ({ children, onScroll }: IMainContainer) => {
     if (user.userId !== "") {
       getUserProfile(user.userId);
     } else {
-      // setIsInitialFetchLoading((prev) => {
-      //   return {
-      //     ...prev,
-      //     isRecentMusicsLoading: false,
-      //   };
-      // });
+      setIsInitialFetchLoading((prev) => {
+        return {
+          ...prev,
+          isRecentMusicsLoading: false,
+        };
+      });
     }
   }, [user.userId]);
 
