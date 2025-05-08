@@ -4,11 +4,6 @@ import FlexListSkeleton from "../FlexList/FlexListSkeleton";
 import FlexList from "../FlexList/FlexList";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "../../../shared/hooks/useToast";
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import {
-  isInitialFetchLoadingSelector,
-  isInitialFetchLoadingState,
-} from "../../../app/entities/global/atom";
 
 const TrendingMusics = () => {
   const [trendingMusicsData, setTrendingMusicsData] = useState<
@@ -18,10 +13,6 @@ const TrendingMusics = () => {
   const { setGlobalToast } = useToast();
   const [isError, setIsError] = useState(false);
   const navigate = useNavigate();
-  const setIsInitialFetchLoading = useSetRecoilState(
-    isInitialFetchLoadingState
-  );
-  const isInitialLoading = useRecoilValue(isInitialFetchLoadingSelector);
 
   const getTrendingMusics = async () => {
     if (isError) return;
@@ -39,9 +30,6 @@ const TrendingMusics = () => {
       setIsError(true);
     }
     setIsTrendingMusicLoading(false);
-    setIsInitialFetchLoading((prev) => {
-      return { ...prev, isTrendingMusicsLoading: false };
-    });
   };
 
   useEffect(() => {
@@ -50,7 +38,8 @@ const TrendingMusics = () => {
 
   return (
     <>
-      {isError ? null : isInitialLoading || trendingMusicsData === null ? (
+      {isError ? null : isTrendingMusicLoading ||
+        trendingMusicsData === null ? (
         <FlexListSkeleton />
       ) : (
         <FlexList

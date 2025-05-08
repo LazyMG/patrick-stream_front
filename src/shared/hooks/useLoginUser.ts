@@ -7,7 +7,6 @@ import { followingArtistsState } from "../../app/entities/artist/atom";
 import { followingAlbumsState } from "../../app/entities/album/atom";
 import { followingPlaylistsState } from "../../app/entities/playlist/atom";
 import { APIUser } from "../models/user";
-import { isInitialFetchLoadingState } from "../../app/entities/global/atom";
 
 export const useLoginUser = () => {
   const setLikedMusics = useSetRecoilState(likedMusicsState);
@@ -15,18 +14,10 @@ export const useLoginUser = () => {
   const setFollowingArtists = useSetRecoilState(followingArtistsState);
   const setFollowingAlbums = useSetRecoilState(followingAlbumsState);
   const setFollowingPlaylists = useSetRecoilState(followingPlaylistsState);
-  const setIsInitialFetchLoading = useSetRecoilState(
-    isInitialFetchLoadingState
-  );
 
   const initiateLoginUserData = (loginUser: APIUser) => {
     setRecentMusics(loginUser.recentMusics ? loginUser.recentMusics : []);
-    setIsInitialFetchLoading((prev) => {
-      return {
-        ...prev,
-        isRecentMusicsLoading: false,
-      };
-    });
+
     setLikedMusics(loginUser.likedMusics ? loginUser.likedMusics : []);
     setFollowingArtists(
       loginUser?.followings?.followingArtists

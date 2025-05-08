@@ -4,11 +4,6 @@ import { useToast } from "../../../shared/hooks/useToast";
 import FlexList from "./../FlexList/FlexList";
 import FlexListSkeleton from "../FlexList/FlexListSkeleton";
 import { useNavigate } from "react-router-dom";
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import {
-  isInitialFetchLoadingSelector,
-  isInitialFetchLoadingState,
-} from "../../../app/entities/global/atom";
 
 const NewMusics = () => {
   const [newMusicsData, setNewMusicsData] = useState<APIMusic[] | null>(null);
@@ -16,10 +11,6 @@ const NewMusics = () => {
   const { setGlobalToast } = useToast();
   const [isError, setIsError] = useState(false);
   const navigate = useNavigate();
-  const setIsInitialFetchLoading = useSetRecoilState(
-    isInitialFetchLoadingState
-  );
-  const isInitialLoading = useRecoilValue(isInitialFetchLoadingSelector);
 
   const getNewMusics = useCallback(async () => {
     if (isError) return;
@@ -37,9 +28,6 @@ const NewMusics = () => {
       setIsError(true);
     }
     setIsNewMusicLoading(false);
-    setIsInitialFetchLoading((prev) => {
-      return { ...prev, isNewMusicsLoading: false };
-    });
   }, [setGlobalToast, isError]);
 
   useEffect(() => {
@@ -48,7 +36,7 @@ const NewMusics = () => {
 
   return (
     <>
-      {isError ? null : isInitialLoading || newMusicsData === null ? (
+      {isError ? null : isNewMusicLoading || newMusicsData === null ? (
         <FlexListSkeleton />
       ) : (
         <FlexList
