@@ -53,6 +53,11 @@ const IconContainer = styled.div<{ $navShow: boolean }>`
     letter-spacing: -1px;
     word-spacing: -2px;
   }
+
+  @media (max-width: 940px) {
+    background-color: transparent;
+    box-shadow: none;
+  }
 `;
 
 const InfoButton = styled.div`
@@ -93,12 +98,20 @@ const SearchContainer = styled.div`
   @media (max-width: 1800px) {
     padding: 0 8%; /* 화면이 1200px 이하일 때 패딩을 6%로 설정 */
   }
+
+  @media (max-width: 940px) {
+    justify-content: flex-end;
+  }
 `;
 
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: flex-end;
   gap: 12px;
+
+  @media (max-width: 940px) {
+    gap: 5px;
+  }
 `;
 
 const Button = styled.button<{ $alter: boolean }>`
@@ -118,6 +131,12 @@ const Button = styled.button<{ $alter: boolean }>`
   transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out;
 
   cursor: pointer;
+
+  @media (max-width: 940px) {
+    width: 40px;
+    font-size: 0;
+    height: 40px;
+  }
 `;
 
 const Profile = styled.span`

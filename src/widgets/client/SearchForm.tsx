@@ -29,6 +29,10 @@ const SearchInput = styled.input`
   &:active {
     outline: none;
   }
+
+  /* @media (max-width: 940px) {
+    display: none;
+  } */
 `;
 
 const SearchButton = styled.button`
@@ -49,6 +53,10 @@ const SearchButton = styled.button`
       color: ${(props) => props.theme.color.pink};
     }
   }
+
+  /* @media (max-width: 940px) {
+    right: 50px;
+  } */
 `;
 
 const SearchForm = () => {
@@ -73,7 +81,7 @@ const SearchForm = () => {
   const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault(); // 리프레시 방지
+    e.preventDefault();
 
     navigate(`/search?q=${encodeURIComponent(keyword)}`);
   };

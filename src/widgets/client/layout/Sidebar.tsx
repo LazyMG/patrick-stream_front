@@ -13,6 +13,14 @@ const Wrapper = styled.div`
 
   display: flex;
   flex-direction: column;
+
+  @media (max-width: 940px) {
+    width: 72px;
+    box-shadow: none;
+  }
+  @media (max-width: 614px) {
+    display: none;
+  }
 `;
 
 const MenuContainer = styled.div`
@@ -28,6 +36,10 @@ const MenuContainer = styled.div`
     &:active {
       text-decoration: none;
     }
+  }
+
+  @media (max-width: 940px) {
+    padding: 8px;
   }
 `;
 
@@ -58,6 +70,19 @@ const Menu = styled.div<{ $isActive: boolean }>`
     ${(props) => (props.$isActive ? "" : `background-color:#fcddde`)};
     ${(props) => (props.$isActive ? "" : `color:#000000`)};
   }
+
+  @media (max-width: 940px) {
+    flex-direction: column;
+    height: 56px;
+    gap: 2px;
+    padding: 3px 5px;
+    svg {
+      flex: 1;
+    }
+    span {
+      font-size: 10px;
+    }
+  }
 `;
 
 const Divider = styled.div`
@@ -66,6 +91,10 @@ const Divider = styled.div`
 
   background-color: #3d3d3d;
   margin: 20px 10px;
+
+  @media (max-width: 940px) {
+    display: none;
+  }
 `;
 
 const Sidebar = () => {

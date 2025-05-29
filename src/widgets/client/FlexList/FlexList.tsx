@@ -70,6 +70,13 @@ const CustomTitle = styled.div`
   color: #fff;
   font-weight: bold;
   font-size: 45px;
+
+  @media (max-width: 940px) {
+    font-size: 36px;
+  }
+  @media (max-width: 614px) {
+    font-size: 28px;
+  }
 `;
 
 // 전체 컨테이너
@@ -115,7 +122,7 @@ interface IFlexList {
   isMore: boolean;
 }
 
-const PERVIEW = 6;
+const PERVIEW = 4;
 
 const FlexList = ({
   isCustom,
@@ -177,7 +184,7 @@ const FlexList = ({
           <SwiperComponent
             onSwiper={(swiper) => (swiperRef.current = swiper)}
             modules={[Scrollbar]}
-            slidesPerView={PERVIEW} // 한 번에 6개의 슬라이드 보이게 설정
+            // slidesPerView={PERVIEW} // 한 번에 6개의 슬라이드 보이게 설정
             spaceBetween={15} // 슬라이드 간의 간격 설정
             slidesPerGroup={1} // 한 번에 1개의 슬라이드를 이동
             allowTouchMove={false}
@@ -189,6 +196,20 @@ const FlexList = ({
               setIsEnd(false);
             }}
             style={{ paddingBottom: "15px" }}
+            breakpoints={{
+              1280: {
+                slidesPerView: 6, //한번에 보이는 슬라이드 개수
+              },
+              768: {
+                slidesPerView: 4, //한번에 보이는 슬라이드 개수
+              },
+              640: {
+                slidesPerView: 3, //한번에 보이는 슬라이드 개수
+              },
+              0: {
+                slidesPerView: 2, //한번에 보이는 슬라이드 개수
+              },
+            }}
           >
             {list?.map((item) => (
               <SwiperSlide key={item._id}>

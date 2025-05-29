@@ -43,6 +43,16 @@ const Wrapper = styled.div<{ $backImg?: string | null }>`
   @media (max-width: 1800px) {
     padding: 0 8%; /* 화면이 1200px 이하일 때 패딩을 6%로 설정 */
   }
+
+  @media (max-width: 940px) {
+    margin-left: 72.5px;
+    background: none;
+  }
+
+  @media (max-width: 614px) {
+    margin-left: 0px;
+    background: none;
+  }
 `;
 
 const Content = styled.div`

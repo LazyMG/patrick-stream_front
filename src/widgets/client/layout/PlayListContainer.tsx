@@ -22,6 +22,10 @@ const Wrapper = styled.div<{ $isPlayerOn: boolean }>`
   overflow: hidden;
 
   ${(props) => (props.$isPlayerOn ? `margin-bottom: 80px;` : "")}
+
+  @media (max-width: 940px) {
+    display: none;
+  }
 `;
 
 const CreateButton = styled.div`

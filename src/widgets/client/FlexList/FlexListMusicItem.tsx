@@ -51,6 +51,13 @@ const Info = styled.div`
   gap: 5px;
 
   font-size: 16px;
+
+  /* @media (max-width: 940px) {
+    font-size: 14px;
+  }
+  @media (max-width: 614px) {
+    font-size: 12px;
+  } */
 `;
 
 const Title = styled.span`

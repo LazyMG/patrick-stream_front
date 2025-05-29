@@ -29,6 +29,13 @@ const DefaultSection = styled.div`
   color: #fff;
   font-weight: bold;
   font-size: 45px;
+
+  @media (max-width: 940px) {
+    font-size: 36px;
+  }
+  @media (max-width: 614px) {
+    font-size: 28px;
+  }
 `;
 
 const ListContainer = styled.div`

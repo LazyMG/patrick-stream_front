@@ -46,11 +46,31 @@ const FlexListContainerSkeleton = styled.div`
 const FlexListSwiperSkeleton = styled.div`
   display: flex;
   gap: 15px;
+  overflow: hidden;
 `;
 
 const FlexListItemSkeleton = styled.div`
-  width: 100%;
+  /* width: 100%;
 
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding-bottom: 5px; */
+  flex: 0 0 50%; /* 기본: 2개 */
+
+  @media (min-width: 640px) {
+    flex: 0 0 calc((100% - 2 * 15px) / 3); /* 3개 + gap 고려 */
+  }
+
+  @media (min-width: 768px) {
+    flex: 0 0 calc((100% - 3 * 15px) / 4); /* 4개 */
+  }
+
+  @media (min-width: 1280px) {
+    flex: 0 0 calc((100% - 5 * 15px) / 6); /* 6개 */
+  }
+
+  width: auto; /* 너비는 flex 기준 */
   display: flex;
   flex-direction: column;
   gap: 15px;
