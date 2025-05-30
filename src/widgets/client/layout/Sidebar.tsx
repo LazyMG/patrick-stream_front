@@ -75,7 +75,7 @@ const Menu = styled.div<{ $isActive: boolean }>`
     flex-direction: column;
     height: 56px;
     gap: 2px;
-    padding: 3px 5px;
+    padding: 7px 5px;
     svg {
       flex: 1;
     }

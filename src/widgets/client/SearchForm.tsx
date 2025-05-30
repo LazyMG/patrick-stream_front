@@ -4,10 +4,18 @@ import styled from "styled-components";
 
 const Wrapper = styled.form`
   position: relative;
+  width: 100%;
+  /* background-color: red; */
+
+  @media (max-width: 940px) {
+    display: flex;
+    justify-content: end;
+  }
 `;
 
 const SearchInput = styled.input`
-  width: 400px;
+  max-width: 400px;
+  width: 80%;
   outline: none;
   padding: 12px 0;
   padding-left: 50px;
@@ -30,9 +38,9 @@ const SearchInput = styled.input`
     outline: none;
   }
 
-  /* @media (max-width: 940px) {
+  @media (max-width: 940px) {
     display: none;
-  } */
+  }
 `;
 
 const SearchButton = styled.button`
@@ -44,6 +52,8 @@ const SearchButton = styled.button`
   background: none;
   border: none;
 
+  width: fit-content;
+
   cursor: pointer;
   svg {
     color: #fff;
@@ -54,9 +64,10 @@ const SearchButton = styled.button`
     }
   }
 
-  /* @media (max-width: 940px) {
-    right: 50px;
-  } */
+  @media (max-width: 940px) {
+    position: initial;
+    top: 0;
+  }
 `;
 
 const SearchForm = () => {

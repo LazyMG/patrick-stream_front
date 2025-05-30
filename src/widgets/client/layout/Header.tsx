@@ -25,8 +25,9 @@ const IconContainer = styled.div<{ $navShow: boolean }>`
   height: 100%;
   width: 250px;
   display: flex;
-  justify-content: center;
+  padding-left: 15px;
   align-items: center;
+  box-sizing: border-box;
 
   position: relative;
 
@@ -34,21 +35,16 @@ const IconContainer = styled.div<{ $navShow: boolean }>`
 
   color: #fff;
 
-  img {
-    width: 65px;
-  }
-
-  svg {
-    position: absolute;
-    width: 40px;
-    left: 25px;
+  & > svg {
+    width: 35px;
     cursor: pointer;
     height: fit-content;
+    margin-left: 10px;
   }
 
   span {
-    margin-left: 24px;
-    font-size: 20px;
+    margin-left: 3px;
+    font-size: 16px;
     font-weight: bold;
     letter-spacing: -1px;
     word-spacing: -2px;
@@ -73,11 +69,22 @@ const InfoButton = styled.div`
   font-size: 12px;
 
   position: absolute;
-  right: 12px;
+  right: 20px;
 
   cursor: pointer;
 
   color: #fff;
+`;
+
+const MenuButton = styled.div`
+  width: 25px;
+  cursor: pointer;
+  border-radius: 50%;
+  padding: 5px;
+
+  &:hover {
+    background-color: rgba(100, 100, 100, 0.8);
+  }
 `;
 
 const SearchContainer = styled.div`
@@ -101,6 +108,7 @@ const SearchContainer = styled.div`
 
   @media (max-width: 940px) {
     justify-content: flex-end;
+    gap: 20px;
   }
 `;
 
@@ -108,10 +116,6 @@ const ButtonContainer = styled.div`
   display: flex;
   justify-content: flex-end;
   gap: 12px;
-
-  @media (max-width: 940px) {
-    gap: 5px;
-  }
 `;
 
 const Button = styled.button<{ $alter: boolean }>`
@@ -132,10 +136,33 @@ const Button = styled.button<{ $alter: boolean }>`
 
   cursor: pointer;
 
+  &:first-child {
+    svg {
+      display: none;
+    }
+  }
+
   @media (max-width: 940px) {
-    width: 40px;
+    width: 48px;
     font-size: 0;
-    height: 40px;
+    height: 48px;
+
+    &:nth-child(2) {
+      display: none;
+    }
+
+    &:first-child {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      svg {
+        display: block;
+        width: 25px;
+      }
+      span {
+        display: none;
+      }
+    }
   }
 `;
 
@@ -166,6 +193,23 @@ const Header = ({ $navShow }: IHeader) => {
   return (
     <Wrapper $navShow={$navShow}>
       <IconContainer $navShow={$navShow}>
+        <MenuButton>
+          <svg
+            data-slot="icon"
+            fill="none"
+            stroke-width="1.5"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+            ></path>
+          </svg>
+        </MenuButton>
         <LogoComponent onClick={() => navigate("/")} />
         <span>Patrick Stream</span>
         <InfoButton onClick={() => navigate("/info")}>i</InfoButton>
@@ -194,7 +238,22 @@ const Header = ({ $navShow }: IHeader) => {
             ) : (
               <>
                 <Button $alter={alter} onClick={() => navigate("/login")}>
-                  로그인
+                  <span>로그인</span>
+                  <svg
+                    data-slot="icon"
+                    fill="none"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"
+                    ></path>
+                  </svg>
                 </Button>
                 <Button $alter={!alter} onClick={() => navigate("/signIn")}>
                   가입하기
