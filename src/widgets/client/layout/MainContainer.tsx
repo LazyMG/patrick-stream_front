@@ -1,5 +1,5 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import PlayBar from "./../PlayBar";
 import YoutubeContainer from "../../YoutubeContainer";
 import { useRecoilValue, useSetRecoilState } from "recoil";
@@ -15,7 +15,10 @@ import ToastContainer from "./../ToastContainer";
 import { useLoginUser } from "../../../shared/hooks/useLoginUser";
 import { useToast } from "../../../shared/hooks/useToast";
 
-const Wrapper = styled.div<{ $backImg?: string | null }>`
+const Wrapper = styled.div<{
+  $backImg?: string | null;
+  $isSideBarChange: boolean;
+}>`
   margin-left: 250.5px;
   padding-left: 250.5px;
   background: ${(props) =>
@@ -34,6 +37,13 @@ const Wrapper = styled.div<{ $backImg?: string | null }>`
   &::-webkit-scrollbar {
     display: none;
   }
+
+  ${(props) =>
+    props.$isSideBarChange &&
+    css`
+      margin-left: 72.5px;
+      background: none;
+    `}
 
   /* 화면 너비에 따라 패딩을 다르게 설정 */
   @media (max-width: 2800px) {
@@ -172,9 +182,14 @@ const SimpleBackImage = styled.div<{ $backImg: string }>`
 interface IMainContainer {
   children: ReactNode;
   onScroll: (scrollTop: number) => void;
+  isSideBarChange: boolean;
 }
 
-const MainContainer = ({ children, onScroll }: IMainContainer) => {
+const MainContainer = ({
+  children,
+  onScroll,
+  isSideBarChange,
+}: IMainContainer) => {
   const user = useRecoilValue(userState);
   const setLoginUserData = useSetRecoilState(loginUserDataState);
   const { initiateLoginUserData } = useLoginUser();
@@ -265,7 +280,11 @@ const MainContainer = ({ children, onScroll }: IMainContainer) => {
   }, [location]);
 
   return (
-    <Wrapper ref={wrapperRef} $backImg={background?.src}>
+    <Wrapper
+      ref={wrapperRef}
+      $backImg={background?.src}
+      $isSideBarChange={isSideBarChange}
+    >
       {background &&
         (background.type === "blur" ? (
           <BlurBackImage $backImg={background.src} />

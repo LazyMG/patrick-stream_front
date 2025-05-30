@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { userState } from "../../../app/entities/user/atom";
 import { useRecoilValue } from "recoil";
 import SearchForm from "./../SearchForm";
@@ -21,11 +21,14 @@ const Wrapper = styled.header<{ $navShow: boolean }>`
   transition: background-color 0.3s ease-in-out, border-bottom 0.3s ease-in-out;
 `;
 
-const IconContainer = styled.div<{ $navShow: boolean }>`
+const IconContainer = styled.div<{
+  $navShow: boolean;
+  $isSideBarChange: boolean;
+}>`
   height: 100%;
   width: 250px;
   display: flex;
-  padding-left: 15px;
+  padding-left: 16px;
   align-items: center;
   box-sizing: border-box;
 
@@ -36,24 +39,31 @@ const IconContainer = styled.div<{ $navShow: boolean }>`
   color: #fff;
 
   & > svg {
-    width: 35px;
+    width: 30px;
     cursor: pointer;
     height: fit-content;
     margin-left: 10px;
   }
 
   span {
-    margin-left: 3px;
-    font-size: 16px;
+    margin-left: 4px;
+    font-size: 18px;
     font-weight: bold;
-    letter-spacing: -1px;
-    word-spacing: -2px;
+    line-height: -2px;
   }
 
   @media (max-width: 940px) {
     background-color: transparent;
     box-shadow: none;
   }
+
+  ${(props) =>
+    props.$isSideBarChange &&
+    css`
+      background-color: transparent;
+      box-shadow: none;
+      width: 240px;
+    `}
 `;
 
 const InfoButton = styled.div`
@@ -69,11 +79,15 @@ const InfoButton = styled.div`
   font-size: 12px;
 
   position: absolute;
-  right: 20px;
+  right: 44px;
 
   cursor: pointer;
 
   color: #fff;
+
+  @media (max-width: 940px) {
+    display: none;
+  }
 `;
 
 const MenuButton = styled.div`
@@ -87,7 +101,7 @@ const MenuButton = styled.div`
   }
 `;
 
-const SearchContainer = styled.div`
+const SearchContainer = styled.div<{ $isSideBarChange: boolean }>`
   height: 100%;
   width: calc(100% - 250px);
 
@@ -99,17 +113,24 @@ const SearchContainer = styled.div`
 
   /* 화면 너비에 따라 패딩을 다르게 설정 */
   @media (max-width: 2800px) {
-    padding: 0 18%; /* 화면이 1200px 이하일 때 패딩을 6%로 설정 */
+    padding: 0 18%;
   }
 
   @media (max-width: 1800px) {
-    padding: 0 8%; /* 화면이 1200px 이하일 때 패딩을 6%로 설정 */
+    padding: 0 8%;
   }
 
   @media (max-width: 940px) {
     justify-content: flex-end;
-    gap: 20px;
+    gap: 12px;
   }
+
+  ${(props) =>
+    props.$isSideBarChange &&
+    css`
+      width: 100%;
+      padding-left: 0 !important;
+    `}
 `;
 
 const ButtonContainer = styled.div`
@@ -126,7 +147,7 @@ const Button = styled.button<{ $alter: boolean }>`
   width: 120px;
   padding: 10px 0;
   border-radius: 20px;
-  font-size: 15px;
+  font-size: 16px;
 
   &:hover {
     opacity: 0.9;
@@ -140,6 +161,11 @@ const Button = styled.button<{ $alter: boolean }>`
     svg {
       display: none;
     }
+  }
+
+  @media (max-width: 1200px) {
+    width: 96px;
+    font-size: 14px;
   }
 
   @media (max-width: 940px) {
@@ -178,9 +204,11 @@ const Profile = styled.span`
 
 interface IHeader {
   $navShow: boolean;
+  setIsSideBarChange: React.Dispatch<React.SetStateAction<boolean>>;
+  isSideBarChange: boolean;
 }
 
-const Header = ({ $navShow }: IHeader) => {
+const Header = ({ $navShow, setIsSideBarChange, isSideBarChange }: IHeader) => {
   const navigate = useNavigate();
   const user = useRecoilValue(userState);
 
@@ -190,10 +218,14 @@ const Header = ({ $navShow }: IHeader) => {
     navigate(`/users/${user.userId}`);
   };
 
+  const toggleMenuClick = () => {
+    setIsSideBarChange((prev) => !prev);
+  };
+
   return (
     <Wrapper $navShow={$navShow}>
-      <IconContainer $navShow={$navShow}>
-        <MenuButton>
+      <IconContainer $navShow={$navShow} $isSideBarChange={isSideBarChange}>
+        <MenuButton onClick={toggleMenuClick}>
           <svg
             data-slot="icon"
             fill="none"
@@ -211,10 +243,14 @@ const Header = ({ $navShow }: IHeader) => {
           </svg>
         </MenuButton>
         <LogoComponent onClick={() => navigate("/")} />
-        <span>Patrick Stream</span>
-        <InfoButton onClick={() => navigate("/info")}>i</InfoButton>
+        <span>
+          Patrick <br /> Stream
+        </span>
+        {!isSideBarChange && (
+          <InfoButton onClick={() => navigate("/info")}>i</InfoButton>
+        )}
       </IconContainer>
-      <SearchContainer>
+      <SearchContainer $isSideBarChange={isSideBarChange}>
         <SearchForm />
         {!user.loading && (
           <ButtonContainer>

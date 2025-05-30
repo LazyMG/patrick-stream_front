@@ -1,8 +1,8 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { Link, useMatch } from "react-router-dom";
 import PlayListContainer from "./PlayListContainer";
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ $isSideBarChange: boolean }>`
   position: fixed;
   left: 0;
   top: 0;
@@ -14,6 +14,13 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
 
+  ${(props) =>
+    props.$isSideBarChange &&
+    css`
+      width: 72px;
+      box-shadow: none;
+    `}
+
   @media (max-width: 940px) {
     width: 72px;
     box-shadow: none;
@@ -23,7 +30,7 @@ const Wrapper = styled.div`
   }
 `;
 
-const MenuContainer = styled.div`
+const MenuContainer = styled.div<{ $isSideBarChange: boolean }>`
   margin-top: 90px;
   width: 100%;
   display: flex;
@@ -31,6 +38,12 @@ const MenuContainer = styled.div`
   gap: 8px;
   padding: 10px;
   box-sizing: border-box;
+
+  ${(props) =>
+    props.$isSideBarChange &&
+    css`
+      padding: 8px;
+    `}
 
   a {
     &:active {
@@ -43,7 +56,7 @@ const MenuContainer = styled.div`
   }
 `;
 
-const Menu = styled.div<{ $isActive: boolean }>`
+const Menu = styled.div<{ $isActive: boolean; $isSideBarChange: boolean }>`
   width: 100%;
   height: 50px;
   border-radius: 15px;
@@ -66,6 +79,22 @@ const Menu = styled.div<{ $isActive: boolean }>`
     width: 25px;
   }
 
+  ${(props) =>
+    props.$isSideBarChange &&
+    css`
+      flex-direction: column;
+      flex-direction: column;
+      height: 56px;
+      gap: 2px;
+      padding: 7px 5px;
+      svg {
+        flex: 1;
+      }
+      span {
+        font-size: 10px;
+      }
+    `}
+
   &:hover {
     ${(props) => (props.$isActive ? "" : `background-color:#fcddde`)};
     ${(props) => (props.$isActive ? "" : `color:#000000`)};
@@ -85,27 +114,33 @@ const Menu = styled.div<{ $isActive: boolean }>`
   }
 `;
 
-const Divider = styled.div`
+const Divider = styled.div<{ $isSideBarChange: boolean }>`
   height: 1px;
   box-sizing: border-box;
 
   background-color: #3d3d3d;
   margin: 20px 10px;
 
+  ${(props) =>
+    props.$isSideBarChange &&
+    css`
+      display: none;
+    `}
+
   @media (max-width: 940px) {
     display: none;
   }
 `;
 
-const Sidebar = () => {
+const Sidebar = ({ isSideBarChange }: { isSideBarChange: boolean }) => {
   const homeMatch = useMatch("/");
 
   return (
     <>
-      <Wrapper>
-        <MenuContainer>
+      <Wrapper $isSideBarChange={isSideBarChange}>
+        <MenuContainer $isSideBarChange={isSideBarChange}>
           <Link to={"/"}>
-            <Menu $isActive={!!homeMatch}>
+            <Menu $isActive={!!homeMatch} $isSideBarChange={isSideBarChange}>
               {homeMatch ? (
                 <svg
                   fill="currentColor"
@@ -136,7 +171,7 @@ const Sidebar = () => {
             </Menu>
           </Link>
           <Link to={"/comming"}>
-            <Menu $isActive={false}>
+            <Menu $isActive={false} $isSideBarChange={isSideBarChange}>
               <svg
                 fill="none"
                 strokeWidth={1.5}
@@ -155,7 +190,7 @@ const Sidebar = () => {
             </Menu>
           </Link>
           <Link to={"/comming"}>
-            <Menu $isActive={false}>
+            <Menu $isActive={false} $isSideBarChange={isSideBarChange}>
               <svg
                 fill="none"
                 strokeWidth={1.5}
@@ -174,8 +209,8 @@ const Sidebar = () => {
             </Menu>
           </Link>
         </MenuContainer>
-        <Divider />
-        <PlayListContainer />
+        <Divider $isSideBarChange={isSideBarChange} />
+        <PlayListContainer isSideBarChange={isSideBarChange} />
       </Wrapper>
     </>
   );

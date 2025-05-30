@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import styled, { keyframes } from "styled-components";
+import styled, { css, keyframes } from "styled-components";
 import CreatePlaylistModal from "./../CreatePlaylistModal";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { userState } from "../../../app/entities/user/atom";
@@ -10,7 +10,7 @@ import { isPlayerOnState } from "../../../app/entities/player/atom";
 import { useToast } from "../../../shared/hooks/useToast";
 import PlaylistErrorItem from "../../../shared/ui/PlaylistErrorItem";
 
-const Wrapper = styled.div<{ $isPlayerOn: boolean }>`
+const Wrapper = styled.div<{ $isPlayerOn: boolean; $isSideBarChange: boolean }>`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -22,6 +22,12 @@ const Wrapper = styled.div<{ $isPlayerOn: boolean }>`
   overflow: hidden;
 
   ${(props) => (props.$isPlayerOn ? `margin-bottom: 80px;` : "")}
+
+  ${(props) =>
+    props.$isSideBarChange &&
+    css`
+      display: none;
+    `}
 
   @media (max-width: 940px) {
     display: none;
@@ -85,7 +91,11 @@ const PlaylistSkeleton = styled.div`
   animation: ${pulseKeyframes} 2.5s ease-in-out infinite;
 `;
 
-const PlayListContainer = () => {
+const PlayListContainer = ({
+  isSideBarChange,
+}: {
+  isSideBarChange: boolean;
+}) => {
   const user = useRecoilValue(userState);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentUserPlaylist, setCurrentUserPlaylist] = useRecoilState(
@@ -164,7 +174,7 @@ const PlayListContainer = () => {
   return (
     <>
       {isModalOpen && <CreatePlaylistModal closeModal={closeModal} />}
-      <Wrapper $isPlayerOn={isPlayerOn}>
+      <Wrapper $isPlayerOn={isPlayerOn} $isSideBarChange={isSideBarChange}>
         <CreateButton onClick={openModal}>
           <svg
             fill="none"

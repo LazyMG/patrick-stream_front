@@ -22,6 +22,7 @@ const Wrapper = styled.div`
 
 const Layout = () => {
   const [navShow, setNavShow] = useState(false);
+  const [isSideBarChange, setIsSideBarChange] = useState<boolean>(false);
 
   const handleScroll = (scrollTop: number) => {
     if (scrollTop > 30) {
@@ -34,9 +35,16 @@ const Layout = () => {
   return (
     <>
       <Wrapper>
-        <Header $navShow={navShow} />
-        <Sidebar />
-        <MainContainer onScroll={handleScroll}>
+        <Header
+          $navShow={navShow}
+          setIsSideBarChange={setIsSideBarChange}
+          isSideBarChange={isSideBarChange}
+        />
+        <Sidebar isSideBarChange={isSideBarChange} />
+        <MainContainer
+          onScroll={handleScroll}
+          isSideBarChange={isSideBarChange}
+        >
           <Outlet />
         </MainContainer>
       </Wrapper>
