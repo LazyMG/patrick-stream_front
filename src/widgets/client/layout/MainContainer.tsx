@@ -47,11 +47,11 @@ const Wrapper = styled.div<{
 
   /* 화면 너비에 따라 패딩을 다르게 설정 */
   @media (max-width: 2800px) {
-    padding: 0 18%; /* 화면이 1200px 이하일 때 패딩을 6%로 설정 */
+    padding: 0 18%;
   }
 
   @media (max-width: 1800px) {
-    padding: 0 8%; /* 화면이 1200px 이하일 때 패딩을 6%로 설정 */
+    padding: 0 8%;
   }
 
   @media (max-width: 940px) {
@@ -73,7 +73,6 @@ const Content = styled.div`
 
   gap: 60px;
   color: white;
-  /* box-sizing: border-box; */
 `;
 
 const ConentContainer = styled.div`

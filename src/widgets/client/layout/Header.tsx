@@ -64,6 +64,11 @@ const IconContainer = styled.div<{
       box-shadow: none;
       width: 240px;
     `}
+
+  @media (max-width: 614px) {
+    background-color: transparent;
+    padding-left: 7%;
+  }
 `;
 
 const InfoButton = styled.div`
@@ -128,8 +133,14 @@ const SearchContainer = styled.div<{ $isSideBarChange: boolean }>`
   ${(props) =>
     props.$isSideBarChange &&
     css`
-      width: 100%;
-      padding-left: 0 !important;
+      width: calc(100% - 72px) !important;
+      @media (max-width: 2800px) {
+        padding-left: calc(18% - 150px) !important;
+      }
+
+      @media (max-width: 1800px) {
+        padding-left: calc(8% - 150px) !important;
+      }
     `}
 `;
 
@@ -169,9 +180,9 @@ const Button = styled.button<{ $alter: boolean }>`
   }
 
   @media (max-width: 940px) {
-    width: 48px;
+    width: 40px;
     font-size: 0;
-    height: 48px;
+    height: 40px;
 
     &:nth-child(2) {
       display: none;
@@ -206,9 +217,10 @@ interface IHeader {
   $navShow: boolean;
   setIsSideBarChange: React.Dispatch<React.SetStateAction<boolean>>;
   isSideBarChange: boolean;
+  onHamburgerClick: () => void;
 }
 
-const Header = ({ $navShow, setIsSideBarChange, isSideBarChange }: IHeader) => {
+const Header = ({ $navShow, onHamburgerClick, isSideBarChange }: IHeader) => {
   const navigate = useNavigate();
   const user = useRecoilValue(userState);
 
@@ -218,28 +230,19 @@ const Header = ({ $navShow, setIsSideBarChange, isSideBarChange }: IHeader) => {
     navigate(`/users/${user.userId}`);
   };
 
-  const toggleMenuClick = () => {
-    setIsSideBarChange((prev) => !prev);
-  };
-
   return (
     <Wrapper $navShow={$navShow}>
       <IconContainer $navShow={$navShow} $isSideBarChange={isSideBarChange}>
-        <MenuButton onClick={toggleMenuClick}>
+        <MenuButton onClick={onHamburgerClick}>
           <svg
-            data-slot="icon"
             fill="none"
-            stroke-width="1.5"
+            strokeWidth="1.5"
             stroke="currentColor"
             viewBox="0 0 24 24"
             xmlns="http://www.w3.org/2000/svg"
             aria-hidden="true"
           >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-            ></path>
+            <path d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"></path>
           </svg>
         </MenuButton>
         <LogoComponent onClick={() => navigate("/")} />
@@ -251,7 +254,7 @@ const Header = ({ $navShow, setIsSideBarChange, isSideBarChange }: IHeader) => {
         )}
       </IconContainer>
       <SearchContainer $isSideBarChange={isSideBarChange}>
-        <SearchForm />
+        <SearchForm isSideBarChange={isSideBarChange} />
         {!user.loading && (
           <ButtonContainer>
             {user.userId !== "" ? (
@@ -264,11 +267,7 @@ const Header = ({ $navShow, setIsSideBarChange, isSideBarChange }: IHeader) => {
                   xmlns="http://www.w3.org/2000/svg"
                   aria-hidden="true"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
-                  />
+                  <path d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                 </svg>
               </Profile>
             ) : (
@@ -278,17 +277,12 @@ const Header = ({ $navShow, setIsSideBarChange, isSideBarChange }: IHeader) => {
                   <svg
                     data-slot="icon"
                     fill="none"
-                    stroke-width="1.5"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
                     xmlns="http://www.w3.org/2000/svg"
                     aria-hidden="true"
                   >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"
-                    ></path>
+                    <path d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"></path>
                   </svg>
                 </Button>
                 <Button $alter={!alter} onClick={() => navigate("/signIn")}>

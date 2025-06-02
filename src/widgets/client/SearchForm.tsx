@@ -1,15 +1,19 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
-const Wrapper = styled.form`
+const Wrapper = styled.form<{ $isSideBarChange: boolean }>`
   position: relative;
   width: 100%;
 
-  @media (max-width: 1706px) {
-    display: flex;
-    justify-content: center;
-  }
+  ${(props) =>
+    props.$isSideBarChange &&
+    css`
+      @media (max-width: 1706px) {
+        display: flex;
+        justify-content: center;
+      }
+    `}
 
   @media (max-width: 940px) {
     display: flex;
@@ -208,7 +212,7 @@ const ResponseSearchFormIcon = styled.div`
   }
 `;
 
-const SearchForm = () => {
+const SearchForm = ({ isSideBarChange }: { isSideBarChange: boolean }) => {
   const location = useLocation();
   const data = new URLSearchParams(location.search);
   const urlKeyword = data.get("q");
@@ -242,7 +246,7 @@ const SearchForm = () => {
 
   return (
     <>
-      <Wrapper onSubmit={handleSubmit}>
+      <Wrapper onSubmit={handleSubmit} $isSideBarChange={isSideBarChange}>
         <InputWrapper>
           <SearchInput
             value={keyword}
@@ -290,18 +294,13 @@ const SearchForm = () => {
               <svg
                 data-slot="icon"
                 fill="none"
-                stroke-width="1.5"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
                 xmlns="http://www.w3.org/2000/svg"
                 aria-hidden="true"
                 onClick={() => setIsSearchFormShow(false)}
               >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"
-                ></path>
+                <path d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"></path>
               </svg>
             </ResponseSearchFormIcon>
             <ResponseSearchInput

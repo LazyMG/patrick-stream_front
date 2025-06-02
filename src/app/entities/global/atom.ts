@@ -29,3 +29,16 @@ export const isPlaylistToastOpenState = atom<boolean>({
   key: "isPlaylistToastOpenState",
   default: false,
 });
+
+interface IIsSideBarChangeConfig {
+  size: "BIG" | "ETC" | "";
+  isChange: boolean;
+}
+
+export const isSideBarChangeConfigState = atom<IIsSideBarChangeConfig>({
+  key: "isSideBarChangeConfigState",
+  default: {
+    size: "",
+    isChange: false,
+  },
+});

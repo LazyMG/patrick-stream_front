@@ -2,31 +2,81 @@ import styled, { css } from "styled-components";
 import { Link, useMatch } from "react-router-dom";
 import PlayListContainer from "./PlayListContainer";
 
-const Wrapper = styled.div<{ $isSideBarChange: boolean }>`
+// const Wrapper = styled.div<{ $isSideBarChange: boolean,$isOverlay:boolean }>`
+//   position: fixed;
+//   left: 0;
+//   top: 0;
+//   height: 100%;
+//   width: 250px;
+
+//   box-shadow: 1px 0 0 #3d3d3d;
+
+//   display: flex;
+//   flex-direction: column;
+
+//   ${(props) =>
+//     props.$isSideBarChange &&
+//     css`
+//       width: 72px;
+//       box-shadow: none;
+//     `}
+
+//   @media (max-width: 940px) {
+//     width: 72px;
+//     box-shadow: none;
+//   }
+//   @media (max-width: 614px) {
+//     display: none;
+//   }
+// `;
+
+const Wrapper = styled.div<{
+  $isSideBarChange: boolean;
+  $isOverlay?: boolean;
+  $visible?: boolean;
+}>`
   position: fixed;
-  left: 0;
   top: 0;
-  height: 100%;
-  width: 250px;
-
-  box-shadow: 1px 0 0 #3d3d3d;
-
+  left: 0;
+  height: 100vh;
+  z-index: ${({ $isOverlay }) => ($isOverlay ? 999 : 1)};
+  background-color: ${(props) =>
+    props.$isSideBarChange ? "transparent" : "#111"};
   display: flex;
   flex-direction: column;
 
-  ${(props) =>
-    props.$isSideBarChange &&
+  width: ${({ $isOverlay, $isSideBarChange }) =>
+    $isOverlay ? "250px" : $isSideBarChange ? "72px" : "250px"};
+
+  box-shadow: ${({ $isOverlay, $isSideBarChange }) =>
+    $isOverlay || $isSideBarChange ? "none" : "1px 0 0 #3d3d3d"};
+
+  transition: transform 0.1s ease-in-out, visibility 0.1s ease-in-out;
+
+  ${({ $isOverlay, $visible }) =>
+    $isOverlay &&
     css`
-      width: 72px;
-      box-shadow: none;
+      transform: ${$visible ? "translateX(0)" : "translateX(-100%)"};
+      opacity: ${$visible ? 1 : 0};
+      visibility: ${$visible ? "visible" : "hidden"};
+      pointer-events: ${$visible ? "auto" : "none"};
     `}
 
   @media (max-width: 940px) {
-    width: 72px;
-    box-shadow: none;
+    ${({ $isOverlay }) =>
+      !$isOverlay &&
+      css`
+        width: 72px;
+        box-shadow: none;
+      `}
   }
+
   @media (max-width: 614px) {
-    display: none;
+    ${({ $isOverlay }) =>
+      !$isOverlay &&
+      css`
+        display: none;
+      `}
   }
 `;
 
@@ -132,12 +182,45 @@ const Divider = styled.div<{ $isSideBarChange: boolean }>`
   }
 `;
 
-const Sidebar = ({ isSideBarChange }: { isSideBarChange: boolean }) => {
+const Overlay = styled.div<{ $visible: boolean }>`
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 998;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+
+  opacity: ${({ $visible }) => ($visible ? 1 : 0)};
+  visibility: ${({ $visible }) => ($visible ? "visible" : "hidden")};
+  pointer-events: ${({ $visible }) => ($visible ? "auto" : "none")};
+
+  transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+`;
+
+type SidebarProps = {
+  isSideBarChange: boolean;
+  isOverlay?: boolean;
+  visible?: boolean;
+  onClose?: () => void;
+};
+
+const Sidebar = ({
+  isSideBarChange,
+  isOverlay = false,
+  visible = true,
+  onClose,
+}: SidebarProps) => {
   const homeMatch = useMatch("/");
 
   return (
     <>
-      <Wrapper $isSideBarChange={isSideBarChange}>
+      {isOverlay && <Overlay onClick={onClose} $visible={visible} />}
+      <Wrapper
+        $isSideBarChange={isSideBarChange}
+        $isOverlay={isOverlay}
+        $visible={visible}
+      >
         <MenuContainer $isSideBarChange={isSideBarChange}>
           <Link to={"/"}>
             <Menu $isActive={!!homeMatch} $isSideBarChange={isSideBarChange}>
