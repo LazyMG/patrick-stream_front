@@ -10,7 +10,11 @@ import { isPlayerOnState } from "../../../app/entities/player/atom";
 import { useToast } from "../../../shared/hooks/useToast";
 import PlaylistErrorItem from "../../../shared/ui/PlaylistErrorItem";
 
-const Wrapper = styled.div<{ $isPlayerOn: boolean; $isSideBarChange: boolean }>`
+const Wrapper = styled.div<{
+  $isPlayerOn: boolean;
+  $isSideBarChange: boolean;
+  $isOverlay: boolean;
+}>`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -29,9 +33,13 @@ const Wrapper = styled.div<{ $isPlayerOn: boolean; $isSideBarChange: boolean }>`
       display: none;
     `}
 
-  @media (max-width: 940px) {
-    display: none;
-  }
+  ${(props) =>
+    !props.$isOverlay &&
+    css`
+      @media (max-width: 940px) {
+        display: none;
+      }
+    `}
 `;
 
 const CreateButton = styled.div`
@@ -93,8 +101,10 @@ const PlaylistSkeleton = styled.div`
 
 const PlayListContainer = ({
   isSideBarChange,
+  isOverlay,
 }: {
   isSideBarChange: boolean;
+  isOverlay: boolean;
 }) => {
   const user = useRecoilValue(userState);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -174,7 +184,11 @@ const PlayListContainer = ({
   return (
     <>
       {isModalOpen && <CreatePlaylistModal closeModal={closeModal} />}
-      <Wrapper $isPlayerOn={isPlayerOn} $isSideBarChange={isSideBarChange}>
+      <Wrapper
+        $isPlayerOn={isPlayerOn}
+        $isSideBarChange={isSideBarChange}
+        $isOverlay={isOverlay}
+      >
         <CreateButton onClick={openModal}>
           <svg
             fill="none"

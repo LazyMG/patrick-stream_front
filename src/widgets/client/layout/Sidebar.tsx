@@ -1,34 +1,7 @@
 import styled, { css } from "styled-components";
-import { Link, useMatch } from "react-router-dom";
+import { Link, useMatch, useNavigate } from "react-router-dom";
 import PlayListContainer from "./PlayListContainer";
-
-// const Wrapper = styled.div<{ $isSideBarChange: boolean,$isOverlay:boolean }>`
-//   position: fixed;
-//   left: 0;
-//   top: 0;
-//   height: 100%;
-//   width: 250px;
-
-//   box-shadow: 1px 0 0 #3d3d3d;
-
-//   display: flex;
-//   flex-direction: column;
-
-//   ${(props) =>
-//     props.$isSideBarChange &&
-//     css`
-//       width: 72px;
-//       box-shadow: none;
-//     `}
-
-//   @media (max-width: 940px) {
-//     width: 72px;
-//     box-shadow: none;
-//   }
-//   @media (max-width: 614px) {
-//     display: none;
-//   }
-// `;
+import LogoComponent from "../../../assets/new-logo.svg?react";
 
 const Wrapper = styled.div<{
   $isSideBarChange: boolean;
@@ -80,6 +53,43 @@ const Wrapper = styled.div<{
   }
 `;
 
+const ResponseSidebarHeader = styled.div`
+  width: 100%;
+  height: 80px;
+  position: absolute;
+  display: flex;
+  padding-left: 16px;
+  align-items: center;
+  box-sizing: border-box;
+
+  color: #fff;
+
+  & > svg {
+    width: 30px;
+    cursor: pointer;
+    height: fit-content;
+    margin-left: 10px;
+  }
+
+  span {
+    margin-left: 4px;
+    font-size: 18px;
+    font-weight: bold;
+    line-height: -2px;
+  }
+`;
+
+const MenuButton = styled.div`
+  width: 25px;
+  cursor: pointer;
+  border-radius: 50%;
+  padding: 5px;
+
+  &:hover {
+    background-color: rgba(100, 100, 100, 0.8);
+  }
+`;
+
 const MenuContainer = styled.div<{ $isSideBarChange: boolean }>`
   margin-top: 90px;
   width: 100%;
@@ -106,7 +116,11 @@ const MenuContainer = styled.div<{ $isSideBarChange: boolean }>`
   }
 `;
 
-const Menu = styled.div<{ $isActive: boolean; $isSideBarChange: boolean }>`
+const Menu = styled.div<{
+  $isActive: boolean;
+  $isSideBarChange: boolean;
+  $isOverlay: boolean;
+}>`
   width: 100%;
   height: 50px;
   border-radius: 15px;
@@ -130,41 +144,46 @@ const Menu = styled.div<{ $isActive: boolean; $isSideBarChange: boolean }>`
   }
 
   ${(props) =>
-    props.$isSideBarChange &&
-    css`
-      flex-direction: column;
-      flex-direction: column;
-      height: 56px;
-      gap: 2px;
-      padding: 7px 5px;
-      svg {
-        flex: 1;
-      }
-      span {
-        font-size: 10px;
-      }
-    `}
+    props.$isOverlay
+      ? ""
+      : props.$isSideBarChange &&
+        css`
+          flex-direction: column;
+          height: 56px;
+          gap: 2px;
+          padding: 7px 5px;
+          svg {
+            flex: 1;
+          }
+          span {
+            font-size: 10px;
+          }
+        `}
 
   &:hover {
     ${(props) => (props.$isActive ? "" : `background-color:#fcddde`)};
     ${(props) => (props.$isActive ? "" : `color:#000000`)};
   }
 
-  @media (max-width: 940px) {
-    flex-direction: column;
-    height: 56px;
-    gap: 2px;
-    padding: 7px 5px;
-    svg {
-      flex: 1;
-    }
-    span {
-      font-size: 10px;
-    }
-  }
+  ${(props) =>
+    !props.$isOverlay &&
+    css`
+      @media (max-width: 940px) {
+        flex-direction: column;
+        height: 56px;
+        gap: 2px;
+        padding: 7px 5px;
+        svg {
+          flex: 1;
+        }
+        span {
+          font-size: 10px;
+        }
+      }
+    `}
 `;
 
-const Divider = styled.div<{ $isSideBarChange: boolean }>`
+const Divider = styled.div<{ $isSideBarChange: boolean; $isOverlay: boolean }>`
   height: 1px;
   box-sizing: border-box;
 
@@ -177,9 +196,13 @@ const Divider = styled.div<{ $isSideBarChange: boolean }>`
       display: none;
     `}
 
-  @media (max-width: 940px) {
-    display: none;
-  }
+  ${(props) =>
+    !props.$isOverlay &&
+    css`
+      @media (max-width: 940px) {
+        display: none;
+      }
+    `}
 `;
 
 const Overlay = styled.div<{ $visible: boolean }>`
@@ -212,6 +235,7 @@ const Sidebar = ({
   onClose,
 }: SidebarProps) => {
   const homeMatch = useMatch("/");
+  const navigate = useNavigate();
 
   return (
     <>
@@ -221,9 +245,37 @@ const Sidebar = ({
         $isOverlay={isOverlay}
         $visible={visible}
       >
+        {isOverlay && (
+          <ResponseSidebarHeader>
+            <MenuButton onClick={onClose}>
+              <svg
+                fill="none"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M6 18 18 6M6 6l12 12"
+                />
+              </svg>
+            </MenuButton>
+            <LogoComponent onClick={() => navigate("/")} />
+            <span>
+              Patrick <br /> Stream
+            </span>
+          </ResponseSidebarHeader>
+        )}
         <MenuContainer $isSideBarChange={isSideBarChange}>
           <Link to={"/"}>
-            <Menu $isActive={!!homeMatch} $isSideBarChange={isSideBarChange}>
+            <Menu
+              $isActive={!!homeMatch}
+              $isSideBarChange={isSideBarChange}
+              $isOverlay={isOverlay}
+            >
               {homeMatch ? (
                 <svg
                   fill="currentColor"
@@ -254,7 +306,11 @@ const Sidebar = ({
             </Menu>
           </Link>
           <Link to={"/comming"}>
-            <Menu $isActive={false} $isSideBarChange={isSideBarChange}>
+            <Menu
+              $isActive={false}
+              $isSideBarChange={isSideBarChange}
+              $isOverlay={isOverlay}
+            >
               <svg
                 fill="none"
                 strokeWidth={1.5}
@@ -273,7 +329,11 @@ const Sidebar = ({
             </Menu>
           </Link>
           <Link to={"/comming"}>
-            <Menu $isActive={false} $isSideBarChange={isSideBarChange}>
+            <Menu
+              $isActive={false}
+              $isSideBarChange={isSideBarChange}
+              $isOverlay={isOverlay}
+            >
               <svg
                 fill="none"
                 strokeWidth={1.5}
@@ -292,8 +352,11 @@ const Sidebar = ({
             </Menu>
           </Link>
         </MenuContainer>
-        <Divider $isSideBarChange={isSideBarChange} />
-        <PlayListContainer isSideBarChange={isSideBarChange} />
+        <Divider $isSideBarChange={isSideBarChange} $isOverlay={isOverlay} />
+        <PlayListContainer
+          isSideBarChange={isSideBarChange}
+          isOverlay={isOverlay}
+        />
       </Wrapper>
     </>
   );
