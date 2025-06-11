@@ -12,7 +12,7 @@ const ModalOverlay = styled.div`
   width: 100vw;
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.8);
-  z-index: 50;
+  z-index: 101;
   top: 0;
   left: 0;
   display: flex;
@@ -27,6 +27,16 @@ const ContentModal = styled.div`
   border: 0.1px solid #414141;
   border-radius: 10px;
   padding: 27px 25px;
+
+  @media (max-width: 940px) {
+    width: 450px;
+    height: 300px;
+  }
+
+  @media (max-width: 614px) {
+    width: 300px;
+    height: 250px;
+  }
 `;
 
 const Content = styled.div`

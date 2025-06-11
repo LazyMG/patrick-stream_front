@@ -12,7 +12,7 @@ const Wrapper = styled.div<{
   top: 0;
   left: 0;
   height: 100vh;
-  z-index: ${({ $isOverlay }) => ($isOverlay ? 999 : 1)};
+  z-index: ${({ $isOverlay }) => ($isOverlay ? 100 : 1)};
   background-color: ${(props) =>
     props.$isSideBarChange ? "transparent" : "#111"};
   display: flex;
@@ -209,7 +209,7 @@ const Overlay = styled.div<{ $visible: boolean }>`
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 998;
+  z-index: 100;
   width: 100vw;
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.5);
