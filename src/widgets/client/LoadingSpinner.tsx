@@ -8,6 +8,18 @@ const Wrapper = styled.div`
     width: 45px;
     color: #fff;
   }
+
+  @media (max-width: 940px) {
+    svg {
+      width: 35px;
+    }
+  }
+
+  @media (max-width: 614px) {
+    svg {
+      width: 40px;
+    }
+  }
 `;
 const LoadingSpinner = () => {
   return (

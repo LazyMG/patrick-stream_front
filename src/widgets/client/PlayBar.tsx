@@ -58,6 +58,15 @@ const PlayBarContentContainer = styled.div`
   padding: 0 15px;
 
   box-sizing: border-box;
+
+  @media (max-width: 940px) {
+    margin-top: 0px;
+  }
+
+  @media (max-width: 614px) {
+    gap: 0px;
+    justify-content: flex-start;
+  }
 `;
 
 const PlayBarContentControlContainer = styled.div`
@@ -67,6 +76,10 @@ const PlayBarContentControlContainer = styled.div`
 
   @media (max-width: 940px) {
     gap: 6px;
+  }
+
+  @media (max-width: 614px) {
+    padding-right: 10px;
   }
 `;
 
@@ -92,6 +105,12 @@ const PlayBarContentControlPlayButton = styled.div`
       width: 35px;
     }
   }
+
+  @media (max-width: 614px) {
+    svg {
+      width: 40px;
+    }
+  }
 `;
 
 const PlayBarContentControlMoveButton = styled.div`
@@ -106,6 +125,12 @@ const PlayBarContentControlMoveButton = styled.div`
       width: 25px;
     }
   }
+
+  @media (max-width: 614px) {
+    svg {
+      width: 30px;
+    }
+  }
 `;
 
 const PlayBarContentControlDuration = styled.div`
@@ -114,12 +139,20 @@ const PlayBarContentControlDuration = styled.div`
   @media (max-width: 940px) {
     font-size: 12px;
   }
+
+  @media (max-width: 614px) {
+    display: none;
+  }
 `;
 
 const PlayBarContentMainContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 15px;
+
+  @media (max-width: 614px) {
+    gap: 0px;
+  }
 `;
 
 const PlayBarContentMainImg = styled.div<{ $imgUrl: string }>`
@@ -129,6 +162,10 @@ const PlayBarContentMainImg = styled.div<{ $imgUrl: string }>`
   background: ${(props) => (props.$imgUrl ? `url(${props.$imgUrl})` : "")};
   background-size: cover;
   flex-shrink: 0;
+
+  @media (max-width: 940px) {
+    display: none;
+  }
 `;
 
 const PlayBarContentMainInfo = styled.div`
@@ -142,6 +179,12 @@ const PlayBarContentMainInfo = styled.div`
 
   @media (max-width: 940px) {
     min-width: 200px;
+  }
+
+  @media (max-width: 614px) {
+    font-size: 12px;
+    line-height: 1.2;
+    max-width: 200px;
   }
 `;
 
@@ -217,6 +260,19 @@ const PlayBarContentUtilContainer = styled.div`
   @media (max-width: 940px) {
     gap: 8px;
   }
+
+  @media (max-width: 614px) {
+    display: none;
+  }
+`;
+
+const PlayBarContentMobileUtilContainer = styled.div`
+  display: none;
+  /* align-items: center; */
+
+  @media (max-width: 614px) {
+    display: block;
+  }
 `;
 
 const PlayBarContentUtilVolumeButton = styled.div`
@@ -227,7 +283,7 @@ const PlayBarContentUtilVolumeButton = styled.div`
 
   &:hover {
     div {
-      opacity: 1;
+      display: block;
     }
   }
 
@@ -244,10 +300,10 @@ const PlayBarContentUtilVolumeButton = styled.div`
 
 const PlayBarContentUtilVolumeRangeContainer = styled.div`
   position: absolute;
-  right: 30px;
+  right: 25px;
   top: -6px;
-  opacity: 0;
-  transition: opacity 0.2s ease-in-out;
+  display: none;
+  transition: display 0.2s ease-in-out;
   padding: 6px;
   background-color: #212121;
 
@@ -959,6 +1015,36 @@ const PlayBar = ({ player }: IPlayBar) => {
               </svg>
             </PlayBarContentUtilButton>
           </PlayBarContentUtilContainer>
+          <PlayBarContentMobileUtilContainer>
+            <PlayBarContentUtilButton onClick={openAddPlaylistModal}>
+              {/* <svg
+                fill="none"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M7.5 21 3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5"
+                />
+              </svg> */}
+              <svg
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+              >
+                <path
+                  clipRule="evenodd"
+                  fillRule="evenodd"
+                  d="M12 3.75a.75.75 0 0 1 .75.75v6.75h6.75a.75.75 0 0 1 0 1.5h-6.75v6.75a.75.75 0 0 1-1.5 0v-6.75H4.5a.75.75 0 0 1 0-1.5h6.75V4.5a.75.75 0 0 1 .75-.75Z"
+                />
+              </svg>
+            </PlayBarContentUtilButton>
+          </PlayBarContentMobileUtilContainer>
         </PlayBarContentContainer>
       </>
       {isAddPlaylistModalOpen && (
