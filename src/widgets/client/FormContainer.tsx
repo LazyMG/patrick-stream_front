@@ -9,6 +9,7 @@ const Wrapper = styled.div`
   align-items: center;
   gap: 40px;
   width: 30%;
+  min-width: 400px;
 `;
 
 const FormHeader = styled.div`
