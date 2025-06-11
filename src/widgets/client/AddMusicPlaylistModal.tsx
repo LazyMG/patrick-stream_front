@@ -20,11 +20,16 @@ const ModalOverlay = styled.div`
 
 const ContentModal = styled.div`
   width: 20%;
+  min-width: 300px;
   height: 60%;
   background-color: #212121;
   border: 0.1px solid #414141;
   border-radius: 10px;
   padding: 27px 0;
+
+  @media (max-width: 940px) {
+    font-size: 12px;
+  }
 `;
 
 const Content = styled.div`
