@@ -64,28 +64,56 @@ const PlayBarContentControlContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 20px;
+
+  @media (max-width: 940px) {
+    gap: 6px;
+  }
 `;
 
 const PlayBarContentControlButtons = styled.div`
   display: flex;
   align-items: center;
   gap: 20px;
+
+  @media (max-width: 940px) {
+    gap: 6px;
+  }
 `;
 
 const PlayBarContentControlPlayButton = styled.div`
-  width: 45px;
+  svg {
+    width: 45px;
+  }
 
   cursor: pointer;
+
+  @media (max-width: 940px) {
+    svg {
+      width: 35px;
+    }
+  }
 `;
 
 const PlayBarContentControlMoveButton = styled.div`
-  width: 35px;
+  svg {
+    width: 35px;
+  }
 
   cursor: pointer;
+
+  @media (max-width: 940px) {
+    svg {
+      width: 25px;
+    }
+  }
 `;
 
 const PlayBarContentControlDuration = styled.div`
-  font-size: 13px;
+  font-size: 14px;
+
+  @media (max-width: 940px) {
+    font-size: 12px;
+  }
 `;
 
 const PlayBarContentMainContainer = styled.div`
@@ -111,6 +139,10 @@ const PlayBarContentMainInfo = styled.div`
   min-width: 300px;
   max-width: 40vw;
   line-height: 1.3;
+
+  @media (max-width: 940px) {
+    min-width: 200px;
+  }
 `;
 
 const PlayBarContentMainInfoTitle = styled.div`
@@ -151,6 +183,10 @@ const PlayBarContentMainInfoOverviewAlbum = styled.span`
 const PlayBarContentMainUtil = styled.div`
   display: flex;
   gap: 15px;
+
+  @media (max-width: 940px) {
+    gap: 8px;
+  }
 `;
 
 const PlayBarContentMainButton = styled.div<{ $isLike: boolean }>`
@@ -177,6 +213,10 @@ const PlayBarContentUtilContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 15px;
+
+  @media (max-width: 940px) {
+    gap: 8px;
+  }
 `;
 
 const PlayBarContentUtilVolumeButton = styled.div`
@@ -186,13 +226,33 @@ const PlayBarContentUtilVolumeButton = styled.div`
   cursor: pointer;
 
   &:hover {
-    input {
+    div {
       opacity: 1;
     }
   }
 
   svg:hover {
     opacity: 0.6;
+  }
+
+  @media (max-width: 940px) {
+    svg {
+      width: 20px;
+    }
+  }
+`;
+
+const PlayBarContentUtilVolumeRangeContainer = styled.div`
+  position: absolute;
+  right: 30px;
+  top: -6px;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+  padding: 6px;
+  background-color: #212121;
+
+  @media (max-width: 940px) {
+    top: -8px;
   }
 `;
 
@@ -201,11 +261,6 @@ const PlayBarContentUtilVolumeRange = styled.input<{
   min: number;
   max: number;
 }>`
-  position: absolute;
-  right: 30px;
-  top: 9px;
-  opacity: 0;
-  transition: opacity 0.2s ease-in-out;
   -webkit-appearance: none;
   background: ${(props) => {
     const percentage =
@@ -258,6 +313,12 @@ const PlayBarContentRepeatButton = styled.div<{ $isRepeat: boolean }>`
   &:hover {
     opacity: ${({ $isRepeat }) => ($isRepeat ? "0.6" : "1")};
   }
+
+  @media (max-width: 940px) {
+    svg {
+      width: 20px;
+    }
+  }
 `;
 
 const PlayBarContentUtilButton = styled.div`
@@ -267,6 +328,12 @@ const PlayBarContentUtilButton = styled.div`
 
   &:hover {
     opacity: 0.6;
+  }
+
+  @media (max-width: 940px) {
+    svg {
+      width: 20px;
+    }
   }
 `;
 
@@ -604,9 +671,7 @@ const PlayBar = ({ player }: IPlayBar) => {
               <PlayBarContentControlMoveButton onClick={playPrevMusic}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  height="36px"
                   viewBox="0 -960 960 960"
-                  width="36px"
                   fill="#fff"
                 >
                   <path d="M220-273.33v-413.34q0-14.16 9.62-23.75 9.61-9.58 23.83-9.58 14.22 0 23.72 9.58 9.5 9.59 9.5 23.75v413.34q0 14.16-9.62 23.75-9.62 9.58-23.83 9.58-14.22 0-23.72-9.58-9.5-9.59-9.5-23.75Zm468-2.34L430-452.33q-7.67-5.34-11.17-12.37-3.5-7.03-3.5-15.3t3.5-15.3q3.5-7.03 11.17-12.37l258-176.66q4.33-3.34 9-4.67t9.67-1.33q13.33 0 23.33 9.16Q740-672 740-657v354q0 15-10 24.17-10 9.16-23.33 9.16-5 0-9.67-1.33t-9-4.67ZM673.33-480Zm0 113.33v-226.66L507.33-480l166 113.33Z" />
@@ -805,14 +870,16 @@ const PlayBar = ({ player }: IPlayBar) => {
                   />
                 </svg>
               )}
-              <PlayBarContentUtilVolumeRange
-                type="range"
-                value={musicVolume}
-                min={0}
-                max={100}
-                onChange={changeVolume}
-                ref={volumeRef}
-              />
+              <PlayBarContentUtilVolumeRangeContainer>
+                <PlayBarContentUtilVolumeRange
+                  type="range"
+                  value={musicVolume}
+                  min={0}
+                  max={100}
+                  onChange={changeVolume}
+                  ref={volumeRef}
+                />
+              </PlayBarContentUtilVolumeRangeContainer>
             </PlayBarContentUtilVolumeButton>
             <PlayBarContentRepeatButton
               $isRepeat={isRepeat}
