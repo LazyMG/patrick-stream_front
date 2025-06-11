@@ -25,6 +25,8 @@ const ContentModal = styled.div`
   border: 0.1px solid #414141;
   border-radius: 10px;
   padding: 40px 30px;
+
+  min-width: 300px;
 `;
 
 const Content = styled.div`
@@ -49,6 +51,10 @@ const Label = styled.span`
   font-weight: bold;
   font-size: 24px;
   color: #9c9c9c;
+
+  @media (max-width: 940px) {
+    font-size: 18px;
+  }
 `;
 
 const CloseButton = styled.div`
