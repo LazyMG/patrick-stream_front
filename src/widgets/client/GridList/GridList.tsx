@@ -120,7 +120,7 @@ const GridList = ({
               rows: 4, // 4행 구성
               fill: "row", // 열을 기준으로 그리드 채우기
             }}
-            slidesPerView={PERVIEW} // 한 번에 3개의 슬라이드 보이게 설정
+            // slidesPerView={PERVIEW} // 한 번에 3개의 슬라이드 보이게 설정
             spaceBetween={15} // 슬라이드 간의 간격 설정
             allowTouchMove={false}
             scrollbar={{ draggable: true }}
@@ -131,6 +131,29 @@ const GridList = ({
               setIsEnd(false);
             }}
             style={{ paddingBottom: "15px" }}
+            breakpoints={{
+              1280: {
+                slidesPerView: 3, //한번에 보이는 슬라이드 개수
+                grid: {
+                  fill: "row",
+                  rows: 4,
+                },
+              },
+              940: {
+                slidesPerView: 2, //한번에 보이는 슬라이드 개수
+                grid: {
+                  fill: "row",
+                  rows: 4,
+                },
+              },
+              614: {
+                slidesPerView: 1, //한번에 보이는 슬라이드 개수
+                grid: {
+                  fill: "row",
+                  rows: 4,
+                },
+              },
+            }}
           >
             {list?.map((item) => (
               <SwiperSlide key={item._id}>
