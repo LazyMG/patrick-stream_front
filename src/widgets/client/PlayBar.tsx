@@ -60,12 +60,13 @@ const PlayBarContentContainer = styled.div`
   box-sizing: border-box;
 
   @media (max-width: 940px) {
-    margin-top: 0px;
+    margin-top: 3px;
   }
 
   @media (max-width: 614px) {
     gap: 0px;
     justify-content: flex-start;
+    padding: 5px;
   }
 `;
 
@@ -90,6 +91,10 @@ const PlayBarContentControlButtons = styled.div`
 
   @media (max-width: 940px) {
     gap: 6px;
+  }
+
+  @media (max-width: 614px) {
+    gap: 0px;
   }
 `;
 
