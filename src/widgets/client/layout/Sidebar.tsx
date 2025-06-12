@@ -41,6 +41,7 @@ const Wrapper = styled.div<{
       css`
         width: 72px;
         box-shadow: none;
+        background-color: transparent;
       `}
   }
 

@@ -41,7 +41,9 @@ const Wrapper = styled.div<{
   ${(props) =>
     props.$isSideBarChange &&
     css`
-      margin-left: 72.5px;
+      /* margin-left: 72.5px; */
+      margin-left: 0px;
+
       background: none;
     `}
 
@@ -51,16 +53,17 @@ const Wrapper = styled.div<{
   }
 
   @media (max-width: 1800px) {
-    padding: 0 8%;
+    padding: 0 12%;
   }
 
   @media (max-width: 940px) {
-    margin-left: 72.5px;
+    margin-left: 0px;
     background: none;
   }
 
   @media (max-width: 614px) {
     margin-left: 0px;
+    padding: 0 8%;
     background: none;
   }
 `;
