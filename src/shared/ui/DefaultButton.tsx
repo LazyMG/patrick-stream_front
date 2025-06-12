@@ -15,4 +15,8 @@ export const DefaultButton = styled.button`
   &:focus {
     outline: none;
   }
+
+  @media (max-width: 614px) {
+    padding: 4px 10px;
+  }
 `;

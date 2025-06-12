@@ -23,6 +23,10 @@ const ListHeader = styled.div`
   justify-content: space-between;
   align-items: end;
   padding-top: 10px;
+
+  @media (max-width: 940px) {
+    align-items: center;
+  }
 `;
 
 const DefaultSection = styled.div`
@@ -34,7 +38,7 @@ const DefaultSection = styled.div`
     font-size: 36px;
   }
   @media (max-width: 614px) {
-    font-size: 28px;
+    font-size: 24px;
   }
 `;
 

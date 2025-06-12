@@ -4,6 +4,10 @@ import { DefaultButton } from "../../shared/ui/DefaultButton";
 const ButtonSection = styled.div`
   display: flex;
   gap: 26px;
+
+  @media (max-width: 614px) {
+    gap: 16px;
+  }
 `;
 
 const MoreButton = styled(DefaultButton)<{ $isActive: boolean }>`
@@ -25,11 +29,19 @@ const MoreButton = styled(DefaultButton)<{ $isActive: boolean }>`
   }`}
 
   cursor:${(props) => (props.$isActive ? `pointer` : `auto`)};
+
+  @media (max-width: 614px) {
+    font-size: 12px;
+  }
 `;
 
 const ControlSection = styled.div`
   display: flex;
   gap: 12px;
+
+  @media (max-width: 614px) {
+    gap: 8px;
+  }
 `;
 
 const MoveButton = styled.button<{ $isAbled: boolean }>`
@@ -77,6 +89,15 @@ const MoveButton = styled.button<{ $isAbled: boolean }>`
     width: 18px;
     height: 18px;
     display: block;
+  }
+
+  @media (max-width: 614px) {
+    width: 30px;
+  height: 30px;
+    svg{
+      width:14px;
+      height:14px;
+    };
   }
 `;
 

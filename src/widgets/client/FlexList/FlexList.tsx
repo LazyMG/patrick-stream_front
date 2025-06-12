@@ -40,19 +40,33 @@ const DefaultSection = styled.div`
 
 const DefaultInfo = styled.span`
   color: #b5b5b5;
-  font-weight: 100;
+  font-weight: 300;
+
+  @media (max-width: 614px) {
+    font-size: 14px;
+  }
 `;
 
 const CustomSection = styled.div`
   display: flex;
   align-items: center;
   gap: 15px;
+
+  @media (max-width: 614px) {
+    gap: 4px;
+  }
 `;
 
 const CustomIcon = styled.div`
   cursor: pointer;
   svg {
     width: 75px;
+  }
+
+  @media (max-width: 614px) {
+    svg {
+      width: 55px;
+    }
   }
 `;
 
@@ -64,7 +78,11 @@ const CustomUserInfo = styled.div`
   height: 100%;
 `;
 
-const CustomUserName = styled.div``;
+const CustomUserName = styled.div`
+  @media (max-width: 614px) {
+    font-size: 12px;
+  }
+`;
 
 const CustomTitle = styled.div`
   color: #fff;
@@ -75,7 +93,7 @@ const CustomTitle = styled.div`
     font-size: 36px;
   }
   @media (max-width: 614px) {
-    font-size: 28px;
+    font-size: 24px;
   }
 `;
 
