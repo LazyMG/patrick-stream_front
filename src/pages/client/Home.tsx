@@ -42,6 +42,10 @@ const ContentContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 60px;
+
+  @media (max-width: 614px) {
+    gap: 40px;
+  }
 `;
 
 const Home = () => {
