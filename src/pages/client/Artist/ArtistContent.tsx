@@ -20,6 +20,10 @@ const Wrapper = styled.div`
   position: relative;
 
   z-index: 2;
+
+  @media (max-width: 614px) {
+    gap: 20px;
+  }
 `;
 
 const InfoHeader = styled.div`
@@ -30,6 +34,11 @@ const InfoHeader = styled.div`
   gap: 20px;
 
   color: #fff;
+
+  @media (max-width: 614px) {
+    margin-top: 200px;
+    gap: 8px;
+  }
 `;
 
 const Title = styled.h1`
@@ -73,6 +82,15 @@ const CircleButton = styled(DefaultButton)`
     background-color: #b97b7c;
     transform: scale(1.1);
   }
+
+  @media (max-width: 614px) {
+    width: 50px;
+    height: 50px;
+
+    svg {
+      width: 20px;
+    }
+  }
 `;
 
 const FollowButton = styled(DefaultButton)<{ $follow: boolean }>`
@@ -90,6 +108,11 @@ const FollowButton = styled(DefaultButton)<{ $follow: boolean }>`
 
   &:hover {
     transform: scale(1.1);
+  }
+
+  @media (max-width: 614px) {
+    font-size: 14px;
+    padding: 5px 20px;
   }
 `;
 
