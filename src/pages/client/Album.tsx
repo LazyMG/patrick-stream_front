@@ -20,8 +20,6 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
 
-  padding: 0 100px;
-
   box-sizing: border-box;
 
   position: relative;
@@ -34,15 +32,17 @@ const ContentContainer = styled.div`
   display: flex;
   position: relative;
   padding-top: 20px;
-  /* min-height: 100vh; */
-  /* height: 100vh; */
+
+  @media (max-width: 1150px) {
+    flex-direction: column;
+    gap: 30px;
+  }
 `;
 
 const AlbumInfo = styled.div`
   position: sticky;
   top: 120px;
-  width: 30%;
-  min-width: 200px;
+  min-width: 255px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -51,6 +51,13 @@ const AlbumInfo = styled.div`
   margin-right: 80px;
 
   z-index: 1;
+
+  @media (max-width: 1150px) {
+    position: relative;
+    top: 0;
+    align-self: center;
+    margin-right: 0;
+  }
 `;
 
 const AlbumArtist = styled.span`
@@ -66,6 +73,7 @@ const AlbumArtist = styled.span`
 
 const AlbumImage = styled.div<{ $img?: string }>`
   width: 100%;
+  min-width: 255px;
   aspect-ratio: 1 / 1;
   border-radius: 15px;
   background-image: ${(props) => (props.$img ? `url(${props.$img})` : "")};
@@ -151,6 +159,11 @@ const AlbumListContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
+
+  @media (max-width: 1150px) {
+    width: 100%;
+    margin-left: 0;
+  }
 `;
 
 const pulseKeyframes = keyframes`

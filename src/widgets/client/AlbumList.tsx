@@ -12,6 +12,7 @@ const AlbumListItem = styled.div`
   grid-template-columns: 1fr 10fr 1fr;
   align-items: center;
   height: 50px;
+  column-gap: 4px;
 `;
 
 const ItemNumber = styled.span`
@@ -22,14 +23,21 @@ const ItemNumber = styled.span`
 const ItemInfo = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
+  width: 100%;
+  overflow: hidden;
 `;
 
 const ItemTitle = styled.span`
   font-weight: bold;
-  width: fit-content;
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1.4;
 
-  &:hover {
+  span {
     cursor: pointer;
   }
 `;
@@ -60,7 +68,9 @@ const AlbumList = ({ music, index }: { music: APIMusic; index: number }) => {
     <AlbumListItem>
       <ItemNumber>{index + 1}</ItemNumber>
       <ItemInfo>
-        <ItemTitle onClick={clickMusic}>{music.title}</ItemTitle>
+        <ItemTitle>
+          <span onClick={clickMusic}>{music.title}</span>
+        </ItemTitle>
         <ItemViews>{views}회</ItemViews>
       </ItemInfo>
       <ItemDuration>{setMusicSeconds(music.duration)}</ItemDuration>
