@@ -12,6 +12,10 @@ import { isPlaylistToastOpenState } from "../../../app/entities/global/atom";
 const Number = styled.span`
   color: #fff;
   text-align: center;
+
+  @media (max-width: 614px) {
+    display: none;
+  }
 `;
 
 const MaskDiv = styled.div`
@@ -36,7 +40,8 @@ const Wrapper = styled.div<{
 }>`
   width: 100%;
   display: grid;
-  grid-template-columns: 0.5fr 35px 12fr 5fr 5fr 7fr 1.5fr;
+  grid-template-columns: 20px 35px 1fr;
+
   grid-template-rows: 35px;
   column-gap: 15px;
   align-items: center;
@@ -61,12 +66,15 @@ const Wrapper = styled.div<{
     z-index: 10;`}
   }
 
-  
-
   ${(props) => !props.$isLast && `border-bottom: 0.01px solid #575757;`}
 
   a {
     color: #fff;
+  }
+
+@media (max-width: 614px) {
+    display: flex;
+    gap:8px;
   }
 `;
 
@@ -78,12 +86,70 @@ const Image = styled.div<{ $img: string }>`
   border-radius: 5px;
 
   cursor: pointer;
+
+  @media (max-width: 614px) {
+    width: 35px;
+    height: 35px;
+  }
+`;
+
+const Info = styled.div`
+  display: grid;
+  width: 100%;
+  grid-template-columns: 6fr 7fr;
+  align-items: center;
+  column-gap: 8px;
+
+  @media (max-width: 614px) {
+    display: flex;
+    flex-direction: column;
+    width: auto;
+    height: 100%;
+    justify-content: space-between;
+    font-size: 14px;
+  }
+`;
+
+const InfoHeader = styled.div`
+  overflow: hidden;
+
+  @media (max-width: 614px) {
+    width: 100%;
+  }
 `;
 
 const Title = styled.div`
+  width: 100%;
+
   span {
-    width: fit-content;
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
     cursor: pointer;
+  }
+`;
+
+const Divider = styled.span``;
+
+const InfoSub = styled.div`
+  display: grid;
+  grid-template-columns: 2fr 1fr 2fr auto;
+  width: 100%;
+  align-items: center;
+  column-gap: 5px;
+
+  ${Divider} {
+    display: none;
+  }
+
+  @media (max-width: 614px) {
+    display: flex;
+
+    ${Divider} {
+      display: inline;
+    }
   }
 `;
 
@@ -93,11 +159,23 @@ const Artist = styled.span`
       text-decoration: underline;
     }
   }
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
-const Views = styled.span``;
+const Views = styled.span`
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
 
 const Album = styled.span`
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1.4;
   a {
     &:hover {
       text-decoration: underline;
@@ -190,23 +268,31 @@ const RowListMusicItem = ({
         />
       </MaskDiv>
       <Number>{index + 1}</Number>
-
       <Image $img={music.coverImg} onClick={clickViews} />
-      <Title>
-        <span onClick={clickViews}>{music.title}</span>
-      </Title>
-      <Artist>
-        <Link to={`/artists/${music.artists ? music.artists[0]._id : ""}`}>
-          {music.artists ? music.artists[0].artistname : "알 수 없음"}
-        </Link>
-      </Artist>
-      <Views>{views}회</Views>
-      <Album>
-        <Link to={`/albums/${music.album ? music.album._id : ""}`}>
-          {music.album ? music.album.title : "알 수 없음"}
-        </Link>
-      </Album>
-      <Duration>{setMusicSeconds(music.duration)}</Duration>
+      <Info>
+        <InfoHeader>
+          <Title>
+            <span onClick={clickViews}>{music.title}</span>
+          </Title>
+        </InfoHeader>
+        <InfoSub>
+          <Artist>
+            <Link to={`/artists/${music.artists ? music.artists[0]._id : ""}`}>
+              {music.artists ? music.artists[0].artistname : "알 수 없음"}
+            </Link>
+          </Artist>
+          <Divider>•</Divider>
+          <Views>{views}회</Views>
+          <Divider>•</Divider>
+          <Album>
+            <Link to={`/albums/${music.album ? music.album._id : ""}`}>
+              {music.album ? music.album.title : "알 수 없음"}
+            </Link>
+          </Album>
+          <Divider>•</Divider>
+          <Duration>{setMusicSeconds(music.duration)}</Duration>
+        </InfoSub>
+      </Info>
     </Wrapper>
   );
 };
