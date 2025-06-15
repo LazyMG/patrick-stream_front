@@ -88,8 +88,8 @@ const Image = styled.div<{ $img: string }>`
   cursor: pointer;
 
   @media (max-width: 614px) {
-    width: 35px;
-    height: 35px;
+    width: 40px;
+    height: 40px;
   }
 `;
 
@@ -107,6 +107,8 @@ const Info = styled.div`
     height: 100%;
     justify-content: space-between;
     font-size: 14px;
+    /* background-color: red; */
+    gap: 4px;
   }
 `;
 
