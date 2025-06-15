@@ -41,7 +41,6 @@ const Wrapper = styled.div<{
   ${(props) =>
     props.$isSideBarChange &&
     css`
-      /* margin-left: 72.5px; */
       margin-left: 0px;
 
       background: none;
@@ -53,7 +52,7 @@ const Wrapper = styled.div<{
   }
 
   @media (max-width: 1800px) {
-    padding: 0 12%;
+    padding: 0 8%;
   }
 
   @media (max-width: 940px) {
@@ -68,7 +67,7 @@ const Wrapper = styled.div<{
   }
 `;
 
-const Content = styled.div`
+const Content = styled.div<{ $isSideBarChange: boolean }>`
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -76,6 +75,13 @@ const Content = styled.div`
 
   gap: 60px;
   color: white;
+
+  ${(props) =>
+    props.$isSideBarChange &&
+    css`
+      width: calc(100% - 78px) !important;
+      padding-left: 78px;
+    `}
 `;
 
 const ConentContainer = styled.div`
@@ -293,7 +299,7 @@ const MainContainer = ({
         ) : (
           <SimpleBackImage $backImg={background.src} />
         ))}
-      <Content>
+      <Content $isSideBarChange={isSideBarChange}>
         <ConentContainer>{children}</ConentContainer>
         <Footer />
       </Content>

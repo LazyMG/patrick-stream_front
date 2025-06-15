@@ -43,8 +43,15 @@ const ContentContainer = styled.div`
   flex-direction: column;
   gap: 60px;
 
+  @media (max-width: 940px) {
+    width: calc(100% - 28px);
+    margin-left: 28px;
+  }
+
   @media (max-width: 614px) {
     gap: 40px;
+    width: 100%;
+    margin-left: 0px;
   }
 `;
 

@@ -15,6 +15,16 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 25px;
+
+  @media (max-width: 940px) {
+    width: calc(100% - 28px);
+    margin-left: 28px;
+  }
+
+  @media (max-width: 614px) {
+    width: 100%;
+    margin-left: 0px;
+  }
 `;
 
 const Title = styled.h1`

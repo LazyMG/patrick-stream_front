@@ -133,7 +133,7 @@ const SearchContainer = styled.div<{ $isSideBarChange: boolean }>`
   ${(props) =>
     props.$isSideBarChange &&
     css`
-      width: calc(100% - 72px) !important;
+      width: calc(100% - 78px) !important;
       @media (max-width: 2800px) {
         padding-left: calc(18% - 150px) !important;
       }
@@ -211,6 +211,9 @@ const Profile = styled.span`
     height: 50px;
     color: #fff;
   }
+
+  display: flex;
+  justify-content: end;
 `;
 
 interface IHeader {
