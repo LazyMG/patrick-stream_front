@@ -30,6 +30,10 @@ const Container = styled.div`
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   column-gap: 20px;
   row-gap: 20px;
+
+  @media (max-width: 380px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
 `;
 
 const Item = styled.div`
