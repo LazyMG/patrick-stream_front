@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { APIMusic } from "../../../shared/models/music";
 import { Link } from "react-router-dom";
 import { usePlayMusic } from "../../../shared/hooks/usePlayMusic";
@@ -9,12 +9,19 @@ import { selectedMusicState } from "../../../app/entities/music/atom";
 import { playlistMusicsState } from "../../../app/entities/playlist/atom";
 import { isPlaylistToastOpenState } from "../../../app/entities/global/atom";
 
-const Number = styled.span`
+const Number = styled.span<{ $isMine: boolean }>`
   color: #fff;
   text-align: center;
 
   @media (max-width: 614px) {
-    display: none;
+    ${(props) =>
+      !props.$isMine
+        ? css`
+            display: none;
+          `
+        : css`
+            margin-left: 5px;
+          `}
   }
 `;
 
@@ -31,6 +38,11 @@ const CheckBox = styled.input`
   width: 20px;
   height: 20px;
   accent-color: ${(props) => props.theme.color.pink};
+
+  @media (max-width: 614px) {
+    width: 15px;
+    height: 15px;
+  }
 `;
 
 const Wrapper = styled.div<{
@@ -269,7 +281,7 @@ const RowListMusicItem = ({
           onChange={onChangeHandler}
         />
       </MaskDiv>
-      <Number>{index + 1}</Number>
+      <Number $isMine={isMine}>{index + 1}</Number>
       <Image $img={music.coverImg} onClick={clickViews} />
       <Info>
         <InfoHeader>

@@ -29,6 +29,10 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 70px;
+
+  @media (max-width: 614px) {
+    gap: 30px;
+  }
 `;
 
 const InfoContainer = styled.div`
@@ -52,18 +56,32 @@ const InfoIcon = styled.div`
   svg {
     width: 180px;
   }
+
+  @media (max-width: 614px) {
+    svg {
+      width: 120px;
+    }
+  }
 `;
 
 const InfoText = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
+
+  @media (max-width: 614px) {
+    gap: 10px;
+  }
 `;
 
 const InfoTitle = styled.span`
   font-size: 32px;
   color: #fff;
   font-weight: bold;
+
+  @media (max-width: 614px) {
+    font-size: 24px;
+  }
 `;
 
 const InfoContent = styled.p`
@@ -269,9 +287,9 @@ const Playlist = () => {
       if (result.ok) {
         setPlaylistData(result.playlist as APIPlaylist);
         setIsLoading(false);
-        console.log("success");
+        // console.log("success");
       } else {
-        console.log("fail");
+        // console.log("fail");
         setIsError(true);
         if (!result.error) {
           if (result.type === "ERROR_ID") {
