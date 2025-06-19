@@ -65,8 +65,9 @@ const PlayBarContentContainer = styled.div`
 
   @media (max-width: 614px) {
     gap: 0px;
-    justify-content: flex-start;
+    /* justify-content: flex-start; */
     padding: 5px;
+    justify-content: space-around;
   }
 `;
 
@@ -113,7 +114,7 @@ const PlayBarContentControlPlayButton = styled.div`
 
   @media (max-width: 614px) {
     svg {
-      width: 40px;
+      width: 35px;
     }
   }
 `;
@@ -133,7 +134,7 @@ const PlayBarContentControlMoveButton = styled.div`
 
   @media (max-width: 614px) {
     svg {
-      width: 30px;
+      width: 25px;
     }
   }
 `;
@@ -157,6 +158,7 @@ const PlayBarContentMainContainer = styled.div`
 
   @media (max-width: 614px) {
     gap: 0px;
+    /* margin-right: 8px; */
   }
 `;
 

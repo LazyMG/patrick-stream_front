@@ -2,6 +2,7 @@ import styled from "styled-components";
 
 const Wrapper = styled.div`
   width: 45px;
+  max-width: 45px;
   color: #fff;
 
   svg {
@@ -17,8 +18,9 @@ const Wrapper = styled.div`
 
   @media (max-width: 614px) {
     svg {
-      width: 40px;
+      width: 35px;
     }
+    max-width: 35px;
   }
 `;
 const LoadingSpinner = () => {
