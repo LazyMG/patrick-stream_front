@@ -9,7 +9,7 @@ import { selectedMusicState } from "../../../app/entities/music/atom";
 import { playlistMusicsState } from "../../../app/entities/playlist/atom";
 import { isPlaylistToastOpenState } from "../../../app/entities/global/atom";
 
-const Number = styled.span<{ $isMine: boolean }>`
+const Number = styled.span<{ $isMine?: boolean }>`
   color: #fff;
   text-align: center;
 
