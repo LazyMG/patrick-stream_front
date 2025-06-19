@@ -13,6 +13,8 @@ const Number = styled.span<{ $isMine?: boolean }>`
   color: #fff;
   text-align: center;
 
+  max-width: 20px;
+
   @media (max-width: 614px) {
     ${(props) =>
       !props.$isMine
@@ -20,7 +22,8 @@ const Number = styled.span<{ $isMine?: boolean }>`
             display: none;
           `
         : css`
-            margin-left: 5px;
+            width: 20px;
+            margin-right: 8px;
           `}
   }
 `;
@@ -119,7 +122,6 @@ const Info = styled.div`
     height: 100%;
     justify-content: space-between;
     font-size: 14px;
-    /* background-color: red; */
     gap: 4px;
   }
 `;
@@ -282,6 +284,7 @@ const RowListMusicItem = ({
         />
       </MaskDiv>
       <Number $isMine={isMine}>{index + 1}</Number>
+
       <Image $img={music.coverImg} onClick={clickViews} />
       <Info>
         <InfoHeader>
