@@ -10,6 +10,10 @@ const Wrapper = styled.div`
 
   font-size: 64px;
   font-weight: bold;
+
+  @media (max-width: 614px) {
+    font-size: 56px;
+  }
 `;
 
 const NotFoundComponent = () => {
