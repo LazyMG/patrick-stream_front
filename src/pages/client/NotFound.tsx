@@ -17,6 +17,12 @@ const Title = styled.h1`
   color: #fff;
   font-weight: bold;
   font-size: 48px;
+
+  text-align: center;
+
+  @media (max-width: 614px) {
+    font-size: 36px;
+  }
 `;
 
 const Button = styled.div`
