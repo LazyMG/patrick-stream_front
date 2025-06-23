@@ -27,6 +27,7 @@ const Content = styled.main`
 `;
 
 const Row = styled.span`
+  line-height: 1.2;
   a {
     color: white;
   }
