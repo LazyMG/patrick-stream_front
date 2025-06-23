@@ -9,6 +9,10 @@ const ExactResultContainerContent = styled.div`
   display: flex;
   padding: 15px 10px;
   position: relative;
+
+  @media (max-width: 614px) {
+    flex-direction: column;
+  }
 `;
 
 const ExactResultContainerContentMask = styled.div<{ $bgUrl: string }>`
@@ -54,6 +58,11 @@ const ExactResultInfo = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-around;
+
+  @media (max-width: 614px) {
+    justify-content: center;
+    gap: 10px;
+  }
 `;
 
 const ExactResultTitle = styled.h4`
@@ -76,6 +85,10 @@ const ExactResultDescription = styled.div`
       text-decoration: underline;
     }
   }
+
+  @media (max-width: 614px) {
+    font-size: 15px;
+  }
 `;
 
 const ExactResultButtonContainer = styled.div`
@@ -95,6 +108,10 @@ const Button = styled.button`
   font-size: 15px;
 
   cursor: pointer;
+
+  @media (max-width: 614px) {
+    width: 100%;
+  }
 `;
 
 const ExactArtistResult = ({ data }: { data: APIArtist }) => {

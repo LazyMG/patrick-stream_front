@@ -70,6 +70,10 @@ const ResultDescription = styled.div`
       text-decoration: underline;
     }
   }
+
+  @media (max-width: 614px) {
+    font-size: 14px;
+  }
 `;
 
 const MoreButton = styled(DefaultButton)<{ $isActive: boolean }>`

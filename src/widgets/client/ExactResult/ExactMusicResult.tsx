@@ -8,6 +8,10 @@ const ExactResultContainerContent = styled.div`
   display: flex;
   padding: 15px 10px;
   position: relative;
+
+  @media (max-width: 614px) {
+    flex-direction: column;
+  }
 `;
 
 const ExactResultContainerContentMask = styled.div<{ $bgUrl: string }>`
@@ -53,6 +57,11 @@ const ExactResultInfo = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-around;
+
+  @media (max-width: 614px) {
+    justify-content: center;
+    gap: 10px;
+  }
 `;
 
 const ExactResultTitle = styled.h4`
@@ -71,6 +80,10 @@ const ExactResultDescription = styled.div`
     &:hover {
       text-decoration: underline;
     }
+  }
+
+  @media (max-width: 614px) {
+    font-size: 15px;
   }
 `;
 
@@ -104,6 +117,10 @@ const Button = styled.button`
   &:hover {
     transform: scale(1.1);
     opacity: 0.8;
+  }
+
+  @media (max-width: 614px) {
+    width: 100%;
   }
 `;
 
