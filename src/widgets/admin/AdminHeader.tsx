@@ -5,11 +5,9 @@ const HeaderContainer = styled.header`
   justify-content: space-between;
   align-items: center;
   padding: 20px;
-  background-color: #000;
+  background-color: beige;
   color: #fff;
 `;
-
-const Title = styled.h1``;
 
 const AdminHeader: React.FC = () => {
   return (

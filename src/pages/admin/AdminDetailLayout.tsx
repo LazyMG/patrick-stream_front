@@ -37,9 +37,9 @@ const Info = styled.div`
   justify-content: center;
   align-items: center;
   padding: 20px 10px;
-  border: 1px solid #fff;
+  border: 1px solid black;
 
-  color: #fff;
+  color: black;
 `;
 
 const Image = styled.img`

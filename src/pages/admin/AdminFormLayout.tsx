@@ -23,6 +23,16 @@ const ContentFooter = styled.div`
   justify-content: space-around;
 `;
 
+const Button = styled.button`
+  border: none;
+  background-color: black;
+  color: white;
+  border-radius: 15px;
+  padding: 4px 8px;
+
+  cursor: pointer;
+`;
+
 interface IAdminFormLayout {
   children: ReactNode;
   backFunc: () => void;
@@ -38,8 +48,8 @@ const AdminFormLayout = ({
     <ContentContainer>
       <Content>{children}</Content>
       <ContentFooter>
-        <button onClick={backFunc}>돌아가기</button>
-        <button onClick={submitForm}>저장하기</button>
+        <Button onClick={backFunc}>돌아가기</Button>
+        <Button onClick={submitForm}>저장하기</Button>
       </ContentFooter>
     </ContentContainer>
   );

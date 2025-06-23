@@ -36,7 +36,8 @@ const AdminAlbumEdit: React.FC = () => {
     const changedFields: Partial<IAlbumFormInput> = {};
 
     (Object.keys(event) as (keyof IAlbumFormInput)[]).forEach((key) => {
-      const newValue = event[key];
+      // const newValue = event[key];
+      const newValue = event[key] as IAlbumFormInput[typeof key];
       const oldValue = outletAlbum?.album[key];
 
       if (key === "length") {
@@ -49,7 +50,7 @@ const AdminAlbumEdit: React.FC = () => {
       }
 
       if (newValue !== oldValue) {
-        changedFields[key] = newValue as IAlbumFormInput[typeof key];
+        changedFields[key] = newValue;
       }
     });
 

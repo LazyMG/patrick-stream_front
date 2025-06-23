@@ -9,7 +9,7 @@ const Wrapper = styled.input`
   padding-left: 10px;
   border-radius: 8px;
 
-  color: #fff;
+  color: black;
 
   height: 30px;
   font-size: 15px;

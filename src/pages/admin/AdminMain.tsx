@@ -20,12 +20,22 @@ const Tab = styled.div`
   align-items: center;
   height: 50px;
   border-radius: 15px;
-  background-color: beige;
+  background-color: ${(props) => props.theme.color.pink};
   justify-content: space-between;
 `;
 
 const TabContent = styled.p`
   font-size: 15px;
+`;
+
+const Button = styled.button`
+  border: none;
+  background-color: black;
+  color: white;
+  border-radius: 15px;
+  padding: 4px 8px;
+
+  cursor: pointer;
 `;
 
 const AdminMain: React.FC = () => {
@@ -97,9 +107,9 @@ const AdminMain: React.FC = () => {
         <Tab>
           <TabContent>Music: {musicsCount}</TabContent>
           <TabContent>
-            <button onClick={(event) => gotoUploadPage(event, "/musics/new")}>
+            <Button onClick={(event) => gotoUploadPage(event, "/musics/new")}>
               등록하기
-            </button>
+            </Button>
           </TabContent>
         </Tab>
       </Link>
@@ -107,9 +117,9 @@ const AdminMain: React.FC = () => {
         <Tab>
           <TabContent>Album: {albumsCount}</TabContent>
           <TabContent>
-            <button onClick={(event) => gotoUploadPage(event, "/albums/new")}>
+            <Button onClick={(event) => gotoUploadPage(event, "/albums/new")}>
               등록하기
-            </button>
+            </Button>
           </TabContent>
         </Tab>
       </Link>
@@ -117,9 +127,9 @@ const AdminMain: React.FC = () => {
         <Tab>
           <TabContent>Artist: {artistsCount}</TabContent>
           <TabContent>
-            <button onClick={(event) => gotoUploadPage(event, "/artists/new")}>
+            <Button onClick={(event) => gotoUploadPage(event, "/artists/new")}>
               등록하기
-            </button>
+            </Button>
           </TabContent>
         </Tab>
       </Link>

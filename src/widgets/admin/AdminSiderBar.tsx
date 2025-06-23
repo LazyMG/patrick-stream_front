@@ -4,13 +4,15 @@ import styled from "styled-components";
 const SidebarContainer = styled.div`
   width: 250px;
   height: 100vh;
-  background-color: #000;
+  background-color: beige;
   padding: 20px;
   padding-top: 56px;
   color: #fff;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
+
+  border-right: 1px solid black;
 `;
 
 const MenuItem = styled.a`

@@ -8,7 +8,7 @@ const Loading = styled.div`
   align-items: center;
   justify-content: center;
 
-  color: #fff;
+  color: black;
   font-size: 48px;
   font-weight: bold;
 

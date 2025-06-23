@@ -33,7 +33,7 @@ const Tab = styled.div`
   align-items: center;
   height: 50px;
   border-radius: 15px;
-  background-color: beige;
+  background-color: ${(props) => props.theme.color.pink};
 `;
 
 const TabContent = styled.p`
@@ -51,6 +51,16 @@ const Error = styled.div`
 
   width: 100%;
   height: 70vh;
+`;
+
+const Button = styled.button`
+  border: none;
+  background-color: black;
+  color: white;
+  border-radius: 15px;
+  padding: 4px 8px;
+
+  cursor: pointer;
 `;
 
 interface AdminPageLayoutProps {
@@ -98,9 +108,9 @@ const AdminPageLayout: React.FC<AdminPageLayoutProps> = ({
       {!isError ? (
         <>
           <ContentHeader>
-            <button onClick={(event) => gotoUploadPage(event, dataType)}>
+            <Button onClick={(event) => gotoUploadPage(event, dataType)}>
               등록하기
-            </button>
+            </Button>
           </ContentHeader>
           <Content>
             {dataType === "music" &&

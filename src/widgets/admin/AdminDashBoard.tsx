@@ -4,7 +4,7 @@ import styled from "styled-components";
 const DashboardContainer = styled.div`
   flex: 1;
   padding: 20px 5%;
-  background-color: #000;
+  background-color: beige;
   overflow-y: auto;
 
   @media (min-width: 1200px) {

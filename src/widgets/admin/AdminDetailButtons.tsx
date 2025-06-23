@@ -1,4 +1,15 @@
 import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
+
+const Button = styled.button`
+  border: none;
+  background-color: black;
+  color: white;
+  border-radius: 15px;
+  padding: 4px 8px;
+
+  cursor: pointer;
+`;
 
 interface IAdminDetailButton {
   firstButtonConfig: {
@@ -32,14 +43,14 @@ const AdminDetailButtons = ({
 
   return (
     <>
-      <button onClick={firstButtonConfig.modalOpen}>
+      <Button onClick={firstButtonConfig.modalOpen}>
         {firstButtonConfig.buttonText}
-      </button>
-      <button onClick={secondButtonConfig.modalOpen}>
+      </Button>
+      <Button onClick={secondButtonConfig.modalOpen}>
         {secondButtonConfig.buttonText}
-      </button>
-      <button onClick={(event) => gotoEditPage(event, path)}>수정하기</button>
-      <button onClick={deleteFunc}>삭제하기</button>
+      </Button>
+      <Button onClick={(event) => gotoEditPage(event, path)}>수정하기</Button>
+      <Button onClick={deleteFunc}>삭제하기</Button>
     </>
   );
 };

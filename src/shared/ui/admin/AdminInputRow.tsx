@@ -11,7 +11,7 @@ const Wrapper = styled.div`
 
 const Label = styled.label`
   font-size: 15px;
-  color: #fff;
+  color: black;
   font-weight: bold;
   width: fit-content;
 `;
