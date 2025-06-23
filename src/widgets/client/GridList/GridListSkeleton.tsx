@@ -52,6 +52,31 @@ const GridListSwiperSkeleton = styled.div`
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(4, 1fr);
   gap: 15px;
+
+  @media (max-width: 940px) {
+    grid-template-columns: repeat(2, 1fr);
+
+    .item-8,
+    .item-9,
+    .item-10,
+    .item-11 {
+      display: none;
+    }
+  }
+  @media (max-width: 614px) {
+    grid-template-columns: repeat(1, 1fr);
+
+    .item-4,
+    .item-5,
+    .item-6,
+    .item-7,
+    .item-8,
+    .item-9,
+    .item-10,
+    .item-11 {
+      display: none;
+    }
+  }
 `;
 
 const GridListMusicItemSkeleton = styled.div`
@@ -73,9 +98,11 @@ const GridListSkeleton = () => {
       </GirdListHeaderSkeleton>
       <GridListContainerSkeleton>
         <GridListSwiperSkeleton>
-          {Array.from({ length: 12 }).map((_, idx) => (
-            <GridListMusicItemSkeleton key={idx} />
-          ))}
+          <GridListSwiperSkeleton>
+            {Array.from({ length: 12 }).map((_, idx) => (
+              <GridListMusicItemSkeleton key={idx} className={`item-${idx}`} />
+            ))}
+          </GridListSwiperSkeleton>
         </GridListSwiperSkeleton>
       </GridListContainerSkeleton>
     </Wrapper>
