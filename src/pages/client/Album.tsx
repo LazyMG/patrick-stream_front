@@ -191,6 +191,13 @@ const AlbumInfoSkeleton = styled.div`
   margin-right: 80px;
 
   animation: ${pulseKeyframes} 2.5s ease-in-out infinite;
+
+  @media (max-width: 1150px) {
+    position: relative;
+    top: 0;
+    align-self: center;
+    margin-right: 0;
+  }
 `;
 
 const AlbumArtistSkeleton = styled.span`
@@ -274,6 +281,15 @@ const AlbumListContainerSkeleton = styled.div`
   gap: 20px;
 
   animation: ${pulseKeyframes} 2.5s ease-in-out infinite;
+
+  @media (max-width: 1150px) {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  @media (max-width: 614px) {
+    gap: 10px;
+  }
 `;
 
 const AlbumListItemSkeleton = styled.div`
