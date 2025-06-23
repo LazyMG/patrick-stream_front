@@ -142,6 +142,11 @@ const InfoHeaderSkeleton = styled.div`
   flex-direction: column;
 
   gap: 20px;
+
+  @media (max-width: 614px) {
+    margin-top: 200px;
+    gap: 8px;
+  }
 `;
 
 const TitleSkeleton = styled.h1`
@@ -196,6 +201,15 @@ const CircleButtonSkeleton = styled.div`
   background-color: #2e2e2e;
 
   animation: ${pulseKeyframes} 2.5s ease-in-out infinite;
+
+  @media (max-width: 614px) {
+    width: 50px;
+    height: 50px;
+
+    svg {
+      width: 20px;
+    }
+  }
 `;
 
 const FollowButtonSkeleton = styled.div`
@@ -207,6 +221,11 @@ const FollowButtonSkeleton = styled.div`
   background-color: #2e2e2e;
 
   animation: ${pulseKeyframes} 2.5s ease-in-out infinite;
+
+  @media (max-width: 614px) {
+    font-size: 14px;
+    padding: 5px 20px;
+  }
 `;
 
 interface IArtistOutlet {
