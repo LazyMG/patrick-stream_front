@@ -14,11 +14,15 @@ const Wrapper = styled.div`
 const SubTitle = styled.span`
   font-size: 24px;
   color: #a5a5a5;
+
+  text-align: center;
 `;
 
 const Title = styled.span`
   font-size: 48px;
   font-weight: bold;
+
+  text-align: center;
 `;
 
 const Comming = () => {
