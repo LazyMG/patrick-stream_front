@@ -43,10 +43,12 @@ const GridListSectionSkeleton = styled.div`
 
 const GridListContainerSkeleton = styled.div`
   width: 100%;
+  height: 100%;
 `;
 
 const GridListSwiperSkeleton = styled.div`
   width: 100%;
+  height: 100%;
 
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -81,9 +83,7 @@ const GridListSwiperSkeleton = styled.div`
 
 const GridListMusicItemSkeleton = styled.div`
   height: 50px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
+  width: 100%;
 
   border-radius: 10px;
 
@@ -98,11 +98,9 @@ const GridListSkeleton = () => {
       </GirdListHeaderSkeleton>
       <GridListContainerSkeleton>
         <GridListSwiperSkeleton>
-          <GridListSwiperSkeleton>
-            {Array.from({ length: 12 }).map((_, idx) => (
-              <GridListMusicItemSkeleton key={idx} className={`item-${idx}`} />
-            ))}
-          </GridListSwiperSkeleton>
+          {Array.from({ length: 12 }).map((_, idx) => (
+            <GridListMusicItemSkeleton key={idx} className={`item-${idx}`} />
+          ))}
         </GridListSwiperSkeleton>
       </GridListContainerSkeleton>
     </Wrapper>
