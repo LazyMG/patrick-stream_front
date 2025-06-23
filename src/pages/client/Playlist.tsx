@@ -176,6 +176,10 @@ const InfoTextSkeleton = styled.div`
   width: 100%;
 
   animation: ${pulseKeyframes} 2.5s ease-in-out infinite;
+
+  @media (max-width: 614px) {
+    gap: 10px;
+  }
 `;
 
 const InfoTitleSkeleton = styled.span`
@@ -184,6 +188,10 @@ const InfoTitleSkeleton = styled.span`
   border-radius: 10px;
 
   width: 40%;
+
+  @media (max-width: 614px) {
+    font-size: 24px;
+  }
 `;
 
 const InfoDescriptionSkeleton = styled.p`
@@ -547,16 +555,13 @@ const Playlist = () => {
               </svg>
             </PlaylistPlayButton>
             {isMine ? (
-              <>
-                {/* <FollowButton $follow={false}>수정하기</FollowButton> */}
-                <FollowButton
-                  $follow={true}
-                  onClick={deletePlaylist}
-                  disabled={isPending}
-                >
-                  {isPending ? "삭제 중" : "삭제하기"}
-                </FollowButton>
-              </>
+              <FollowButton
+                $follow={true}
+                onClick={deletePlaylist}
+                disabled={isPending}
+              >
+                {isPending ? "삭제 중" : "삭제하기"}
+              </FollowButton>
             ) : (
               <FollowButton $follow={!!follow} onClick={followPlaylist}>
                 {follow ? "언팔로우" : "팔로우"}
@@ -564,7 +569,7 @@ const Playlist = () => {
             )}
           </InfoButtons>
         ) : (
-          isLoading && <InfoButtonsSkeleton />
+          <InfoButtonsSkeleton />
         )}
       </InfoContainer>
       {isLoading && <RowListSkeleton />}
