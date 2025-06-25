@@ -118,8 +118,9 @@ function YoutubeContainer() {
       });
     }
 
+    alert("state" + event.target.getPlayerState());
     if (isMobile && event.target.getPlayerState() === 5) {
-      alert("test!");
+      // alert("test!");
     }
 
     if (currentPlayer.isRedirectPaused) {
