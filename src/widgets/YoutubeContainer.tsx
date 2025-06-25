@@ -96,7 +96,9 @@ function YoutubeContainer() {
 
   const onPlayerPlay: YouTubeProps["onPlay"] = (event) => {
     if (isMobile) {
-      event.target.unMute();
+      setTimeout(() => {
+        event.target.unMute();
+      }, 500);
     }
   };
 
