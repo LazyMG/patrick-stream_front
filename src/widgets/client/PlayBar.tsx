@@ -16,6 +16,7 @@ import {
 } from "../../app/entities/music/atom";
 import {
   currentPlayerState,
+  playerInstanceAtom,
   ytPlayerState,
 } from "../../app/entities/player/atom";
 import LoadingSpinner from "./LoadingSpinner";
@@ -405,7 +406,8 @@ interface IPlayBar {
   player: YT.Player | null;
 }
 
-const PlayBar = ({ player }: IPlayBar) => {
+const PlayBar = () => {
+  const [player, setPlayer] = useRecoilState(playerInstanceAtom);
   const [timeline, setTimeline] = useState(0);
   const [time, setTime] = useState("00:00");
   const [ytPlayer, setYtPlayer] = useRecoilState(ytPlayerState);
