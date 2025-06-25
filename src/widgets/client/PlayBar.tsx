@@ -505,27 +505,27 @@ const PlayBar = () => {
     }
   }, [player, ytId]);
 
-  const [pendingYtId, setPendingYtId] = useState<string | null>(null);
+  // const [pendingYtId, setPendingYtId] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (ytId.ytId) setPendingYtId(ytId.ytId);
-  }, [ytId]);
+  // useEffect(() => {
+  //   if (ytId.ytId) setPendingYtId(ytId.ytId);
+  // }, [ytId]);
 
-  useEffect(() => {
-    if (!isMobileByUserAgent()) return;
+  // useEffect(() => {
+  //   if (!isMobileByUserAgent()) return;
 
-    if (player && pendingYtId && player.loadVideoById) {
-      try {
-        player.mute();
-        player.loadVideoById(pendingYtId);
-        player.playVideo();
-        setTimeout(() => player.unMute(), 300);
-        setPendingYtId(null);
-      } catch (e) {
-        console.warn("재생 실패", e);
-      }
-    }
-  }, [player, pendingYtId]);
+  //   if (player && pendingYtId && player.loadVideoById) {
+  //     try {
+  //       player.mute();
+  //       player.loadVideoById(pendingYtId);
+  //       player.playVideo();
+  //       setTimeout(() => player.unMute(), 300);
+  //       setPendingYtId(null);
+  //     } catch (e) {
+  //       console.warn("재생 실패", e);
+  //     }
+  //   }
+  // }, [player, pendingYtId]);
 
   useEffect(() => {
     if (user.userId !== "" && selectedMusic) {
