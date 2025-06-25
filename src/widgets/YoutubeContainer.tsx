@@ -65,11 +65,6 @@ function YoutubeContainer() {
     },
   };
 
-  const onError = (event) => {
-    const errorCode = event.data;
-    alert(errorCode);
-  };
-
   return (
     <>
       <YouTube
@@ -78,7 +73,6 @@ function YoutubeContainer() {
         onReady={onPlayerReady}
         onPlay={onPlayerPlay}
         onStateChange={onStateChange}
-        onError={onError}
         // style={{
         //   position: "absolute",
         //   top: 0,

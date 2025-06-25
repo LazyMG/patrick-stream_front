@@ -505,18 +505,27 @@ const PlayBar = () => {
     }
   }, [player, ytId]);
 
+  const [pendingYtId, setPendingYtId] = useState<string | null>(null);
+
   useEffect(() => {
-    if (isMobileByUserAgent() && player && player.videoTitle) {
-      // console.log("타이틀", player.videoTitle);
+    if (ytId.ytId) setPendingYtId(ytId.ytId);
+  }, [ytId]);
+
+  useEffect(() => {
+    if (!isMobileByUserAgent()) return;
+
+    if (player && pendingYtId && player.loadVideoById) {
       try {
-        setTime("00:00");
-        setTimeline(0);
+        player.mute();
+        player.loadVideoById(pendingYtId);
         player.playVideo();
-      } catch (error) {
-        alert(error);
+        setTimeout(() => player.unMute(), 300);
+        setPendingYtId(null);
+      } catch (e) {
+        console.warn("재생 실패", e);
       }
     }
-  }, [player, ytId]);
+  }, [player, pendingYtId]);
 
   useEffect(() => {
     if (user.userId !== "" && selectedMusic) {
