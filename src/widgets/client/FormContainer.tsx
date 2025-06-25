@@ -18,14 +18,17 @@ const FormHeader = styled.div`
   display: flex;
   justify-content: center;
 
-  svg {
+  a {
     position: absolute;
     width: 45px;
-    height: fit-content;
+    height: 45px;
     top: 5px;
     left: 0;
 
-    cursor: pointer;
+    svg {
+      width: 100%;
+      height: 100%;
+    }
   }
 `;
 
