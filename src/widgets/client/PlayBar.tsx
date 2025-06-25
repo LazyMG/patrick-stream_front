@@ -507,11 +507,11 @@ const PlayBar = () => {
 
   useEffect(() => {
     if (isMobileByUserAgent() && player && player.videoTitle) {
-      console.log("타이틀", player.videoTitle);
-      player.stopVideo();
+      // console.log("타이틀", player.videoTitle);
       setTime("00:00");
       setTimeline(0);
       player.playVideo();
+      alert(`play ${player.videoTitle}`);
     }
   }, [player, ytId]);
 
