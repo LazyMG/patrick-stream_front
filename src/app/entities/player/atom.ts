@@ -38,3 +38,8 @@ export const playerInstanceAtom = atom<YT.Player | null>({
   default: null,
   dangerouslyAllowMutability: true, // YouTube Player 객체는 mutable하므로 필수
 });
+
+export const isMobileIssueState = atom<boolean>({
+  key: "isMobileIssueState",
+  default: false,
+});

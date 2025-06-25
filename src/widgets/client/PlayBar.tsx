@@ -16,6 +16,7 @@ import {
 } from "../../app/entities/music/atom";
 import {
   currentPlayerState,
+  isMobileIssueState,
   playerInstanceAtom,
   ytPlayerState,
 } from "../../app/entities/player/atom";
@@ -409,6 +410,7 @@ const PlayBar = () => {
   const ytId = useRecoilValue(ytIdState);
   const [currentPlayer, setCurrentPlayer] = useRecoilState(currentPlayerState);
   const selectedMusic = useRecoilValue(selectedMusicState);
+  const isMobileIssue = useRecoilValue(isMobileIssueState);
 
   const [isMusicMuted, setMusicIsMuted] = useState(false);
   const [musicVolume, setMusicVolume] = useState<number>(50);
@@ -456,41 +458,12 @@ const PlayBar = () => {
     }
   }, [player, ytId]);
 
-  // useEffect(() => {
-  //   if (player) {
-  //     if (player.getPlayerState() === 1) {
-  //       setCurrentPlayer((prev) => {
-  //         return {
-  //           ...prev,
-  //           isPlaying: true,
-  //           isPaused: false,
-  //           isLoading: false,
-  //         };
-  //       });
-  //     } else if (player.getPlayerState() === 2) {
-  //       setCurrentPlayer((prev) => ({
-  //         ...prev,
-  //         isPaused: true,
-  //         isPlaying: false,
-  //         isLoading: false,
-  //       }));
-  //     }
-  //   }
-  // }, [setCurrentPlayer, player]);
-
-  // useEffect(() => {
-  //   if (!isMobileByUserAgent()) return;
-
-  //   if (player) {
-  //     try {
-  //       player.mute();
-  //       player.playVideo();
-  //       setTimeout(() => player.unMute(), 300);
-  //     } catch (e) {
-  //       console.warn("재생 실패", e);
-  //     }
-  //   }
-  // }, [player]);
+  useEffect(() => {
+    if (isMobileIssue) {
+      setTime("00:00");
+      setTimeline(0);
+    }
+  }, [isMobileIssue]);
 
   useEffect(() => {
     if (user.userId !== "" && selectedMusic) {

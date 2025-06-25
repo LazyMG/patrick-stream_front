@@ -3,6 +3,7 @@ import { ytIdState } from "../app/entities/music/atom";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import {
   currentPlayerState,
+  isMobileIssueState,
   playerInstanceAtom,
   ytPlayerState,
 } from "../app/entities/player/atom";
@@ -69,6 +70,7 @@ function YoutubeContainer() {
   const [player, setPlayer] = useRecoilState(playerInstanceAtom);
   const isMobile = isMobileByUserAgent();
   const setCurrentPlayer = useSetRecoilState(currentPlayerState);
+  const setIsMobileIssue = useSetRecoilState(isMobileIssueState);
 
   // 전체 플레이어 관리
   const onPlayerReady: YouTubeProps["onReady"] = (event) => {
@@ -101,6 +103,7 @@ function YoutubeContainer() {
       (ytPlayer === 3 || ytPlayer === 5) &&
       event.target.getPlayerState() === -1
     ) {
+      setIsMobileIssue(true);
       setytPlayer(2);
       setCurrentPlayer((prev) => {
         return {
@@ -128,7 +131,7 @@ function YoutubeContainer() {
         });
       }
     }
-
+    setIsMobileIssue(false);
     if (currentPlayer.isRedirectPaused) {
       setytPlayer(2);
     }
