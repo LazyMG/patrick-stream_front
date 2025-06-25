@@ -202,9 +202,9 @@ const ThemeMusic = () => {
     if (newMusicMatch) {
       url = url + `/music/recently-updated`;
     } else if (trendingMusicMatch) {
-      url = `/music/trending`;
+      url = url + `/music/trending`;
     } else if (popularMusicMatch) {
-      url = `/music/popular`;
+      url = url + `/music/popular`;
     } else {
       return;
     }
