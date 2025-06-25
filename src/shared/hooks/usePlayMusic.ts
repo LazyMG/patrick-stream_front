@@ -56,12 +56,12 @@ export const usePlayMusic = () => {
       return prev;
     });
     setIsPlayerOn(true);
-    setCurrentPlayer((prev) => {
-      return {
-        ...prev,
-        isPlaying: true,
-      };
-    });
+    // setCurrentPlayer((prev) => {
+    //   return {
+    //     ...prev,
+    //     isPlaying: true,
+    //   };
+    // });
 
     addUserRecentMusics(music);
     const updateResult = await updateMusicView(music);

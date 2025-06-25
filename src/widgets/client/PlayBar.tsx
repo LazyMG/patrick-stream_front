@@ -456,27 +456,37 @@ const PlayBar = () => {
     }
   }, [player, ytId]);
 
-  // const [pendingYtId, setPendingYtId] = useState<string | null>(null);
-
-  // useEffect(() => {
-  //   if (ytId.ytId) setPendingYtId(ytId.ytId);
-  // }, [ytId]);
+  useEffect(() => {
+    if (player) {
+      if (player.getPlayerState() === 1) {
+        setCurrentPlayer((prev) => {
+          return {
+            ...prev,
+            isPlaying: true,
+          };
+        });
+      } else {
+        setCurrentPlayer((prev) => ({
+          ...prev,
+          isPaused: true,
+        }));
+      }
+    }
+  }, [setCurrentPlayer, player]);
 
   // useEffect(() => {
   //   if (!isMobileByUserAgent()) return;
 
-  //   if (player && pendingYtId && player.loadVideoById) {
+  //   if (player) {
   //     try {
   //       player.mute();
-  //       player.loadVideoById(pendingYtId);
   //       player.playVideo();
   //       setTimeout(() => player.unMute(), 300);
-  //       setPendingYtId(null);
   //     } catch (e) {
   //       console.warn("재생 실패", e);
   //     }
   //   }
-  // }, [player, pendingYtId]);
+  // }, [player]);
 
   useEffect(() => {
     if (user.userId !== "" && selectedMusic) {
