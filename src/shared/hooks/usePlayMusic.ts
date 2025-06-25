@@ -1,8 +1,5 @@
 import { useSetRecoilState } from "recoil";
-import {
-  currentPlayerState,
-  isPlayerOnState,
-} from "../../app/entities/player/atom";
+import { isPlayerOnState } from "../../app/entities/player/atom";
 import {
   playingPlaylistState,
   selectedMusicState,
@@ -16,7 +13,7 @@ import { useToast } from "./useToast";
 export const usePlayMusic = () => {
   const setIsPlayerOn = useSetRecoilState(isPlayerOnState);
   const setYtId = useSetRecoilState(ytIdState);
-  const setCurrentPlayer = useSetRecoilState(currentPlayerState);
+  // const setCurrentPlayer = useSetRecoilState(currentPlayerState);
   const setSelectedMusic = useSetRecoilState(selectedMusicState);
   const setPlayingPlaylist = useSetRecoilState(playingPlaylistState);
   const { addUserRecentMusics } = useRecentMusics();
