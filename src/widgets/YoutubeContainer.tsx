@@ -46,13 +46,14 @@ function YoutubeContainer({ player, setPlayer }: IYoutubeContainer) {
   };
 
   const opts: YouTubeProps["opts"] = {
-    height: "0",
-    width: "0",
-    // height: "390",
-    // width: "320",
+    // height: "0",
+    // width: "0",
+    height: "390",
+    width: "320",
     playerVars: {
-      // https://developers.google.com/youtube/player_parameters
       autoplay: 1,
+      // mute: 1,
+      playsinline: 1,
     },
   };
 
@@ -64,6 +65,15 @@ function YoutubeContainer({ player, setPlayer }: IYoutubeContainer) {
         onReady={onPlayerReady}
         onPlay={onPlayerPlay}
         onStateChange={onStateChange}
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: 1,
+          height: 1,
+          opacity: 0,
+          pointerEvents: "none",
+        }}
       />
     </>
   );
