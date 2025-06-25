@@ -508,7 +508,6 @@ const PlayBar = () => {
   useEffect(() => {
     if (isMobileByUserAgent() && player && player.videoTitle) {
       // console.log("타이틀", player.videoTitle);
-      // player.mute();
       try {
         setTime("00:00");
         setTimeline(0);
@@ -516,8 +515,6 @@ const PlayBar = () => {
       } catch (error) {
         alert(error);
       }
-
-      // player.unMute();
     }
   }, [player, ytId]);
 
