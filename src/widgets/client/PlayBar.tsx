@@ -508,12 +508,12 @@ const PlayBar = () => {
   useEffect(() => {
     if (isMobileByUserAgent() && player && player.videoTitle) {
       console.log("타이틀", player.videoTitle);
-      player.stopVideo();
+      // player.stopVideo();
       setTime("00:00");
       setTimeline(0);
       player.playVideo();
     }
-  }, [player]);
+  }, [player, ytId]);
 
   useEffect(() => {
     if (user.userId !== "" && selectedMusic) {
