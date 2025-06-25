@@ -100,7 +100,11 @@ function YoutubeContainer() {
   };
 
   const onStateChange: YouTubeProps["onStateChange"] = (event) => {
-    if (isMobile && ytPlayer === 3 && event.target.getPlayerState() === -1) {
+    if (
+      isMobile &&
+      (ytPlayer === 3 || ytPlayer === 5) &&
+      event.target.getPlayerState() === -1
+    ) {
       setytPlayer(2);
       setCurrentPlayer((prev) => {
         return {
