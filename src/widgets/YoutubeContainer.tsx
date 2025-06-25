@@ -94,9 +94,9 @@ function YoutubeContainer() {
   };
 
   const onPlayerPlay: YouTubeProps["onPlay"] = (event) => {
-    if (isMobile) {
-      event.target.unMute();
-    }
+    // if (isMobile) {
+    //   event.target.unMute();
+    // }
   };
 
   const onStateChange: YouTubeProps["onStateChange"] = (event) => {
