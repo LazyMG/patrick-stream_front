@@ -463,12 +463,14 @@ const PlayBar = () => {
           return {
             ...prev,
             isPlaying: true,
+            isPaused: false,
           };
         });
       } else {
         setCurrentPlayer((prev) => ({
           ...prev,
           isPaused: true,
+          isPlaying: false,
         }));
       }
     }
