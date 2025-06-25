@@ -7,8 +7,11 @@ const PageContainer = styled.div`
   padding-top: 50px;
   box-sizing: border-box;
   background-color: #000;
-  width: 100vw;
   height: 100vh;
+
+  &::-webkit-scrollbar {
+    display: none; /* 스크롤바 숨김 */
+  }
 `;
 
 const AuthLayout = ({ children }: { children: ReactNode }) => {

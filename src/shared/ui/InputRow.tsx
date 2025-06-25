@@ -30,6 +30,7 @@ const ConfirmButton = styled.button`
   background-color: ${(props) => props.theme.color.pink};
   font-weight: bold;
   height: 45px;
+  color: black;
 
   cursor: pointer;
 

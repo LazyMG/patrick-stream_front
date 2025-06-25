@@ -10,6 +10,7 @@ const Wrapper = styled.button`
   background-color: ${(props) => props.theme.color.pink};
   font-weight: bold;
   height: 45px;
+  color: black;
 
   cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
   pointer-events: ${(props) => (props.disabled ? "none" : "auto")};
