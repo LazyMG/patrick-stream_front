@@ -71,6 +71,7 @@ function YoutubeContainer() {
 
   // 전체 플레이어 관리
   const onPlayerReady: YouTubeProps["onReady"] = (event) => {
+    player?.destroy();
     setPlayer(event.target);
 
     // setPlayerInstance(event.target);
