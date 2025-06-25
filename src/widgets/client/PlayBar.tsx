@@ -401,55 +401,6 @@ const PlayBarContentUtilButton = styled.div`
   }
 `;
 
-function isMobileByUserAgent() {
-  const userAgent = navigator.userAgent; // 구형 브라우저 호환성을 위해 navigator.vendor, window.opera도 고려
-
-  // 모바일 기기를 나타내는 일반적인 키워드 목록
-  // 대소문자 구분을 없애기 위해 /i 플래그 사용
-  const mobileKeywords = [
-    "android",
-    "ipad",
-    "iphone",
-    "ipod",
-    "blackberry",
-    "blazer",
-    "compal",
-    "elaine",
-    "fennec",
-    "hiptop",
-    "iemobile",
-    "ip(hone|od)",
-    "iris",
-    "kindle",
-    "lge ",
-    "maemo",
-    "midp",
-    "mmp",
-    "netfront",
-    "opera m(ob|in)i",
-    "palm( os)?",
-    "phone",
-    "p(ixi|rim)",
-    "plucker",
-    "pocket",
-    "psp",
-    "series(4|6)0",
-    "symbian",
-    "treo",
-    "up\\.(browser|link)",
-    "vodafone",
-    "wap",
-    "windows ce",
-    "xda",
-    "xiino",
-    "mobi", // 'Mobile' 키워드는 대부분의 모바일 브라우저에 포함됩니다.
-  ];
-
-  const regex = new RegExp(mobileKeywords.join("|"), "i");
-
-  return regex.test(userAgent);
-}
-
 const PlayBar = () => {
   const player = useRecoilValue(playerInstanceAtom);
   const [timeline, setTimeline] = useState(0);
