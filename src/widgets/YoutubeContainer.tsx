@@ -71,7 +71,7 @@ function YoutubeContainer() {
 
   // 전체 플레이어 관리
   const onPlayerReady: YouTubeProps["onReady"] = (event) => {
-    player?.destroy();
+    // player?.destroy();
     setPlayer(event.target);
 
     // setPlayerInstance(event.target);
@@ -95,9 +95,10 @@ function YoutubeContainer() {
   };
 
   const onPlayerPlay: YouTubeProps["onPlay"] = (event) => {
-    if (isMobile && player) {
-      event.target.unMute();
-    }
+    alert(event.target.isMute());
+    // if (isMobile && player) {
+    //   event.target.unMute();
+    // }
   };
 
   const onStateChange: YouTubeProps["onStateChange"] = (event) => {
