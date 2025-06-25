@@ -101,7 +101,7 @@ function YoutubeContainer() {
 
   const onStateChange: YouTubeProps["onStateChange"] = (event) => {
     setytPlayer(event.target.getPlayerState());
-    // console.log("state2", event.target.getPlayerState());
+    console.log("state2", event.target.getPlayerState());
     if (event.target.getPlayerState() === 1) {
       setCurrentPlayer((prev) => {
         return {
@@ -116,6 +116,10 @@ function YoutubeContainer() {
           isPaused: true,
         };
       });
+    }
+
+    if (isMobile && event.target.getPlayerState() === 5) {
+      alert("test!");
     }
 
     if (currentPlayer.isRedirectPaused) {
