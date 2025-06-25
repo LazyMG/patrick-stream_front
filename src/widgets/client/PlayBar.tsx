@@ -456,25 +456,27 @@ const PlayBar = () => {
     }
   }, [player, ytId]);
 
-  useEffect(() => {
-    if (player) {
-      if (player.getPlayerState() === 1) {
-        setCurrentPlayer((prev) => {
-          return {
-            ...prev,
-            isPlaying: true,
-            isPaused: false,
-          };
-        });
-      } else {
-        setCurrentPlayer((prev) => ({
-          ...prev,
-          isPaused: true,
-          isPlaying: false,
-        }));
-      }
-    }
-  }, [setCurrentPlayer, player]);
+  // useEffect(() => {
+  //   if (player) {
+  //     if (player.getPlayerState() === 1) {
+  //       setCurrentPlayer((prev) => {
+  //         return {
+  //           ...prev,
+  //           isPlaying: true,
+  //           isPaused: false,
+  //           isLoading: false,
+  //         };
+  //       });
+  //     } else if (player.getPlayerState() === 2) {
+  //       setCurrentPlayer((prev) => ({
+  //         ...prev,
+  //         isPaused: true,
+  //         isPlaying: false,
+  //         isLoading: false,
+  //       }));
+  //     }
+  //   }
+  // }, [setCurrentPlayer, player]);
 
   // useEffect(() => {
   //   if (!isMobileByUserAgent()) return;
@@ -599,6 +601,7 @@ const PlayBar = () => {
         isRedirectPaused: false,
       }));
     } else {
+      console.log("current", currentPlayer);
       if (playingPlaylist && playingPlaylist.length !== 0) {
         playMusic(playingPlaylist[0]);
         setTime("00:00");

@@ -68,13 +68,12 @@ function YoutubeContainer() {
   // const setPlayerInstance = useSetRecoilState(playerInstanceAtom);
   const [player, setPlayer] = useRecoilState(playerInstanceAtom);
   const isMobile = isMobileByUserAgent();
+  const setCurrentPlayer = useSetRecoilState(currentPlayerState);
 
   // 전체 플레이어 관리
   const onPlayerReady: YouTubeProps["onReady"] = (event) => {
-    // player?.destroy();
     setPlayer(event.target);
 
-    // setPlayerInstance(event.target);
     // console.dir(event.target);
     // console.log("play!", player?.getPlayerState());
     // console.log("ready");
@@ -102,6 +101,22 @@ function YoutubeContainer() {
 
   const onStateChange: YouTubeProps["onStateChange"] = (event) => {
     setytPlayer(event.target.getPlayerState());
+    // console.log("state2", event.target.getPlayerState());
+    if (event.target.getPlayerState() === 1) {
+      setCurrentPlayer((prev) => {
+        return {
+          ...prev,
+          isPlaying: true,
+        };
+      });
+    } else if (event.target.getPlayerState() === 2) {
+      setCurrentPlayer((prev) => {
+        return {
+          ...prev,
+          isPaused: true,
+        };
+      });
+    }
 
     if (currentPlayer.isRedirectPaused) {
       setytPlayer(2);
