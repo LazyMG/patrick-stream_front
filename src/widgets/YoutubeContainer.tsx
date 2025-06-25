@@ -95,11 +95,9 @@ function YoutubeContainer() {
   };
 
   const onPlayerPlay: YouTubeProps["onPlay"] = (event) => {
-    alert("상태" + event.target.isMuted());
-
-    // if (isMobile && player) {
-    //   event.target.unMute();
-    // }
+    if (isMobile && event.target.isMuted()) {
+      event.target.unMute();
+    }
   };
 
   const onStateChange: YouTubeProps["onStateChange"] = (event) => {
