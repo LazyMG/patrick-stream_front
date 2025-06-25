@@ -46,10 +46,10 @@ function YoutubeContainer({ player, setPlayer }: IYoutubeContainer) {
   };
 
   const opts: YouTubeProps["opts"] = {
-    height: "0",
-    width: "0",
-    // height: "390",
-    // width: "640",
+    // height: "0",
+    // width: "0",
+    height: "390",
+    width: "320",
     playerVars: {
       // https://developers.google.com/youtube/player_parameters
       autoplay: 1,
