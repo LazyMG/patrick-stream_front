@@ -63,7 +63,7 @@ function isMobileByUserAgent() {
 
 function YoutubeContainer() {
   const ytId = useRecoilValue(ytIdState);
-  const setytPlayer = useSetRecoilState(ytPlayerState);
+  const [ytPlayer, setytPlayer] = useRecoilState(ytPlayerState);
   const currentPlayer = useRecoilValue(currentPlayerState);
   // const setPlayerInstance = useSetRecoilState(playerInstanceAtom);
   const [player, setPlayer] = useRecoilState(playerInstanceAtom);
@@ -100,6 +100,15 @@ function YoutubeContainer() {
   };
 
   const onStateChange: YouTubeProps["onStateChange"] = (event) => {
+    if (isMobile && ytPlayer === 3 && event.target.getPlayerState() === -1) {
+      setCurrentPlayer((prev) => {
+        return {
+          ...prev,
+          isPlaying: true,
+        };
+      });
+    }
+
     setytPlayer(event.target.getPlayerState());
     console.log("state2", event.target.getPlayerState());
     if (event.target.getPlayerState() === 1) {
@@ -118,10 +127,7 @@ function YoutubeContainer() {
       });
     }
 
-    alert("state" + event.target.getPlayerState());
-    if (isMobile && event.target.getPlayerState() === 5) {
-      // alert("test!");
-    }
+    // alert("state" + event.target.getPlayerState());
 
     if (currentPlayer.isRedirectPaused) {
       setytPlayer(2);
