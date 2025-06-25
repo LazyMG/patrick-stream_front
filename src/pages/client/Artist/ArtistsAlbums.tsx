@@ -18,6 +18,10 @@ const Title = styled.h1`
   font-size: 40px;
   font-weight: bold;
   color: #fff;
+
+  @media (max-width: 614px) {
+    margin-top: 40px;
+  }
 `;
 
 const Container = styled.div`
@@ -27,7 +31,10 @@ const Container = styled.div`
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   column-gap: 20px;
   row-gap: 20px;
-  padding-bottom: 100px;
+
+  @media (max-width: 614px) {
+    padding-bottom: 100px;
+  }
 `;
 
 const Item = styled.div`
