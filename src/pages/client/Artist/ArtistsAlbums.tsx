@@ -20,7 +20,7 @@ const Title = styled.h1`
   color: #fff;
 
   @media (max-width: 614px) {
-    margin-top: 40px;
+    margin-top: 10px;
   }
 `;
 
