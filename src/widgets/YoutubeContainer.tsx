@@ -74,8 +74,6 @@ function YoutubeContainer() {
     // player?.destroy();
     setPlayer(event.target);
 
-    alert("상태" + event.target.isMute());
-
     // setPlayerInstance(event.target);
     // console.dir(event.target);
     // console.log("play!", player?.getPlayerState());
@@ -97,6 +95,8 @@ function YoutubeContainer() {
   };
 
   const onPlayerPlay: YouTubeProps["onPlay"] = (event) => {
+    alert("상태" + event.target.isMuted());
+
     // if (isMobile && player) {
     //   event.target.unMute();
     // }
