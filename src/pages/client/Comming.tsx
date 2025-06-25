@@ -9,6 +9,10 @@ const Wrapper = styled.div`
   gap: 15px;
   justify-content: center;
   align-items: center;
+
+  @media (max-width: 614px) {
+    min-height: 60vh;
+  }
 `;
 
 const SubTitle = styled.span`
