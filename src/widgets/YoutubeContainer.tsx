@@ -100,6 +100,9 @@ function YoutubeContainer() {
   };
 
   const onStateChange: YouTubeProps["onStateChange"] = (event) => {
+    alert(
+      `player state ${event.target.getPlayerState()} | ytPlayer ${ytPlayer}`
+    );
     if (
       isMobile &&
       (ytPlayer === 3 || ytPlayer === 5) &&
