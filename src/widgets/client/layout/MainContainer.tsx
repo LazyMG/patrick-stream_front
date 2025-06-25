@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useEffect, useRef, useState } from "react";
+import { ReactNode, useCallback, useEffect, useRef } from "react";
 import styled, { css } from "styled-components";
 import PlayBar from "./../PlayBar";
 import YoutubeContainer from "../../YoutubeContainer";
@@ -263,7 +263,6 @@ const MainContainer = ({
 
   const wrapperRef = useRef<HTMLDivElement>(null);
 
-  const [player, setPlayer] = useState<YT.Player | null>(null);
   const background = useRecoilValue(backgroundState);
   const isPlayerOn = useRecoilValue(isPlayerOnState);
 
@@ -303,7 +302,7 @@ const MainContainer = ({
         <ConentContainer>{children}</ConentContainer>
         <Footer />
       </Content>
-      {isPlayerOn && <PlayBar player={player} setPlayer={setPlayer} />}
+      {isPlayerOn && <PlayBar />}
       {globalToastConfig &&
         globalToastConfig.toasts.length !== 0 &&
         globalToastConfig.toasts.map((item) => (
@@ -313,7 +312,7 @@ const MainContainer = ({
             key={item.toastKey}
           />
         ))}
-      <YoutubeContainer player={player} setPlayer={setPlayer} />
+      <YoutubeContainer />
     </Wrapper>
   );
 };
