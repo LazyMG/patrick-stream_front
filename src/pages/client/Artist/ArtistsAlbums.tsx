@@ -27,6 +27,7 @@ const Container = styled.div`
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   column-gap: 20px;
   row-gap: 20px;
+  padding-bottom: 100px;
 `;
 
 const Item = styled.div`
