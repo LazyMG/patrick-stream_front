@@ -100,9 +100,9 @@ function YoutubeContainer() {
   };
 
   const onStateChange: YouTubeProps["onStateChange"] = (event) => {
-    alert(
-      `player state ${event.target.getPlayerState()} | ytPlayer ${ytPlayer}`
-    );
+    // alert(
+    //   `player state ${event.target.getPlayerState()} | ytPlayer ${ytPlayer}`
+    // );
     if (
       isMobile &&
       (ytPlayer === 3 || ytPlayer === 5) &&
@@ -113,6 +113,7 @@ function YoutubeContainer() {
         return {
           ...prev,
           isPaused: true,
+          isPlaying: false,
         };
       });
     } else {
