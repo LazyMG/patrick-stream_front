@@ -32,3 +32,9 @@ export const isPlayerOnState = atom<boolean>({
   key: "isPlayerOnState",
   default: false,
 });
+
+export const playerInstanceAtom = atom<YT.Player | null>({
+  key: "playerInstanceAtom",
+  default: null,
+  dangerouslyAllowMutability: true, // YouTube Player 객체는 mutable하므로 필수
+});
