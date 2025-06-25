@@ -11,7 +11,7 @@ interface PlayBarTimelineProps {
 const Wrapper = styled.input<PlayBarTimelineProps>`
   -webkit-appearance: none;
   position: absolute;
-  top: 2px;
+  top: -2px;
   left: -2px;
   width: 100%;
   height: 3px;
