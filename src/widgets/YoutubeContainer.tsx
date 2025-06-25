@@ -104,23 +104,24 @@ function YoutubeContainer() {
       setytPlayer(2);
     } else {
       setytPlayer(event.target.getPlayerState());
+
+      if (event.target.getPlayerState() === 1) {
+        setCurrentPlayer((prev) => {
+          return {
+            ...prev,
+            isPlaying: true,
+          };
+        });
+      } else if (event.target.getPlayerState() === 2) {
+        setCurrentPlayer((prev) => {
+          return {
+            ...prev,
+            isPaused: true,
+          };
+        });
+      }
     }
     console.log("state2", event.target.getPlayerState());
-    if (event.target.getPlayerState() === 1) {
-      setCurrentPlayer((prev) => {
-        return {
-          ...prev,
-          isPlaying: true,
-        };
-      });
-    } else if (event.target.getPlayerState() === 2) {
-      setCurrentPlayer((prev) => {
-        return {
-          ...prev,
-          isPaused: true,
-        };
-      });
-    }
 
     // alert("state" + event.target.getPlayerState());
 
