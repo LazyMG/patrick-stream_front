@@ -95,7 +95,7 @@ function YoutubeContainer() {
   };
 
   const onPlayerPlay: YouTubeProps["onPlay"] = (event) => {
-    alert(event.target.isMute());
+    alert("상태" + event.target.isMute());
     // if (isMobile && player) {
     //   event.target.unMute();
     // }
