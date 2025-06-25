@@ -52,7 +52,7 @@ function YoutubeContainer({ player, setPlayer }: IYoutubeContainer) {
     width: "320",
     playerVars: {
       autoplay: 1,
-      // mute: 1,
+      mute: 1,
       playsinline: 1,
     },
   };
@@ -65,15 +65,15 @@ function YoutubeContainer({ player, setPlayer }: IYoutubeContainer) {
         onReady={onPlayerReady}
         onPlay={onPlayerPlay}
         onStateChange={onStateChange}
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: 1,
-          height: 1,
-          opacity: 0,
-          pointerEvents: "none",
-        }}
+        // style={{
+        //   position: "absolute",
+        //   top: 0,
+        //   left: 0,
+        //   width: 1,
+        //   height: 1,
+        //   opacity: 0,
+        //   pointerEvents: "none",
+        // }}
       />
     </>
   );
