@@ -26,6 +26,7 @@ import { useToast } from "../../shared/hooks/useToast";
 
 const Wrapper = styled.div`
   width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   gap: 70px;
