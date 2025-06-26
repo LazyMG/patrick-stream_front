@@ -18,7 +18,8 @@ const Wrapper = styled.div<{ $isPlayerOn: boolean }>`
   position: fixed;
   left: 0;
   bottom: ${(props) => (props.$isPlayerOn ? `100px` : "20px")};
-  display: block;
+  display: flex;
+  justify-content: center;
 
   animation: ${slideUp} 0.5s ease-out forwards;
 
