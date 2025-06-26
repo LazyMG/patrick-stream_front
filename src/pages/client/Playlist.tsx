@@ -30,14 +30,13 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 70px;
-  overflow: hidden;
 
   @media (max-width: 614px) {
     gap: 30px;
     padding-bottom: 30px;
   }
 
-  background-color: red;
+  /* background-color: red; */
 `;
 
 const InfoContainer = styled.div`

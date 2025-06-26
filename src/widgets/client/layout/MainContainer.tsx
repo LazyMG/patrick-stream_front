@@ -82,9 +82,7 @@ const Content = styled.div<{ $isSideBarChange: boolean }>`
     css`
       width: calc(100% - 78px) !important;
       padding-left: 78px;
-    `}
-
-  background-color: blue;
+    `}/* background-color: blue; */
 `;
 
 const ConentContainer = styled.div`
@@ -304,7 +302,7 @@ const MainContainer = ({
         ))}
       <Content $isSideBarChange={isSideBarChange}>
         <ConentContainer>{children}</ConentContainer>
-        {isPlayerOn && <Footer />}
+        <Footer />
       </Content>
       {isPlayerOn && <PlayBar />}
       {globalToastConfig &&
