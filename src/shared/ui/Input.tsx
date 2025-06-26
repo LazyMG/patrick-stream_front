@@ -12,7 +12,7 @@ const Wrapper = styled.input`
   color: #fff;
 
   height: 30px;
-  font-size: 15px;
+  font-size: 16px;
 
   &:focus {
     border: 2px solid #dbdbdb;
