@@ -13,9 +13,7 @@ const Wrapper = styled.div`
   flex-direction: column;
   overflow-y: hidden;
 
-  /* background-color: #000; */
-
-  background-color: blue;
+  background-color: #000;
 
   &::-webkit-scrollbar {
     display: none;

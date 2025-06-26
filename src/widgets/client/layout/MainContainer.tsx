@@ -69,6 +69,7 @@ const Wrapper = styled.div<{
 
 const Content = styled.div<{ $isSideBarChange: boolean }>`
   width: 100%;
+
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -88,6 +89,8 @@ const ConentContainer = styled.div`
   width: 100%;
   height: 100%;
   margin-top: 100px;
+
+  overflow-y: hidden;
 `;
 
 const Footer = styled.div`

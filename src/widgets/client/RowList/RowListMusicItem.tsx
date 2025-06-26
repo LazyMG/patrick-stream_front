@@ -62,6 +62,7 @@ const Wrapper = styled.div<{
   align-items: center;
 
   padding: 10px 2px;
+  box-sizing: border-box;
 
   position: relative;
 
@@ -91,6 +92,7 @@ const Wrapper = styled.div<{
     display: flex;
     gap:8px;
   }
+
 `;
 
 const Image = styled.div<{ $img: string }>`

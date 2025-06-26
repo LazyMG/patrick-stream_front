@@ -30,6 +30,7 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 70px;
+  /* overflow: hidden; */
 
   @media (max-width: 614px) {
     gap: 30px;
@@ -102,7 +103,7 @@ const InfoContent = styled.p`
 `;
 
 const InfoDescription = styled.p`
-  max-width: 950px;
+  max-width: 900px;
   word-break: break-word; /* 긴 단어가 있을 때 강제로 줄바꿈 */
   overflow-wrap: break-word; /* 컨테이너를 벗어나지 않도록 줄바꿈 */
   white-space: normal; /* 기본 줄바꿈 규칙을 따르도록 설정 */
