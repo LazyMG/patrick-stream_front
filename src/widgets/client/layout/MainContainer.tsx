@@ -30,7 +30,7 @@ const Wrapper = styled.div<{
 
   /* min-height: 100vh; */
   flex: 1;
-  height: 100%;
+  height: 100vh;
   box-sizing: border-box;
 
   background-attachment: local;
@@ -301,12 +301,12 @@ const MainContainer = ({
       $backImg={background?.src}
       $isSideBarChange={isSideBarChange}
     >
-      {/* {background &&
+      {background &&
         (background.type === "blur" ? (
           <BlurBackImage $backImg={background.src} />
         ) : (
           <SimpleBackImage $backImg={background.src} />
-        ))} */}
+        ))}
       <Content $isSideBarChange={isSideBarChange}>
         <ConentContainer>{children}</ConentContainer>
         <Footer />
