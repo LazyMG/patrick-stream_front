@@ -83,6 +83,8 @@ const Content = styled.div<{ $isSideBarChange: boolean }>`
       width: calc(100% - 78px) !important;
       padding-left: 78px;
     `}
+
+  background-color: blue;
 `;
 
 const ConentContainer = styled.div`
