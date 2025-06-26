@@ -27,7 +27,7 @@ const Layout = () => {
   const [isOverlayOpen, setOverlayOpen] = useState(false);
 
   const handleScroll = (scrollTop: number) => {
-    if (scrollTop > 30) {
+    if (scrollTop > 20) {
       setNavShow(true);
     } else {
       setNavShow(false);
