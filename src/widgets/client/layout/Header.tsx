@@ -45,13 +45,6 @@ const IconContainer = styled.div<{
     margin-left: 10px;
   }
 
-  span {
-    margin-left: 4px;
-    font-size: 18px;
-    font-weight: bold;
-    line-height: -2px;
-  }
-
   @media (max-width: 940px) {
     background-color: transparent;
     box-shadow: none;
@@ -69,6 +62,17 @@ const IconContainer = styled.div<{
     background-color: transparent;
     padding-left: 7%;
   }
+`;
+
+const Title = styled.span`
+  margin-left: 4px;
+  font-size: 18px;
+  font-weight: bold;
+  line-height: -2px;
+
+  font-family: "Chewy", system-ui !important;
+  font-weight: 400;
+  font-style: normal;
 `;
 
 const InfoButton = styled.div`
@@ -249,9 +253,9 @@ const Header = ({ $navShow, onHamburgerClick, isSideBarChange }: IHeader) => {
           </svg>
         </MenuButton>
         <LogoComponent onClick={() => navigate("/")} />
-        <span>
+        <Title>
           Patrick <br /> Stream
-        </span>
+        </Title>
         {!isSideBarChange && (
           <InfoButton onClick={() => navigate("/info")}>i</InfoButton>
         )}
