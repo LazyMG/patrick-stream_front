@@ -11,7 +11,7 @@ const Wrapper = styled.div`
   display: flex;
   position: relative;
   flex-direction: column;
-  overflow-y: hidden;
+  overflow-y: scroll;
 
   background-color: #000;
 
