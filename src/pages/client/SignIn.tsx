@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import { debounce } from "lodash";
 import { useSetRecoilState } from "recoil";
 import { currentPlayerState } from "../../app/entities/player/atom";
+import { useClearPlayer } from "../../shared/hooks/useClearPlayer";
 
 const Form = styled.form`
   display: flex;
@@ -42,18 +43,20 @@ const SignIn = () => {
   }>({ email: "", state: false });
   const [isLoading, setIsLoading] = useState(false);
   const setCurrentPlayer = useSetRecoilState(currentPlayerState);
+  const clearPlayer = useClearPlayer();
 
   useEffect(() => {
-    setCurrentPlayer((prev) => {
-      if (!prev) return prev;
-      if (prev.isPaused) {
-        return {
-          ...prev,
-          isRedirectPaused: true,
-        };
-      } else return prev;
-    });
-  });
+    // setCurrentPlayer((prev) => {
+    //   if (!prev) return prev;
+    //   if (prev.isPaused) {
+    //     return {
+    //       ...prev,
+    //       isRedirectPaused: true,
+    //     };
+    //   } else return prev;
+    // });
+    clearPlayer();
+  }, []);
 
   const onValid: SubmitHandler<LoginFormValues> = async (data) => {
     if (isLoading) return;

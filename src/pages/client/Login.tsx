@@ -11,6 +11,7 @@ import { userState } from "../../app/entities/user/atom";
 import { googleLoginUrl } from "../../shared/lib/constant";
 import { useEffect, useState } from "react";
 import { currentPlayerState } from "../../app/entities/player/atom";
+import { useClearPlayer } from "../../shared/hooks/useClearPlayer";
 
 const Form = styled.form`
   display: flex;
@@ -35,18 +36,20 @@ const Login = () => {
   const setUser = useSetRecoilState(userState);
   const [isLoading, setIsLoading] = useState(false);
   const setCurrentPlayer = useSetRecoilState(currentPlayerState);
+  const clearPlayer = useClearPlayer();
 
   useEffect(() => {
-    setCurrentPlayer((prev) => {
-      if (!prev) return prev;
-      if (prev.isPaused) {
-        return {
-          ...prev,
-          isRedirectPaused: true,
-        };
-      } else return prev;
-    });
-  });
+    // setCurrentPlayer((prev) => {
+    //   if (!prev) return prev;
+    //   if (prev.isPaused) {
+    //     return {
+    //       ...prev,
+    //       isRedirectPaused: true,
+    //     };
+    //   } else return prev;
+    // });
+    clearPlayer();
+  }, [clearPlayer]);
 
   const onValid: SubmitHandler<LoginFormValues> = async (data) => {
     if (isLoading) return;

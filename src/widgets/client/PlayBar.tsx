@@ -448,7 +448,7 @@ const PlayBar = () => {
   // 재생 상태 1 이거나 일시 정지 상태 2 일 때 음악이 바뀌면 타임라인 초기화
   useEffect(() => {
     if (
-      player &&
+      player !== null &&
       (player.getPlayerState() === 1 || player.getPlayerState() === 2)
     ) {
       player.stopVideo();
@@ -457,6 +457,22 @@ const PlayBar = () => {
       player.playVideo();
     }
   }, [player, ytId]);
+
+  // useEffect(() => {
+  //   if (
+  //     player &&
+  //     typeof player.getPlayerState === "function" &&
+  //     player.getIframe() // iframe이 attach된 상태인지 확인
+  //   ) {
+  //     const state = player.getPlayerState();
+  //     if (state === 1 || state === 2) {
+  //       player.stopVideo();
+  //       setTime("00:00");
+  //       setTimeline(0);
+  //       player.playVideo();
+  //     }
+  //   }
+  // }, [player, ytId]);
 
   useEffect(() => {
     if (isMobileIssue) {
