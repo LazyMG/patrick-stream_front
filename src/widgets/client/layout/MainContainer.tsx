@@ -19,6 +19,8 @@ const Wrapper = styled.div<{
   $backImg?: string | null;
   $isSideBarChange: boolean;
 }>`
+  display: flex;
+  flex-direction: column;
   margin-left: 250.5px;
   padding-left: 250.5px;
   background: ${(props) =>
@@ -26,7 +28,10 @@ const Wrapper = styled.div<{
       ? `none`
       : `radial-gradient(circle at top left, #281a29 3%, #0a0a0a 20%)`};
 
-  min-height: 100vh;
+  /* min-height: 100vh; */
+  flex: 1;
+  height: 0;
+  box-sizing: border-box;
 
   background-attachment: local;
 
@@ -83,15 +88,12 @@ const Content = styled.div<{ $isSideBarChange: boolean }>`
     css`
       width: calc(100% - 78px) !important;
       padding-left: 78px;
-    `}/* background-color: blue; */
+    `}
 `;
 
 const ConentContainer = styled.div`
   width: 100%;
-  height: 100%;
   margin-top: 100px;
-
-  overflow-y: hidden;
 `;
 
 const Footer = styled.div`
