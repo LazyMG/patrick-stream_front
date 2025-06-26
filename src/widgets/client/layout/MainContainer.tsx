@@ -23,14 +23,14 @@ const Wrapper = styled.div<{
   flex-direction: column;
   margin-left: 250.5px;
   padding-left: 250.5px;
-  background: ${(props) =>
+  /* background: ${(props) =>
     props?.$backImg
       ? `none`
-      : `radial-gradient(circle at top left, #281a29 3%, #0a0a0a 20%)`};
+      : `radial-gradient(circle at top left, #281a29 3%, #0a0a0a 20%)`}; */
 
   /* min-height: 100vh; */
   flex: 1;
-  height: 0;
+  height: 100%;
   box-sizing: border-box;
 
   background-attachment: local;
@@ -68,9 +68,11 @@ const Wrapper = styled.div<{
   @media (max-width: 614px) {
     margin-left: 0px;
     padding: 0 6%;
-    background: none;
+    /* background: none; */
     -webkit-overflow-scrolling: touch;
   }
+
+  background-color: blue !important;
 `;
 
 const Content = styled.div<{ $isSideBarChange: boolean }>`
@@ -299,12 +301,12 @@ const MainContainer = ({
       $backImg={background?.src}
       $isSideBarChange={isSideBarChange}
     >
-      {background &&
+      {/* {background &&
         (background.type === "blur" ? (
           <BlurBackImage $backImg={background.src} />
         ) : (
           <SimpleBackImage $backImg={background.src} />
-        ))}
+        ))} */}
       <Content $isSideBarChange={isSideBarChange}>
         <ConentContainer>{children}</ConentContainer>
         <Footer />
