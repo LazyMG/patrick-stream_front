@@ -64,6 +64,7 @@ const Wrapper = styled.div<{
     margin-left: 0px;
     padding: 0 6%;
     background: none;
+    -webkit-overflow-scrolling: touch;
   }
 `;
 
