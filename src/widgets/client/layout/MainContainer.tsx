@@ -302,7 +302,7 @@ const MainContainer = ({
         ))}
       <Content $isSideBarChange={isSideBarChange}>
         <ConentContainer>{children}</ConentContainer>
-        <Footer />
+        {isPlayerOn && <Footer />}
       </Content>
       {isPlayerOn && <PlayBar />}
       {globalToastConfig &&
