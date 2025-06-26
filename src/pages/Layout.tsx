@@ -13,10 +13,12 @@ const Wrapper = styled.div`
   flex-direction: column;
   overflow-y: auto;
 
-  background-color: #000;
+  /* background-color: #000; */
+
+  background-color: blue;
 
   &::-webkit-scrollbar {
-    display: none; /* 스크롤바 숨김 */
+    display: none;
   }
 `;
 

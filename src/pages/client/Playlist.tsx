@@ -34,6 +34,8 @@ const Wrapper = styled.div`
     gap: 30px;
     padding-bottom: 30px;
   }
+
+  background-color: red;
 `;
 
 const InfoContainer = styled.div`
