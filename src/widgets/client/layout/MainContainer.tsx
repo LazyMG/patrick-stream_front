@@ -89,8 +89,6 @@ const ConentContainer = styled.div`
   width: 100%;
   height: 100%;
   margin-top: 100px;
-
-  overflow-y: hidden;
 `;
 
 const Footer = styled.div`
