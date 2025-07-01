@@ -22,6 +22,7 @@ const Wrapper = styled.div<{
   width: 100%;
   padding: 0 10px;
   box-sizing: border-box;
+  overflow-y: auto;
 
   ${(props) => (props.$isPlayerOn ? `margin-bottom: 80px;` : "")}
 
@@ -38,11 +39,6 @@ const Wrapper = styled.div<{
         display: none;
       }
     `}
-
-  overflow-y: auto;
-
-  overscroll-behavior-y: none;
-  touch-action: pan-y;
 `;
 
 const CreateButton = styled.div`
@@ -75,10 +71,15 @@ const PlaylistView = styled.div`
   flex-direction: column;
   gap: 10px;
   width: 100%;
-  min-height: 50%;
+  /* min-height: 50%; */
   box-sizing: border-box;
 
   overflow-y: auto;
+
+  overscroll-behavior-y: none;
+  touch-action: pan-y;
+
+  min-height: 0;
 `;
 
 const pulseKeyframes = keyframes`
