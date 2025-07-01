@@ -23,8 +23,6 @@ const Wrapper = styled.div<{
   padding: 0 10px;
   box-sizing: border-box;
 
-  /* overflow: hidden; */
-
   ${(props) => (props.$isPlayerOn ? `margin-bottom: 80px;` : "")}
 
   ${(props) =>
@@ -41,20 +39,16 @@ const Wrapper = styled.div<{
       }
     `}
 
-    background-color:red;
+  overflow-y: auto;
 
-    // 🌟🌟🌟 남은 공간을 모두 차지하도록 flex-grow 추가 🌟🌟🌟
-  flex-grow: 1;
+  overscroll-behavior-y: none;
+  touch-action: pan-y;
+
+  /* flex-grow: 1;
   flex-shrink: 1;
   flex-basis: auto;
   
-  // 🌟🌟🌟 이 Wrapper가 스크롤 컨테이너 역할을 합니다.
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  
-  // iOS에서 스크롤이 끝에 도달했을 때 아래로 이벤트 전파를 막음
-  overscroll-behavior-y: none;
-  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch; */
 `;
 
 const CreateButton = styled.div`
@@ -92,15 +86,13 @@ const PlaylistView = styled.div`
 
   overflow-y: auto;
 
-  background-color: blue;
-
-  // 🌟🌟🌟 이 부분이 가장 중요합니다. 🌟🌟🌟
-  min-height: 0; // Flexbox 아이템의 최소 크기를 0으로 재정의
+  //
+  /* min-height: 0;
 
   box-sizing: border-box;
 
   flex-grow: 1;
-  -webkit-overflow-scrolling: touch;
+  -webkit-overflow-scrolling: touch; */
 `;
 
 const pulseKeyframes = keyframes`
