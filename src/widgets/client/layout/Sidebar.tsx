@@ -51,6 +51,8 @@ const Wrapper = styled.div<{
       css`
         display: none;
       `}
+    //
+      touch-action: none;
   }
 `;
 
