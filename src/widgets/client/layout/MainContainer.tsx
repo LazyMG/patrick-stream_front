@@ -80,6 +80,12 @@ const Wrapper = styled.div<{
 }>`
   display: flex;
   flex-direction: column; /* 내부 Content를 수직으로 배치하기 위함 */
+  position: relative;
+
+  background: ${(props) =>
+    props?.$backImg
+      ? `none`
+      : `radial-gradient(circle at top left, #281a29 3%, #0a0a0a 20%)`};
 
   /* 부모(Layout Wrapper)의 남은 공간을 모두 차지하도록 설정 */
   flex-grow: 1; /* Layout Wrapper가 flex-direction: column;일 때 남은 수직 공간을 차지 */
@@ -96,9 +102,6 @@ const Wrapper = styled.div<{
 
   background-attachment: local;
   position: relative;
-
-  /* 스크롤바 숨김도 제거 (Content에서 할 예정) */
-  /* &::-webkit-scrollbar { display: none; } */
 
   ${(props) =>
     props.$isSideBarChange &&
@@ -126,8 +129,6 @@ const Wrapper = styled.div<{
     padding: 0 6%;
     /* -webkit-overflow-scrolling: touch; (여기서는 필요 없음, Content로 이동) */
   }
-
-  background-color: blue !important; /* 디버깅용 */
 `;
 
 // const Content = styled.div<{ $isSideBarChange: boolean }>`
@@ -154,7 +155,6 @@ const Content = styled.div<{ $isSideBarChange: boolean }>`
 
   display: flex;
   flex-direction: column;
-  /* justify-content: center; */ // 이 속성은 콘텐츠를 중앙 정렬하여 스크롤 시작 위치에 영향을 줄 수 있습니다. 일단 제거해보고 테스트해보세요.
 
   gap: 60px;
   color: white;
@@ -183,8 +183,6 @@ const Content = styled.div<{ $isSideBarChange: boolean }>`
       padding-left: 78px;
     `}
 
-  /* 디버깅용 min-height: 200vh;는 이제 필요 없습니다. */
-  background-color: rgba(255, 0, 0, 0.3); /* 디버깅용 배경색은 유지 */
   padding-top: 100px;
 `;
 
@@ -402,7 +400,6 @@ const MainContainer = ({
         ) : (
           <SimpleBackImage $backImg={background.src} />
         ))}
-
       <Content $isSideBarChange={isSideBarChange} ref={wrapperRef}>
         <ConentContainer>{children}</ConentContainer>
         <Footer />
