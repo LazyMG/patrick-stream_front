@@ -37,6 +37,8 @@ const ContentContainer = styled.div`
     flex-direction: column;
     gap: 30px;
   }
+
+  background-color: blue;
 `;
 
 const AlbumInfo = styled.div`
@@ -164,6 +166,8 @@ const AlbumListContainer = styled.div`
     width: 100%;
     margin-left: 0;
   }
+
+  background-color: red;
 `;
 
 const pulseKeyframes = keyframes`

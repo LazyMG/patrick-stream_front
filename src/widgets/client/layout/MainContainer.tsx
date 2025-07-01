@@ -98,6 +98,10 @@ const ConentContainer = styled.div`
 const Footer = styled.div`
   width: 100%;
   height: 80px;
+
+  @media (max-width: 614px) {
+    height: 20px;
+  }
 `;
 
 const BlurBackImage = styled.div<{ $backImg: string }>`
