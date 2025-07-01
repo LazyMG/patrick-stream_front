@@ -56,6 +56,11 @@ const ExactResultImage = styled.div<{ $imgUrl: string }>`
   border-radius: 50%;
 
   cursor: pointer;
+
+  @media (max-width: 614px) {
+    width: 100px;
+    height: 100px;
+  }
 `;
 
 const ExactResultInfo = styled.div`
