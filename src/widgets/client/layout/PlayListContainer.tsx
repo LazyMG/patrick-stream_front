@@ -94,12 +94,13 @@ const PlaylistView = styled.div`
 
   background-color: blue;
 
+  // 🌟🌟🌟 이 부분이 가장 중요합니다. 🌟🌟🌟
+  min-height: 0; // Flexbox 아이템의 최소 크기를 0으로 재정의
+
+  box-sizing: border-box;
+
   flex-grow: 1;
   -webkit-overflow-scrolling: touch;
-
-  @media (max-width: 614px) {
-    min-height: 100px;
-  }
 `;
 
 const pulseKeyframes = keyframes`
