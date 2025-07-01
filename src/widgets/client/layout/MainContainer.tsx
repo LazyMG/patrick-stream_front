@@ -185,11 +185,12 @@ const Content = styled.div<{ $isSideBarChange: boolean }>`
 
   /* 디버깅용 min-height: 200vh;는 이제 필요 없습니다. */
   background-color: rgba(255, 0, 0, 0.3); /* 디버깅용 배경색은 유지 */
+  padding-top: 100px;
 `;
 
 const ConentContainer = styled.div`
   width: 100%;
-  margin-top: 100px;
+  /* margin-top: 100px; */
 `;
 
 const Footer = styled.div`
