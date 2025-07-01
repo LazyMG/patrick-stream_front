@@ -144,7 +144,7 @@ function YoutubeContainer() {
     width: "320",
     playerVars: {
       autoplay: 1,
-      // mute: 1,
+      mute: 1,
       playsinline: 1,
     },
   };
