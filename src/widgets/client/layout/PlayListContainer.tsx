@@ -98,7 +98,7 @@ const PlaylistView = styled.div`
   -webkit-overflow-scrolling: touch;
 
   @media (max-width: 614px) {
-    min-height: fit-content;
+    min-height: 100px;
   }
 `;
 
