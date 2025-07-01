@@ -220,6 +220,9 @@ const Overlay = styled.div<{ $visible: boolean }>`
   pointer-events: ${({ $visible }) => ($visible ? "auto" : "none")};
 
   transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+
+  //
+  touch-action: none;
 `;
 
 type SidebarProps = {

@@ -40,6 +40,8 @@ const Wrapper = styled.div<{
         display: none;
       }
     `}
+
+    background-color:red;
 `;
 
 const CreateButton = styled.div`
@@ -76,6 +78,8 @@ const PlaylistView = styled.div`
   box-sizing: border-box;
 
   overflow-y: auto;
+
+  background-color: blue;
 `;
 
 const pulseKeyframes = keyframes`
