@@ -7,7 +7,8 @@ import { useEffect, useState } from "react";
 
 const Wrapper = styled.div`
   width: 100vw;
-  height: 100vh;
+  height: 100vh; /* 폴백 */
+  height: 100dvh; /* iOS Safari 툴바를 고려한 동적 뷰포트 높이 */
   display: flex;
   position: relative;
   flex-direction: column;
