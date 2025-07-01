@@ -37,8 +37,6 @@ const ContentContainer = styled.div`
     flex-direction: column;
     gap: 30px;
   }
-
-  background-color: blue;
 `;
 
 const AlbumInfo = styled.div`
@@ -170,8 +168,6 @@ const AlbumListContainer = styled.div`
   @media (max-width: 614px) {
     min-height: 200px;
   }
-
-  background-color: red;
 `;
 
 const pulseKeyframes = keyframes`
