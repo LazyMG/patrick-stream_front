@@ -96,6 +96,10 @@ const PlaylistView = styled.div`
 
   flex-grow: 1;
   -webkit-overflow-scrolling: touch;
+
+  @media (max-width: 614px) {
+    min-height: fit-content;
+  }
 `;
 
 const pulseKeyframes = keyframes`
