@@ -51,8 +51,7 @@ const Wrapper = styled.div<{
       css`
         display: none;
       `}
-    //
-      touch-action: none;
+    touch-action: none;
   }
 `;
 
@@ -223,7 +222,6 @@ const Overlay = styled.div<{ $visible: boolean }>`
 
   transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
 
-  //
   touch-action: none;
 `;
 

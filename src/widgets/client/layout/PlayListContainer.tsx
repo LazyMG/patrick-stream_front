@@ -43,12 +43,6 @@ const Wrapper = styled.div<{
 
   overscroll-behavior-y: none;
   touch-action: pan-y;
-
-  /* flex-grow: 1;
-  flex-shrink: 1;
-  flex-basis: auto;
-  
-  -webkit-overflow-scrolling: touch; */
 `;
 
 const CreateButton = styled.div`
@@ -85,14 +79,6 @@ const PlaylistView = styled.div`
   box-sizing: border-box;
 
   overflow-y: auto;
-
-  //
-  /* min-height: 0;
-
-  box-sizing: border-box;
-
-  flex-grow: 1;
-  -webkit-overflow-scrolling: touch; */
 `;
 
 const pulseKeyframes = keyframes`
