@@ -53,7 +53,7 @@ const Wrapper = styled.div<{
   -webkit-overflow-scrolling: touch;
   
   // iOS에서 스크롤이 끝에 도달했을 때 아래로 이벤트 전파를 막음
-  overscroll-behavior-y: contain;
+  overscroll-behavior-y: none;
   touch-action: pan-y;
 `;
 
