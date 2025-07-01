@@ -39,6 +39,10 @@ const ExactResultItem = styled.div`
   gap: 20px;
   padding: 15px 10px;
   z-index: 1;
+
+  a {
+    width: fit-content;
+  }
 `;
 
 const ExactResultImage = styled.div<{ $imgUrl: string }>`
