@@ -167,6 +167,10 @@ const AlbumListContainer = styled.div`
     margin-left: 0;
   }
 
+  @media (max-width: 614px) {
+    min-height: 200px;
+  }
+
   background-color: red;
 `;
 
