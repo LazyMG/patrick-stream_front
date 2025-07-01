@@ -15,43 +15,99 @@ import ToastContainer from "./../ToastContainer";
 import { useLoginUser } from "../../../shared/hooks/useLoginUser";
 import { useToast } from "../../../shared/hooks/useToast";
 
+// const Wrapper = styled.div<{
+//   $backImg?: string | null;
+//   $isSideBarChange: boolean;
+// }>`
+//   display: flex;
+//   flex-direction: column;
+//   margin-left: 250.5px;
+//   padding-left: 250.5px;
+//   /* background: ${(props) =>
+//     props?.$backImg
+//       ? `none`
+//       : `radial-gradient(circle at top left, #281a29 3%, #0a0a0a 20%)`}; */
+
+//   /* min-height: 100vh; */
+//   height: 100vh;
+//   box-sizing: border-box;
+
+//   background-attachment: local;
+
+//   position: relative;
+
+//   overflow-y: scroll;
+
+//   &::-webkit-scrollbar {
+//     display: none;
+//   }
+
+//   ${(props) =>
+//     props.$isSideBarChange &&
+//     css`
+//       margin-left: 0px;
+
+//       background: none;
+//     `}
+
+//   /* 화면 너비에 따라 패딩을 다르게 설정 */
+//   @media (max-width: 2800px) {
+//     padding: 0 18%;
+//   }
+
+//   @media (max-width: 1800px) {
+//     padding: 0 8%;
+//   }
+
+//   @media (max-width: 940px) {
+//     margin-left: 0px;
+//     background: none;
+//   }
+
+//   @media (max-width: 614px) {
+//     margin-left: 0px;
+//     padding: 0 6%;
+//     /* background: none; */
+//     -webkit-overflow-scrolling: touch;
+//   }
+
+//   background-color: blue !important;
+// `;
+
 const Wrapper = styled.div<{
   $backImg?: string | null;
   $isSideBarChange: boolean;
 }>`
   display: flex;
-  flex-direction: column;
-  margin-left: 250.5px;
-  padding-left: 250.5px;
-  /* background: ${(props) =>
-    props?.$backImg
-      ? `none`
-      : `radial-gradient(circle at top left, #281a29 3%, #0a0a0a 20%)`}; */
+  flex-direction: column; /* 내부 Content를 수직으로 배치하기 위함 */
 
-  /* min-height: 100vh; */
-  flex: 1;
-  height: 100vh;
-  box-sizing: border-box;
+  /* 부모(Layout Wrapper)의 남은 공간을 모두 차지하도록 설정 */
+  flex-grow: 1; /* Layout Wrapper가 flex-direction: column;일 때 남은 수직 공간을 차지 */
+  flex-shrink: 0; /* 공간이 부족해도 줄어들지 않도록 */
+  flex-basis: auto; /* 기본 크기 설정 */
+
+  /* 기존 margin-left 유지 (Sidebar에 의해 밀리는 공간) */
+  margin-left: 250.5px;
+  padding-left: 250.5px; /* 아마도 padding도 Sidebar 영향일 듯 */
+
+  /* 이전 height: 100vh; 및 overflow-y: scroll; 제거! */
+  /* 이 요소는 이제 스크롤되지 않습니다. */
+  overflow-y: hidden; /* 혹시 모를 내부 콘텐츠 넘침으로 인한 Wrapper 스크롤 방지 */
 
   background-attachment: local;
-
   position: relative;
 
-  overflow-y: scroll;
-
-  &::-webkit-scrollbar {
-    display: none;
-  }
+  /* 스크롤바 숨김도 제거 (Content에서 할 예정) */
+  /* &::-webkit-scrollbar { display: none; } */
 
   ${(props) =>
     props.$isSideBarChange &&
     css`
       margin-left: 0px;
-
       background: none;
     `}
 
-  /* 화면 너비에 따라 패딩을 다르게 설정 */
+  /* @media 쿼리 유지 */
   @media (max-width: 2800px) {
     padding: 0 18%;
   }
@@ -68,22 +124,57 @@ const Wrapper = styled.div<{
   @media (max-width: 614px) {
     margin-left: 0px;
     padding: 0 6%;
-    /* background: none; */
-    -webkit-overflow-scrolling: touch;
+    /* -webkit-overflow-scrolling: touch; (여기서는 필요 없음, Content로 이동) */
   }
 
-  background-color: blue !important;
+  background-color: blue !important; /* 디버깅용 */
 `;
 
+// const Content = styled.div<{ $isSideBarChange: boolean }>`
+//   width: 100%;
+
+//   display: flex;
+//   flex-direction: column;
+//   justify-content: center;
+
+//   gap: 60px;
+//   color: white;
+
+//   ${(props) =>
+//     props.$isSideBarChange &&
+//     css`
+//       width: calc(100% - 78px) !important;
+//       padding-left: 78px;
+//     `}
+// `;
+
+// MainContainer.tsx의 Content 컴포넌트
 const Content = styled.div<{ $isSideBarChange: boolean }>`
   width: 100%;
 
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  /* justify-content: center; */ // 이 속성은 콘텐츠를 중앙 정렬하여 스크롤 시작 위치에 영향을 줄 수 있습니다. 일단 제거해보고 테스트해보세요.
 
   gap: 60px;
   color: white;
+
+  /* MainContainer Wrapper의 남은 공간을 모두 차지하도록 설정 */
+  flex-grow: 1; /* 부모(Wrapper)의 남은 수직 공간을 모두 차지 */
+  flex-shrink: 0;
+  flex-basis: auto; /* 또는 flex-basis: 0; Flex 컨테이너 내에서 아이템의 기본 크기를 설정합니다. */
+
+  /* 🌟🌟🌟 가장 중요한 변경: Content의 높이를 부모의 남은 공간으로 제한하고 스크롤 허용 🌟🌟🌟 */
+  height: 0; /* flex-grow가 1일 때, 이 값을 0으로 설정하면 남은 공간을 정확히 채웁니다. */
+  min-height: 0; /* flex 컨테이너의 자식에게 min-height 기본값(auto)이 콘텐츠 크기에 따라 커지는 것을 방지 */
+
+  overflow-y: auto; /* 내용이 넘칠 때만 세로 스크롤바 표시 */
+  -webkit-overflow-scrolling: touch; /* iOS에서 부드러운 스크롤 활성화 */
+
+  /* 스크롤바 숨김 (선택 사항 - 일단 주석 해제하여 스크롤바가 보이는지 확인) */
+  &::-webkit-scrollbar {
+    display: none;
+  }
 
   ${(props) =>
     props.$isSideBarChange &&
@@ -91,6 +182,9 @@ const Content = styled.div<{ $isSideBarChange: boolean }>`
       width: calc(100% - 78px) !important;
       padding-left: 78px;
     `}
+
+  /* 디버깅용 min-height: 200vh;는 이제 필요 없습니다. */
+  background-color: rgba(255, 0, 0, 0.3); /* 디버깅용 배경색은 유지 */
 `;
 
 const ConentContainer = styled.div`
@@ -297,7 +391,7 @@ const MainContainer = ({
 
   return (
     <Wrapper
-      ref={wrapperRef}
+      // ref={wrapperRef}
       $backImg={background?.src}
       $isSideBarChange={isSideBarChange}
     >
@@ -307,7 +401,8 @@ const MainContainer = ({
         ) : (
           <SimpleBackImage $backImg={background.src} />
         ))}
-      <Content $isSideBarChange={isSideBarChange}>
+
+      <Content $isSideBarChange={isSideBarChange} ref={wrapperRef}>
         <ConentContainer>{children}</ConentContainer>
         <Footer />
       </Content>
