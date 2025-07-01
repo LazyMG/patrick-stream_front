@@ -11,7 +11,7 @@ const Wrapper = styled.div<{
   position: fixed;
   top: 0;
   left: 0;
-  height: 100vh;
+  height: 100dvh;
   z-index: ${({ $isOverlay }) => ($isOverlay ? 100 : 1)};
   background-color: ${(props) =>
     props.$isSideBarChange ? "transparent" : "#111"};
