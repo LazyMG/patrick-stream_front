@@ -144,7 +144,7 @@ function YoutubeContainer() {
     playerVars: {
       autoplay: 1,
       // mute: 1,
-      mute: isMobile ? 1 : 0,
+      // mute: isMobile ? 1 : 0,
       playsinline: 1,
     },
   };
