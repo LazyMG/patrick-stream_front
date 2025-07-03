@@ -82,7 +82,6 @@ function YoutubeContainer() {
     // console.log("currentPlayer", currentPlayer.isPaused);
 
     if (currentPlayer.isRedirectPaused) {
-      // console.log("true");
       event.target.pauseVideo();
     }
 
@@ -144,7 +143,7 @@ function YoutubeContainer() {
     width: "320",
     playerVars: {
       autoplay: 1,
-      mute: 1,
+      // mute: 1,
       playsinline: 1,
     },
   };
